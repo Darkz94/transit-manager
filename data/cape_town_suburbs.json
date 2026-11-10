@@ -1,0 +1,79 @@
+[
+  {
+    "id": "cape-town-city-bowl",
+    "name": "City Bowl",
+    "type": "suburb_district",
+    "lat": -33.925,
+    "lon": 18.418
+  },
+  {
+    "id": "woodstock",
+    "name": "Woodstock",
+    "type": "suburb_district",
+    "lat": -33.9275,
+    "lon": 18.448
+  },
+  {
+    "id": "bellville",
+    "name": "Bellville",
+    "type": "suburb_district",
+    "lat": -33.9,
+    "lon": 18.63
+  },
+  {
+    "id": "parow",
+    "name": "Parow",
+    "type": "suburb_district",
+    "lat": -33.9,
+    "lon": 18.59
+  },
+  {
+    "id": "table-view",
+    "name": "Table View",
+    "type": "suburb_district",
+    "lat": -33.822,
+    "lon": 18.49
+  },
+  {
+    "id": "milnerton",
+    "name": "Milnerton",
+    "type": "suburb_district",
+    "lat": -33.88,
+    "lon": 18.5
+  },
+  {
+    "id": "century-city",
+    "name": "Century City",
+    "type": "suburb_district",
+    "lat": -33.892,
+    "lon": 18.51
+  },
+  {
+    "id": "claremont",
+    "name": "Claremont",
+    "type": "suburb_district",
+    "lat": -33.98,
+    "lon": 18.47
+  },
+  {
+    "id": "hout-bay",
+    "name": "Hout Bay",
+    "type": "suburb_district",
+    "lat": -34.05,
+    "lon": 18.36
+  },
+  {
+    "id": "khayelitsha",
+    "name": "Khayelitsha",
+    "type": "suburb_district",
+    "lat": -34.04,
+    "lon": 18.67
+  },
+  {
+    "id": "mitchells-plain",
+    "name": "Mitchells Plain",
+    "type": "suburb_district",
+    "lat": -34.05,
+    "lon": 18.62
+  }
+]
