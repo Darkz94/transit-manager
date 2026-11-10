@@ -7,11 +7,17 @@
 
 ## Project direction
 
-Transit Manager should let the player grow a small road carrier into a large logistics company. Its core loop is to inspect demand, buy and configure vehicles, hire the right drivers, send cargo along profitable routes, maintain the fleet, reinvest earnings, and expand the network.
+Transit Manager should let the player grow a small road carrier into a national logistics company operating across South Africa. Its core loop is to inspect demand, buy and configure vehicles, hire the right drivers, send cargo along profitable routes, maintain the fleet, win long-haul contracts, reinvest earnings, and expand the network from local districts to national routes.
 
 Truck Manager - 2027 is a useful reference for the depth and breadth of this management loop. Transit Manager should implement comparable categories of play while using original names, art, interface, map, numbers, text, and progression. We should not copy its artwork, source code, branded vehicle designs, exact data tables, or screen layouts.
 
 The main design difference is offline play. All simulation and saves should work on the device without a login, server, advertisements, or network connection. Time should advance through a controllable in-game clock, with a clear pause and speed control. Returning after a long absence should not create unlimited or punitive catch-up.
+
+### South Africa map goal
+
+The finished game map should cover all of South Africa, including all nine provinces, major cities, towns, and meaningful suburban delivery districts. Use a national overview for long-distance planning, then let the player zoom into provincial and metropolitan areas to see terminals, local roads, and suburb-level demand. Long-haul contracts between distant parts of the country are a core feature of the game, not a late optional extra. The map can be rolled out region by region during development, but the data model and national overview must support the full country from the first map prototype.
+
+Represent suburbs as playable metro districts or delivery zones rather than plotting every street address as a separate node. That keeps local route planning readable while still allowing familiar places to appear in the game. Use original map illustration and interface art; establish a suitable offline geographic data source and attribution plan before building the production map.
 
 ## Research findings
 
@@ -38,12 +44,12 @@ The official store listing says Truck Manager requires an internet connection. I
 
 These decisions make the first build small enough to finish while preserving a path to deeper management:
 
-1. **Camera and layout:** landscape-first. Use a readable regional road map as the main view, with compact company, fleet, cargo, and finance panels. Support touch and mouse from the start; keep the layout adaptable for tablets and desktop.
-2. **Opening geography:** begin with one compact, fictional region inspired by the Western Cape road network. Use fictional city names and original map art. This gives the game a distinct identity and keeps the first road graph manageable. Expand to additional regions later.
+1. **Camera and layout:** landscape-first. Use a readable South Africa road map as the main view, with compact company, fleet, cargo, and finance panels. Support touch and mouse from the start; keep the layout adaptable for tablets and desktop. The map should support national, provincial, metro, and suburb-district zoom levels.
+2. **Geography:** South Africa is the complete-map goal, with all nine provinces, major cities, towns, and metro suburb districts represented. Start implementation with a detailed Western Cape slice, but show the full national map and plan national long-haul corridors from the beginning. Use original illustrated map art and a verified offline data source.
 3. **Simulation clock:** use an in-game clock with pause, normal speed, and fast-forward. Save elapsed simulation state locally. Provide a setting for offline catch-up, with a conservative cap and clear summary.
 4. **Offline persistence:** use versioned local saves, automatic save after important actions, a manual save/export option if the selected engine supports it well, and recovery from interrupted writes.
 5. **Original content:** create fictional manufacturers, vehicle models, staff, cargo labels, map art, icons, text, pricing, and balancing. Use Truck Manager only as a feature reference.
-6. **First playable scope:** one region, six cities, one home terminal, three vehicle classes, four cargo types, local and line-haul dispatch, basic drivers, finite daily demand, revenue and costs, vehicle wear, and a save/load cycle.
+6. **First playable scope:** a South Africa overview map with one detailed Western Cape operating area, six initial destinations, one home terminal, three vehicle classes, four cargo types, local and line-haul dispatch, basic drivers, finite daily demand, revenue and costs, vehicle wear, a save/load cycle, and an early long-haul contract prototype. This proves the national map and contract design before the full location catalogue is built.
 7. **Platform and engine:** decide during Stage 0 after checking the repository and target devices. Godot is a reasonable candidate for a native landscape game with offline saves; avoid locking implementation until the first prototype and device targets are agreed.
 
 ## Development stages
@@ -53,13 +59,13 @@ Stages are sequenced by dependency. A stage is complete when its exit criteria a
 | Stage | Goal | Main deliverables | Exit criteria |
 |---|---|---|---|
 | 0. Foundation and design | Agree the product boundaries and technical direction. | Repository conventions, concise game design brief, screen map, data model, engine decision, issue list. | Core loop and MVP scope are documented; project opens and runs on the chosen target. |
-| 1. Landscape shell and map prototype | Make the main management view tangible before building simulation depth. | Main menu, landscape HUD, original regional map, clickable city and terminal panels, responsive scaling. | Player can inspect the map and open each core panel; placeholder visuals have a consistent style. |
+| 1. Landscape shell and South Africa map prototype | Make the national view and geographic hierarchy tangible before building simulation depth. | Main menu, landscape HUD, South Africa overview, province and metro zoom levels, clickable city/town and terminal panels, original road-map art, responsive scaling. | Player can inspect a national map, zoom into a detailed Western Cape slice, and open place panels; data supports the other provinces without redesign. |
 | 2. Offline simulation foundation | Build reliable time and save systems. | Simulation clock, pause/speed controls, versioned local save, autosave, new-game flow, recovery behavior. | A session can be saved, closed, reopened, and resumed with vehicles and finances intact and no network access. |
 | 3. Core logistics MVP | Deliver the first complete management loop. | Vehicle purchase, drivers, cargo demand, local routes, dispatch, trip progress, delivery payment, daily demand reset. | Player can buy a vehicle, assign a driver and cargo, deliver, earn a profit or loss, and understand why. |
-| 4. Terminals and line hauls | Turn isolated trips into a network puzzle. | Terminal purchase and upgrades, road graph, terminal-to-terminal routes, route demand, return-leg dispatch, route overview. | The map only permits valid connections; route choices visibly affect travel time, demand, and profit. |
+| 4. Network logistics and first long-haul contracts | Turn isolated trips into a network and prove the contract loop early. | Terminal purchase and upgrades, South Africa road graph, terminal-to-terminal line hauls, route demand, return-leg dispatch, contract board, bidding, deadlines, eligible vehicle assignment, first long-distance contract. | A player can run local and line-haul routes, bid for a long-haul contract, assign suitable vehicles, complete it on time, and see the financial result. |
 | 5. Fleet depth and operations | Add specialization and operating pressure. | More vehicle classes, trailer/certification compatibility, additional cargo families, fuel/electricity, wear, repair, inspections, breakdown or incident events. | Fleet composition matters; maintenance and cargo selection change the economics without making routine play tedious. |
 | 6. Company progression | Add strategic growth systems. | Reputation, marketing, company levels, department managers and perks, staff hiring/training, R&D tree, achievements. | Multiple viable development paths exist, and progress is earned through clear actions rather than waiting alone. |
-| 7. Contracts and regional expansion | Add longer commitments and scale. | Contract board, bidding, deadlines, multi-vehicle assignment, additional regions, long-haul routes, optional backhaul planning. | The player can plan capacity against deadlines and expand without breaking save performance. |
+| 7. South Africa expansion and advanced long-haul operations | Fill out the national network and make long-distance planning a major progression path. | Roll out all nine provinces; add major cities, towns, and metropolitan suburb districts; add interprovincial corridors, contract tiers, multi-vehicle capacity planning, contract reputation, and backhaul planning. | The national map supports long-haul operations across the country, while metro zoom levels support local deliveries and the full location catalogue remains data-driven. |
 | 8. Economy and advanced management | Add late-game financial strategy. | Loans, budgets, advanced market conditions, company valuation, local simulated competitors, optional offline share market. | Advanced systems are understandable, optional, and do not block the core transport loop. |
 | 9. Content, usability, and release readiness | Turn the prototype into a complete offline game. | Tutorial, scenarios, local events, accessibility, controller/keyboard support, balancing, performance and save migration. | A new player can complete the tutorial, grow through the main progression, and continue after an app restart with no connection. |
 
@@ -67,7 +73,7 @@ Stages are sequenced by dependency. A stage is complete when its exit criteria a
 
 - The MVP does not need 3D truck driving. The player manages logistics from a landscape map; vehicles can be clear original map icons with status, direction, and progress.
 - A real-world stock market, online leaderboards, player alliances, account sync, and server events are excluded from the offline version. If desired, later stages can use simulated companies, local rankings, and authored events.
-- Long-haul contracts, trailer swapping, and backhauling are valuable depth but should wait until local and line-haul economics work.
+- Long-haul contracts are part of the core game. Introduce a simple contract flow by Stage 4, then deepen contract tiers and backhaul planning as the South Africa network expands. Trailer swapping can follow once tractor and trailer compatibility is established.
 - Keep all simulation rules data-driven so new cities, vehicles, cargo, routes, and upgrades can be added without rewriting the core engine.
 
 ## Stage 0 starting checklist
@@ -75,7 +81,7 @@ Stages are sequenced by dependency. A stage is complete when its exit criteria a
 The research and roadmap are now the first design artifact. Before implementation, confirm or revise these choices:
 
 - [ ] Engine and target platforms
-- [ ] Whether the initial region should be a fictional Western Cape-inspired map
+- [ ] South Africa geographic data source, national map style, and province/metro/suburb hierarchy
 - [ ] 2D map icons versus a 2.5D presentation
 - [ ] Simulation time scale and offline catch-up cap
 - [ ] Whether save export/import is required in the first release
@@ -85,17 +91,19 @@ Then create the Stage 0 implementation issues:
 
 1. Choose engine and create the runnable project shell.
 2. Define the landscape screen map and navigation.
-3. Define the data schema for city, road, terminal, vehicle, driver, cargo, route, delivery, and save.
-4. Create an original six-city map prototype.
-5. Implement the local simulation clock and save/load spike before adding content.
+3. Define the data schema for province, metro area, town/city, suburb district, road segment, terminal, vehicle, driver, cargo, contract, trip, delivery, and save.
+4. Create the South Africa overview map with a detailed Western Cape prototype layer.
+5. Research an offline geographic data source and document any attribution requirements.
+6. Implement the local simulation clock and save/load spike before adding content.
+7. Prototype a long-haul contract between two distant destinations and show its route, deadline, vehicle needs, and expected costs.
 
 ## Initial simulation entities
 
 Start with these records and keep the game logic independent from the screen code:
 
 - **Company:** name, cash, reputation, level, research, settings, owned terminals.
-- **City:** id, display name, region, coordinates, demand profile, unlock state.
-- **Road edge:** start city, end city, distance, travel-time modifier, road quality.
+- **Place hierarchy:** province, metro or municipality, city/town, and suburb district with stable ids, display names, coordinates, demand profiles, and unlock state.
+- **Road segment:** start and end place, distance, travel-time modifier, road quality, road class, and whether it belongs to a long-haul corridor.
 - **Terminal:** city, level, capacity, daily costs, upgrade state.
 - **Vehicle:** class, capacity, compatible cargo, energy type, condition, location, assigned driver, trip state.
 - **Driver:** skills, permitted cargo, wage, fatigue or availability, experience.
