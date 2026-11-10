@@ -84,7 +84,7 @@ Stage 0 foundation decisions and the project shell are in place. Remaining produ
 - [x] First release target: Android phones and tablets in landscape orientation. PC builds are out of scope for this phase.
 - [x] Full-map goal: South Africa, with nine provinces and city, town, and metro-district layers.
 - [x] Visual direction: 2D landscape, map-first interface.
-- [ ] Choose simulation time scale and offline catch-up cap during the offline simulation stage.
+- [x] Set prototype clock defaults: 24-minute game day and 12-game-hour offline catch-up cap; revisit during balancing.
 - [ ] Decide whether save export/import is needed before release.
 - [ ] Set starting funds, currency display, and opening fleet during economy balancing.
 
