@@ -35,6 +35,8 @@ const CONTRACT_ROUTES := [
 	{"destination":"Durban","km":1650,"hours":66.0,"cargo_id":"produce","cargo_name":"Fresh produce","units":18,"rate":44.0,"deadline_days":7}
 ]
 const CONTRACT_BOND := 25000
+const REPAIR_COST_PER_CONDITION := 850
+const WEAR_PER_100_KM := 0.72
 const TERMINAL_MARKET := [
 	{"name":"Gqeberha","province":"Eastern Cape","km":750,"price":200000},
 	{"name":"Bloemfontein","province":"Free State","km":1000,"price":260000},
@@ -215,6 +217,8 @@ func start_new_game(game_time: float) -> void:
 func load_state(state: Dictionary, game_time: float) -> void:
 	cash = int(state.get("cash", STARTING_CASH))
 	fleet = state.get("fleet", [])
+	for vehicle in fleet:
+		vehicle["condition"] = clampf(float(vehicle.get("condition", 100.0)), 0.0, 100.0)
 	drivers = state.get("drivers", [])
 	trips = state.get("trips", [])
 	demand = state.get("demand", {})
@@ -304,6 +308,7 @@ func _complete_until(game_time: float) -> void:
 		trip["status"] = "returned"
 		for vehicle in fleet:
 			if str(vehicle.get("id", "")) == str(trip.get("vehicle_id", "")):
+				vehicle["condition"] = clampf(float(vehicle.get("condition", 100.0)) - float(trip.get("wear", 0.0)), 0.0, 100.0)
 				vehicle["status"] = "available"
 				vehicle["driver_id"] = ""
 				vehicle["location"] = HOME
@@ -386,7 +391,7 @@ func buy_vehicle() -> void:
 		_set_message("Not enough cash. %s costs R%s." % [definition["name"], commas(price)])
 		return
 	cash -= price
-	fleet.append({"id":"vehicle_%d" % (fleet.size()+1),"name":definition["name"],"price":price,"capacity":definition["capacity"],"km_cost":definition["km_cost"],"cargo":definition["cargo"].duplicate(),"status":"available","driver_id":"","location":HOME})
+	fleet.append({"id":"vehicle_%d" % (fleet.size()+1),"name":definition["name"],"price":price,"capacity":definition["capacity"],"km_cost":definition["km_cost"],"cargo":definition["cargo"].duplicate(),"condition":100.0,"status":"available","driver_id":"","location":HOME})
 	selected_vehicle = fleet.size() - 1
 	vehicle_offer = (vehicle_offer + 1) % VEHICLES.size()
 	_set_message("Purchased %s for R%s." % [definition["name"], commas(price)])
@@ -452,6 +457,29 @@ func cycle_vehicle() -> void:
 	_set_message("Selected %s." % fleet[selected_vehicle]["name"])
 
 
+func repair_selected_vehicle() -> void:
+	if fleet.is_empty():
+		_set_message("Buy a vehicle before scheduling maintenance.")
+		return
+	selected_vehicle = posmod(selected_vehicle, fleet.size())
+	var vehicle: Dictionary = fleet[selected_vehicle]
+	if str(vehicle.get("status", "")) != "available":
+		_set_message("A vehicle must return before it can be repaired.")
+		return
+	var condition := clampf(float(vehicle.get("condition", 100.0)), 0.0, 100.0)
+	var missing := 100.0 - condition
+	if missing < 0.5:
+		_set_message("%s is already in excellent condition." % vehicle.get("name", "Vehicle"))
+		return
+	var cost := int(ceil(missing * REPAIR_COST_PER_CONDITION))
+	if cash < cost:
+		_set_message("Repair needs R%s, but your company has insufficient cash." % commas(cost))
+		return
+	cash -= cost
+	vehicle["condition"] = 100.0
+	_set_message("%s repaired to 100%% condition for R%s." % [vehicle.get("name", "Vehicle"), commas(cost)])
+
+
 func cycle_driver() -> void:
 	if drivers.is_empty():
 		_set_message("Hire a driver before selecting one.")
@@ -511,14 +539,14 @@ func dispatch_network(game_time: float) -> void:
 		return
 	var units := mini(int(job["demand"]), int(vehicle["capacity"]))
 	var revenue := int(300 + int(job["km"]) * float(job["rate"]) * units)
-	var expense := int(int(job["km"]) * 2 * float(vehicle["km_cost"]) + 100)
+	var expense := int(ceil((int(job["km"]) * 2 * float(vehicle["km_cost"]) + 100) * _vehicle_cost_multiplier(vehicle)))
 	if cash < expense:
 		_set_message("Insufficient cash for estimated R%s line-haul costs." % commas(expense))
 		return
 	var vehicle_id := str(vehicle["id"])
 	var driver_id := str(driver["id"])
 	var duration := maxf(2.0, float(job["hours"]) * 2.0)
-	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_name":job["cargo_name"],"revenue":revenue,"start_time":game_time,"arrival":game_time + duration * 3600.0,"route_km":job["km"],"route_points":job.get("route_points", []).duplicate(true),"operation_type":"linehaul","status":"in_transit"})
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_name":job["cargo_name"],"revenue":revenue,"start_time":game_time,"arrival":game_time + duration * 3600.0,"route_km":job["km"],"wear":_trip_wear(int(job["km"]), units, int(vehicle["capacity"])),"route_points":job.get("route_points", []).duplicate(true),"operation_type":"linehaul","status":"in_transit"})
 	vehicle["status"] = "in_transit"
 	vehicle["driver_id"] = driver_id
 	vehicle["location"] = str(job["destination"])
@@ -553,14 +581,14 @@ func dispatch(game_time: float) -> void:
 	var units := mini(int(job["demand"]), int(vehicle["capacity"]))
 	var km := int(job["km"])
 	var revenue := int(500 + km * float(job["rate"]) * units)
-	var expense := int(km * 2 * float(vehicle["km_cost"]) + 100)
+	var expense := int(ceil((km * 2 * float(vehicle["km_cost"]) + 100) * _vehicle_cost_multiplier(vehicle)))
 	if cash < expense:
 		_set_message("Insufficient cash for estimated R%s trip costs." % commas(expense))
 		return
 	var duration := maxf(2.0, float(job["hours"]) * 2.0)
 	var driver_id := str(driver["id"])
 	var vehicle_id := str(vehicle["id"])
-	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_name":job["cargo_name"],"revenue":revenue,"arrival":game_time + duration * 3600.0,"operation_type":"local","status":"in_transit"})
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_name":job["cargo_name"],"revenue":revenue,"arrival":game_time + duration * 3600.0,"route_km":km,"wear":_trip_wear(km, units, int(vehicle["capacity"])),"operation_type":"local","status":"in_transit"})
 	vehicle["status"] = "in_transit"
 	vehicle["driver_id"] = driver_id
 	vehicle["location"] = str(job["destination"])
@@ -626,13 +654,13 @@ func dispatch_contract(game_time: float) -> void:
 	if not vehicle.get("cargo", []).has(contract.get("cargo_id", "")) or int(vehicle.get("capacity", 0)) < int(contract.get("units", 0)):
 		_set_message("This contract needs a compatible vehicle with at least %s units of capacity." % contract.get("units", 0))
 		return
-	var expense := int(int(contract["km"]) * 2 * float(vehicle["km_cost"]) + 1000)
+	var expense := int(ceil((int(contract["km"]) * 2 * float(vehicle["km_cost"]) + 1000) * _vehicle_cost_multiplier(vehicle)))
 	if cash < expense:
 		_set_message("Insufficient cash for estimated R%s long-haul costs." % commas(expense))
 		return
 	var vehicle_id := str(vehicle["id"])
 	var driver_id := str(driver["id"])
-	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":contract["destination"],"cargo_name":contract["cargo_name"],"revenue":int(contract["revenue"]),"arrival":game_time + float(contract["hours"]) * 2.0 * 3600.0,"start_time":game_time,"route_km":contract["km"],"route_points":contract.get("route_points", []).duplicate(true),"deadline":float(contract["deadline"]),"contract_id":contract["id"],"bond":int(contract.get("bond", 0)),"operation_type":"contract","status":"in_transit"})
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":contract["destination"],"cargo_name":contract["cargo_name"],"revenue":int(contract["revenue"]),"arrival":game_time + float(contract["hours"]) * 2.0 * 3600.0,"start_time":game_time,"route_km":contract["km"],"wear":_trip_wear(int(contract["km"]), int(contract["units"]), int(vehicle["capacity"])),"route_points":contract.get("route_points", []).duplicate(true),"deadline":float(contract["deadline"]),"contract_id":contract["id"],"bond":int(contract.get("bond", 0)),"operation_type":"contract","status":"in_transit"})
 	contract["status"] = "in_transit"
 	vehicle["status"] = "in_transit"
 	vehicle["driver_id"] = driver_id
@@ -689,7 +717,32 @@ func vehicle_label() -> String:
 		return "No vehicles yet"
 	selected_vehicle = posmod(selected_vehicle, fleet.size())
 	var item: Dictionary = fleet[selected_vehicle]
-	return "%s • %s • %d-unit capacity" % [item["name"], str(item["status"]).capitalize(), int(item["capacity"])]
+	return "%s • %s • %d units" % [item["name"], str(item["status"]).capitalize(), int(item["capacity"])]
+
+
+func vehicle_condition_label() -> String:
+	if fleet.is_empty():
+		return "Condition —"
+	var item: Dictionary = fleet[posmod(selected_vehicle, fleet.size())]
+	return "Condition %.0f%%" % float(item.get("condition", 100.0))
+
+
+func repair_label() -> String:
+	if fleet.is_empty():
+		return "REPAIR SELECTED VEHICLE"
+	var item: Dictionary = fleet[posmod(selected_vehicle, fleet.size())]
+	var cost := int(ceil((100.0 - clampf(float(item.get("condition", 100.0)), 0.0, 100.0)) * REPAIR_COST_PER_CONDITION))
+	return "REPAIR • R%s" % commas(cost)
+
+
+func _vehicle_cost_multiplier(vehicle: Dictionary) -> float:
+	var condition := clampf(float(vehicle.get("condition", 100.0)), 0.0, 100.0)
+	return 1.0 + (100.0 - condition) * 0.005
+
+
+func _trip_wear(one_way_km: int, units: int, capacity: int) -> float:
+	var load_factor := 0.85 + 0.45 * clampf(float(units) / maxf(1.0, float(capacity)), 0.0, 1.0)
+	return minf(45.0, float(one_way_km) * 2.0 / 100.0 * WEAR_PER_100_KM * load_factor)
 
 
 func next_vehicle_label() -> String:

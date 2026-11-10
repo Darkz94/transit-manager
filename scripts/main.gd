@@ -657,15 +657,17 @@ func _draw_operations_screen(font: Font) -> void:
 	draw_rect(right, c_divider, false, 1.0)
 	draw_string(font, left.position + Vector2(16, 24), "FLEET & DRIVERS", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, c_cyan)
 	draw_string(font, left.position + Vector2(16, 52), CompanyOperations.vehicle_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 11, c_text)
-	_draw_operation_button("cycle_vehicle", "SELECT VEHICLE", Rect2(left.position.x + 12.0, left.position.y + 62.0, card_w - 24.0, 32.0), font)
-	_draw_operation_button("buy_vehicle", "BUY: " + CompanyOperations.next_vehicle_label(), Rect2(left.position.x + 12.0, left.position.y + 100.0, card_w - 24.0, 38.0), font)
-	draw_string(font, left.position + Vector2(16, 165), CompanyOperations.driver_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 11, c_text)
-	_draw_operation_button("cycle_driver", "SELECT DRIVER", Rect2(left.position.x + 12.0, left.position.y + 175.0, card_w - 24.0, 32.0), font)
-	_draw_operation_button("hire_driver", "HIRE: " + CompanyOperations.next_driver_label(), Rect2(left.position.x + 12.0, left.position.y + 213.0, card_w - 24.0, 38.0), font)
-	draw_string(font, left.position + Vector2(16, 275), "Driver wages are charged once per game day.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
-	draw_string(font, left.position + Vector2(16, 305), "TERMINAL NETWORK • %d / 5 OWNED" % CompanyOperations.owned_terminals.size(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 10, c_cyan)
-	_draw_operation_button("cycle_terminal", "NEXT TERMINAL: " + CompanyOperations.next_terminal_label(), Rect2(left.position.x + 12.0, left.position.y + 314.0, card_w - 24.0, 32.0), font)
-	_draw_operation_button("buy_terminal", "BUY SELECTED TERMINAL", Rect2(left.position.x + 12.0, left.position.y + 352.0, card_w - 24.0, 36.0), font)
+	draw_string(font, left.position + Vector2(16, 66), CompanyOperations.vehicle_condition_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 10, c_muted)
+	_draw_operation_button("cycle_vehicle", "SELECT VEHICLE", Rect2(left.position.x + 12.0, left.position.y + 72.0, card_w - 24.0, 32.0), font)
+	_draw_operation_button("buy_vehicle", "BUY: " + CompanyOperations.next_vehicle_label(), Rect2(left.position.x + 12.0, left.position.y + 110.0, card_w - 24.0, 38.0), font)
+	_draw_operation_button("repair_vehicle", CompanyOperations.repair_label(), Rect2(left.position.x + 12.0, left.position.y + 152.0, card_w - 24.0, 32.0), font)
+	draw_string(font, left.position + Vector2(16, 200), CompanyOperations.driver_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 11, c_text)
+	_draw_operation_button("cycle_driver", "SELECT DRIVER", Rect2(left.position.x + 12.0, left.position.y + 210.0, card_w - 24.0, 32.0), font)
+	_draw_operation_button("hire_driver", "HIRE: " + CompanyOperations.next_driver_label(), Rect2(left.position.x + 12.0, left.position.y + 248.0, card_w - 24.0, 38.0), font)
+	draw_string(font, left.position + Vector2(16, 306), "Driver wages are charged once per game day.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
+	draw_string(font, left.position + Vector2(16, 335), "TERMINAL NETWORK • %d / 5 OWNED" % CompanyOperations.owned_terminals.size(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 10, c_cyan)
+	_draw_operation_button("cycle_terminal", "NEXT TERMINAL: " + CompanyOperations.next_terminal_label(), Rect2(left.position.x + 12.0, left.position.y + 344.0, card_w - 24.0, 32.0), font)
+	_draw_operation_button("buy_terminal", "BUY SELECTED TERMINAL", Rect2(left.position.x + 12.0, left.position.y + 382.0, card_w - 24.0, 36.0), font)
 
 	var tab_w := (card_w - 36.0) / 3.0
 	_draw_operation_button("tab_local", "LOCAL", Rect2(right.position.x + 12.0, right.position.y + 10.0, tab_w, 30.0), font)
@@ -761,6 +763,8 @@ func _handle_operation_action(action: String) -> void:
 			CompanyOperations.hire_driver()
 		"cycle_vehicle":
 			CompanyOperations.cycle_vehicle()
+		"repair_vehicle":
+			CompanyOperations.repair_selected_vehicle()
 		"cycle_driver":
 			CompanyOperations.cycle_driver()
 		"next_job":
