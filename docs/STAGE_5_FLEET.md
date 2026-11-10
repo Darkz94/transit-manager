@@ -1,6 +1,6 @@
 # Stage 5: Fleet depth and maintenance
 
-**Status:** Vehicle condition, repair, cargo equipment, and the first driver endorsement are implemented; Android play review and balance tuning remain.
+**Status:** Vehicle condition, repair, cargo equipment, and three specialist driver endorsements are implemented; Android play review and balance tuning remain.
 **Target:** Android phones and tablets in landscape orientation.
 
 ## Included in this pass
@@ -15,7 +15,8 @@
 - Added the Longhaul Prime Mover as the specialist machinery truck, with higher capacity, running cost, and purchase price. Industrial machinery jobs use a higher cargo wear factor.
 - Legacy fleets infer suitable equipment from the saved cargo capabilities so existing saves remain usable.
 - Added controlled-chemical freight, which requires both a hazmat-equipped SafeRoute DG Rigid and a driver with a hazmat endorsement. Other vehicles or general drivers are rejected at dispatch with a clear explanation.
-- Added Thandi Ndlovu as a higher-wage, hazmat-endorsed driver candidate. Driver credentials appear in the Operations panel and are stored in local saves. Existing drivers default to general credentials when older saves are loaded.
+- Added Thandi Ndlovu (hazmat), Zanele Pieters (cold-chain), and Sipho Maseko (heavy-haul) as specialist driver candidates. Fresh produce needs cold-chain credentials; industrial machinery needs heavy-haul credentials. Driver credentials appear in Operations and are saved locally. Existing drivers default to general credentials when older saves are loaded.
+- Added bulk aggregates and the CapeBulk Tipper 10T. Bulk aggregates require tipper equipment; the tipper can also carry building supplies.
 
 ## Initial balance rules
 
@@ -33,4 +34,4 @@ These values are first-pass game balance, not real fleet-maintenance estimates. 
 
 ## Next slice
 
-The next fleet slice can add more cargo families and endorsements, followed by fuel choices and inspection intervals. Keep breakdown events out until the existing maintenance costs have been reviewed on Android, so the system stays understandable rather than punitive.
+The next fleet slice can add fuel and energy choices, inspection intervals, and additional vehicle roles. Keep breakdown events out until maintenance costs and certification rules have been reviewed on Android, so the system stays understandable rather than punitive.

@@ -11,21 +11,25 @@ const VEHICLES := [
 	{"id":"rigid","name":"Regional Rigid 8T","class":"rigid","price":760000,"capacity":28,"km_cost":22.0,"equipment":["standard","flatbed"],"cargo":["dry","building"]},
 	{"id":"reefer","name":"ColdLink Refrigerated","class":"reefer","price":920000,"capacity":20,"km_cost":25.0,"equipment":["standard","refrigerated"],"cargo":["produce","dry"]},
 	{"id":"prime_mover","name":"Longhaul Prime Mover","class":"tractor","price":1350000,"capacity":40,"km_cost":32.0,"equipment":["standard","flatbed","machinery_platform"],"cargo":["dry","building","machinery"]},
-	{"id":"safechem_rigid","name":"SafeRoute DG Rigid","class":"rigid","price":1180000,"capacity":22,"km_cost":29.0,"equipment":["standard","hazmat"],"cargo":["dry","hazmat"]}
+	{"id":"safechem_rigid","name":"SafeRoute DG Rigid","class":"rigid","price":1180000,"capacity":22,"km_cost":29.0,"equipment":["standard","hazmat"],"cargo":["dry","hazmat"]},
+	{"id":"capebulk_tipper","name":"CapeBulk Tipper 10T","class":"tipper","price":1050000,"capacity":32,"km_cost":26.0,"equipment":["standard","tipper"],"cargo":["granular","building"]}
 ]
 const DRIVERS := [
 	{"name":"Lebo Mokoena","wage":900,"endorsements":["general"]},
 	{"name":"Siyabonga Dlamini","wage":1050,"endorsements":["general"]},
 	{"name":"Nadia Jacobs","wage":1150,"endorsements":["general"]},
-	{"name":"Thandi Ndlovu","wage":1480,"endorsements":["general","hazmat"]}
+	{"name":"Thandi Ndlovu","wage":1480,"endorsements":["general","hazmat"]},
+	{"name":"Zanele Pieters","wage":1360,"endorsements":["general","cold_chain"]},
+	{"name":"Sipho Maseko","wage":1680,"endorsements":["general","heavy_haul"]}
 ]
 const CARGO := [
 	{"id":"parcels","name":"Parcel freight","rate":22.0,"equipment":"standard","wear_factor":0.8},
 	{"id":"dry","name":"Packaged goods","rate":17.0,"equipment":"standard","wear_factor":1.0},
-	{"id":"produce","name":"Fresh produce","rate":20.0,"equipment":"refrigerated","wear_factor":1.0},
+	{"id":"produce","name":"Fresh produce","rate":20.0,"equipment":"refrigerated","driver_endorsement":"cold_chain","wear_factor":1.0},
 	{"id":"building","name":"Building supplies","rate":15.0,"equipment":"flatbed","wear_factor":1.2},
-	{"id":"machinery","name":"Industrial machinery","rate":28.0,"equipment":"machinery_platform","wear_factor":1.45},
-	{"id":"hazmat","name":"Controlled chemicals","rate":34.0,"equipment":"hazmat","driver_endorsement":"hazmat","wear_factor":1.35}
+	{"id":"machinery","name":"Industrial machinery","rate":28.0,"equipment":"machinery_platform","driver_endorsement":"heavy_haul","wear_factor":1.45},
+	{"id":"hazmat","name":"Controlled chemicals","rate":34.0,"equipment":"hazmat","driver_endorsement":"hazmat","wear_factor":1.35},
+	{"id":"granular","name":"Bulk aggregates","rate":18.0,"equipment":"tipper","wear_factor":1.3}
 ]
 const DESTINATIONS := [
 	{"name":"Stellenbosch","km":52,"hours":1.0},
@@ -770,7 +774,7 @@ func _cargo_equipment_label(cargo_id: String) -> String:
 	var requirements := str(cargo.get("equipment", "standard")).replace("_", " ")
 	var endorsement := str(cargo.get("driver_endorsement", ""))
 	if endorsement != "":
-		requirements += " + %s driver" % endorsement
+		requirements += " + %s driver" % _endorsement_label(endorsement)
 	return requirements
 
 
@@ -792,7 +796,28 @@ func _cargo_incompatibility_message(vehicle: Dictionary, cargo_id: String) -> St
 func _driver_incompatibility_message(driver: Dictionary, cargo_id: String) -> String:
 	var cargo := _cargo_definition(cargo_id)
 	var required := str(cargo.get("driver_endorsement", "specialist"))
-	return "%s needs a %s driver endorsement." % [cargo.get("name", "This load"), required]
+	return "%s needs a %s driver endorsement." % [cargo.get("name", "This load"), _endorsement_label(required)]
+
+
+func _endorsement_label(endorsement: String) -> String:
+	match endorsement:
+		"hazmat":
+			return "hazmat"
+		"cold_chain":
+			return "cold-chain"
+		"heavy_haul":
+			return "heavy-haul"
+		_:
+			return endorsement.replace("_", " ")
+
+
+func _driver_credentials_label(driver: Dictionary) -> String:
+	var credentials: Array[String] = []
+	for endorsement in driver.get("endorsements", ["general"]):
+		if str(endorsement) == "general":
+			continue
+		credentials.append(_endorsement_label(str(endorsement)).capitalize())
+	return ", ".join(credentials) if not credentials.is_empty() else "General"
 
 
 func _infer_legacy_equipment(vehicle: Dictionary) -> Array:
@@ -804,6 +829,8 @@ func _infer_legacy_equipment(vehicle: Dictionary) -> Array:
 		equipment.append("flatbed")
 	if old_cargo.has("machinery"):
 		equipment.append("machinery_platform")
+	if old_cargo.has("granular"):
+		equipment.append("tipper")
 	return equipment
 
 
@@ -840,14 +867,12 @@ func driver_label() -> String:
 		return "No drivers yet"
 	selected_driver = posmod(selected_driver, drivers.size())
 	var item: Dictionary = drivers[selected_driver]
-	var credentials := "Hazmat endorsed" if item.get("endorsements", []).has("hazmat") else "General"
-	return "%s • %s • %s • R%s/day" % [item["name"], str(item["status"]).capitalize(), credentials, commas(int(item["wage"]))]
+	return "%s • %s • %s • R%s/day" % [item["name"], str(item["status"]).capitalize(), _driver_credentials_label(item), commas(int(item["wage"]))]
 
 
 func next_driver_label() -> String:
 	var item: Dictionary = DRIVERS[driver_offer]
-	var credentials := "Hazmat endorsed" if item.get("endorsements", []).has("hazmat") else "General"
-	return "%s • %s • R%s/day" % [item["name"], credentials, commas(int(item["wage"]))]
+	return "%s • %s • R%s/day" % [item["name"], _driver_credentials_label(item), commas(int(item["wage"]))]
 
 
 func job_label() -> String:
