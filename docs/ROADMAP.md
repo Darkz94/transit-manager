@@ -50,7 +50,7 @@ These decisions make the first build small enough to finish while preserving a p
 4. **Offline persistence:** use versioned local saves, automatic save after important actions, a manual save/export option if the selected engine supports it well, and recovery from interrupted writes.
 5. **Original content:** create fictional manufacturers, vehicle models, staff, cargo labels, map art, icons, text, pricing, and balancing. Use Truck Manager only as a feature reference.
 6. **First playable scope:** a South Africa overview map with one detailed Western Cape operating area, six initial destinations, one home terminal, three vehicle classes, four cargo types, local and line-haul dispatch, basic drivers, finite daily demand, revenue and costs, vehicle wear, a save/load cycle, and an early long-haul contract prototype. This proves the national map and contract design before the full location catalogue is built.
-7. **Platform and engine:** decide during Stage 0 after checking the repository and target devices. Godot is a reasonable candidate for a native landscape game with offline saves; avoid locking implementation until the first prototype and device targets are agreed.
+7. **Platform and engine:** use Godot 4.7.2 stable with GDScript. Target Android landscape first, with desktop builds available for development and later support. Godot 4.8 is still beta in the current release snapshot, so the project starts on the stable 4.7 line. Use a 1280 x 720 landscape design canvas, 2D canvas-item scaling, and an expanding aspect ratio for varied phone and tablet screens.
 
 ## Development stages
 
@@ -58,7 +58,7 @@ Stages are sequenced by dependency. A stage is complete when its exit criteria a
 
 | Stage | Goal | Main deliverables | Exit criteria |
 |---|---|---|---|
-| 0. Foundation and design | Agree the product boundaries and technical direction. | Repository conventions, concise game design brief, screen map, data model, engine decision, issue list. | Core loop and MVP scope are documented; project opens and runs on the chosen target. |
+| 0. Foundation and design | Set the product and technical foundations. | Godot 4.7.2 project shell, Android landscape target, screen map, geographic hierarchy, simulation entities, save plan, Stage 1 backlog. | Project shell is configured for 2D landscape play; product and data foundations are documented. |
 | 1. Landscape shell and South Africa map prototype | Make the national view and geographic hierarchy tangible before building simulation depth. | Main menu, landscape HUD, South Africa overview, province and metro zoom levels, clickable city/town and terminal panels, original road-map art, responsive scaling. | Player can inspect a national map, zoom into a detailed Western Cape slice, and open place panels; data supports the other provinces without redesign. |
 | 2. Offline simulation foundation | Build reliable time and save systems. | Simulation clock, pause/speed controls, versioned local save, autosave, new-game flow, recovery behavior. | A session can be saved, closed, reopened, and resumed with vehicles and finances intact and no network access. |
 | 3. Core logistics MVP | Deliver the first complete management loop. | Vehicle purchase, drivers, cargo demand, local routes, dispatch, trip progress, delivery payment, daily demand reset. | Player can buy a vehicle, assign a driver and cargo, deliver, earn a profit or loss, and understand why. |
@@ -80,7 +80,8 @@ Stages are sequenced by dependency. A stage is complete when its exit criteria a
 
 The research and roadmap are now the first design artifact. Before implementation, confirm or revise these choices:
 
-- [ ] Engine and target platforms
+- [x] Engine: Godot 4.7.2 stable with GDScript; Android landscape first, desktop development builds
+- [ ] Confirm whether desktop release support is required
 - [ ] South Africa geographic data source, national map style, and province/metro/suburb hierarchy
 - [ ] 2D map icons versus a 2.5D presentation
 - [ ] Simulation time scale and offline catch-up cap
@@ -89,7 +90,7 @@ The research and roadmap are now the first design artifact. Before implementatio
 
 Then create the Stage 0 implementation issues:
 
-1. Choose engine and create the runnable project shell.
+1. Build the Godot project shell and landscape entry screen.
 2. Define the landscape screen map and navigation.
 3. Define the data schema for province, metro area, town/city, suburb district, road segment, terminal, vehicle, driver, cargo, contract, trip, delivery, and save.
 4. Create the South Africa overview map with a detailed Western Cape prototype layer.
