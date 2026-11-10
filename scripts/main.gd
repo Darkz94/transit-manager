@@ -146,10 +146,10 @@ func _draw() -> void:
 	var theme_name := "DAYTIME" if theme_mode == 0 else "NIGHT"
 	draw_string(font, Vector2(0, 29), "SOUTH AFRICA MAP - " + theme_name, HORIZONTAL_ALIGNMENT_CENTER, w, 23, c_header_title)
 	draw_string(font, Vector2(0, 52), "9 PROVINCES  •  TERMINALS  •  CITIES  •  N1 / N2 / N3 / N4", HORIZONTAL_ALIGNMENT_CENTER, w, 10, c_muted)
-	theme_button_rect = Rect2(w - 88.0, 17.0, 78.0, 34.0)
+	theme_button_rect = Rect2(w - 132.0, 11.0, 120.0, 48.0)
 	draw_rect(theme_button_rect, c_button, true)
-	draw_rect(theme_button_rect, c_button_border, false, 1.0)
-	draw_string(font, theme_button_rect.position + Vector2(0, 22), "NIGHT" if theme_mode == 0 else "DAY", HORIZONTAL_ALIGNMENT_CENTER, theme_button_rect.size.x, 10, c_button_text)
+	draw_rect(theme_button_rect, c_button_border, false, 2.0)
+	draw_string(font, theme_button_rect.position + Vector2(0, 29), "NIGHT MODE" if theme_mode == 0 else "DAY MODE", HORIZONTAL_ALIGNMENT_CENTER, theme_button_rect.size.x, 11, c_button_text)
 
 	map_rect = Rect2(0, header_h, w, maxf(120.0, h - header_h - info_h - controls_h))
 	info_rect = Rect2(0, map_rect.end.y, w, info_h)
@@ -359,6 +359,11 @@ func _draw_markers(font: Font) -> void:
 					terminal_at_city = true
 					break
 		var should_label := is_terminal or (is_city and not terminal_at_city) or kind == "suburb_district" or map_mode == 2
+		if map_mode == 0:
+			if is_terminal:
+				should_label = str(item.get("city", "")) in ["Cape Town", "Kimberley", "Gqeberha", "Bloemfontein", "Durban", "Johannesburg"]
+			elif is_city:
+				should_label = not terminal_at_city and name in ["Springbok", "Upington", "De Aar", "George", "Mossel Bay", "Knysna", "East London", "Mthatha", "Pietermaritzburg", "Richards Bay", "Newcastle", "Rustenburg", "Polokwane", "Mbombela"]
 		if should_label:
 			var label := str(item.get("map_label", item.get("name", "")))
 			draw_string(font, p + Vector2(8, -4), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 10 if map_mode == 2 else 11, c_text)
