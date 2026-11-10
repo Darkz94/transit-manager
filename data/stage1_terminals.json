@@ -1,0 +1,32 @@
+[
+  {
+    "id": "terminal-cape-town",
+    "name": "Cape Town Depot",
+    "type": "terminal",
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "lat": -33.9249,
+    "lon": 18.4241,
+    "stage": "Demo location"
+  },
+  {
+    "id": "terminal-johannesburg",
+    "name": "Gauteng Freight Hub",
+    "type": "terminal",
+    "city": "Johannesburg",
+    "province": "Gauteng",
+    "lat": -26.2041,
+    "lon": 28.0473,
+    "stage": "Demo location"
+  },
+  {
+    "id": "terminal-durban",
+    "name": "Durban Port Depot",
+    "type": "terminal",
+    "city": "Durban",
+    "province": "KwaZulu-Natal",
+    "lat": -29.8587,
+    "lon": 31.0218,
+    "stage": "Demo location"
+  }
+]
