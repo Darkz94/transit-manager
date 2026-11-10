@@ -4,76 +4,109 @@
     "name": "City Bowl",
     "type": "suburb_district",
     "lat": -33.925,
-    "lon": 18.418
+    "lon": 18.418,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
   },
   {
     "id": "woodstock",
     "name": "Woodstock",
     "type": "suburb_district",
     "lat": -33.9275,
-    "lon": 18.448
+    "lon": 18.448,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
   },
   {
     "id": "bellville",
     "name": "Bellville",
     "type": "suburb_district",
     "lat": -33.9,
-    "lon": 18.63
+    "lon": 18.63,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
   },
   {
     "id": "parow",
     "name": "Parow",
     "type": "suburb_district",
     "lat": -33.9,
-    "lon": 18.59
+    "lon": 18.59,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
   },
   {
     "id": "table-view",
     "name": "Table View",
     "type": "suburb_district",
     "lat": -33.822,
-    "lon": 18.49
+    "lon": 18.49,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
   },
   {
     "id": "milnerton",
     "name": "Milnerton",
     "type": "suburb_district",
     "lat": -33.88,
-    "lon": 18.5
+    "lon": 18.5,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
   },
   {
     "id": "century-city",
     "name": "Century City",
     "type": "suburb_district",
     "lat": -33.892,
-    "lon": 18.51
+    "lon": 18.51,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
   },
   {
     "id": "claremont",
     "name": "Claremont",
     "type": "suburb_district",
     "lat": -33.98,
-    "lon": 18.47
+    "lon": 18.47,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
   },
   {
     "id": "hout-bay",
     "name": "Hout Bay",
     "type": "suburb_district",
     "lat": -34.05,
-    "lon": 18.36
+    "lon": 18.36,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
   },
   {
     "id": "khayelitsha",
     "name": "Khayelitsha",
     "type": "suburb_district",
     "lat": -34.04,
-    "lon": 18.67
+    "lon": 18.67,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
   },
   {
     "id": "mitchells-plain",
     "name": "Mitchells Plain",
     "type": "suburb_district",
     "lat": -34.05,
-    "lon": 18.62
+    "lon": 18.62,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
   }
 ]
