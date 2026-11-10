@@ -35,6 +35,12 @@ const CONTRACT_ROUTES := [
 	{"destination":"Durban","km":1650,"hours":66.0,"cargo_id":"produce","cargo_name":"Fresh produce","units":18,"rate":44.0,"deadline_days":7}
 ]
 const CONTRACT_BOND := 25000
+const TERMINAL_MARKET := [
+	{"name":"Gqeberha","province":"Eastern Cape","km":750,"price":200000},
+	{"name":"Bloemfontein","province":"Free State","km":1000,"price":260000},
+	{"name":"Johannesburg","province":"Gauteng","km":1400,"price":350000},
+	{"name":"Durban","province":"KwaZulu-Natal","km":1650,"price":320000}
+]
 
 var cash := STARTING_CASH
 var fleet: Array = []
@@ -43,14 +49,18 @@ var trips: Array = []
 var demand: Dictionary = {}
 var jobs: Array = []
 var contracts: Array = []
+var owned_terminals: Array = [HOME]
+var network_jobs: Array = []
 var last_time := 21600.0
 var selected_vehicle := 0
 var selected_driver := 0
 var selected_job := 0
 var selected_contract := 0
+var selected_network_job := 0
 var accepted_contract_id := ""
 var vehicle_offer := 0
 var driver_offer := 0
+var terminal_offer := 0
 var message := "Company ready. Buy a vehicle and hire a driver to begin."
 
 
@@ -61,13 +71,17 @@ func start_new_game(game_time: float) -> void:
 	trips.clear()
 	demand.clear()
 	contracts.clear()
+	owned_terminals = [HOME]
+	network_jobs.clear()
 	selected_vehicle = 0
 	selected_driver = 0
 	selected_job = 0
 	selected_contract = 0
+	selected_network_job = 0
 	accepted_contract_id = ""
 	vehicle_offer = 0
 	driver_offer = 0
+	terminal_offer = 0
 	last_time = game_time
 	_reset_demand(int(floor(game_time / DAY_SECONDS)))
 	_set_message("New Cape Town company opened with R1,250,000 in starting funds.")
@@ -80,22 +94,29 @@ func load_state(state: Dictionary, game_time: float) -> void:
 	trips = state.get("trips", [])
 	demand = state.get("demand", {})
 	contracts = state.get("contracts", [])
+	owned_terminals = state.get("owned_terminals", [HOME])
+	if not owned_terminals.has(HOME):
+		owned_terminals.push_front(HOME)
+	network_jobs = []
 	selected_vehicle = int(state.get("selected_vehicle", 0))
 	selected_driver = int(state.get("selected_driver", 0))
 	selected_job = int(state.get("selected_job", 0))
 	selected_contract = int(state.get("selected_contract", 0))
+	selected_network_job = int(state.get("selected_network_job", 0))
 	accepted_contract_id = str(state.get("accepted_contract_id", ""))
 	vehicle_offer = int(state.get("vehicle_offer", 0))
 	driver_offer = int(state.get("driver_offer", 0))
+	terminal_offer = int(state.get("terminal_offer", 0))
 	last_time = float(state.get("last_time", game_time))
 	_build_jobs(int(floor(game_time / DAY_SECONDS)))
 	_build_contract_offers(int(floor(game_time / DAY_SECONDS)))
+	_build_network_jobs(int(floor(game_time / DAY_SECONDS)))
 	advance_to(game_time)
 	_set_message("Company progress loaded from this device.")
 
 
 func snapshot() -> Dictionary:
-	return {"cash":cash,"fleet":fleet.duplicate(true),"drivers":drivers.duplicate(true),"trips":trips.duplicate(true),"demand":demand.duplicate(true),"contracts":contracts.duplicate(true),"selected_vehicle":selected_vehicle,"selected_driver":selected_driver,"selected_job":selected_job,"selected_contract":selected_contract,"accepted_contract_id":accepted_contract_id,"vehicle_offer":vehicle_offer,"driver_offer":driver_offer,"last_time":last_time}
+	return {"cash":cash,"fleet":fleet.duplicate(true),"drivers":drivers.duplicate(true),"trips":trips.duplicate(true),"demand":demand.duplicate(true),"contracts":contracts.duplicate(true),"owned_terminals":owned_terminals.duplicate(true),"selected_vehicle":selected_vehicle,"selected_driver":selected_driver,"selected_job":selected_job,"selected_contract":selected_contract,"selected_network_job":selected_network_job,"accepted_contract_id":accepted_contract_id,"vehicle_offer":vehicle_offer,"driver_offer":driver_offer,"terminal_offer":terminal_offer,"last_time":last_time}
 
 
 func advance_to(game_time: float) -> void:
@@ -112,6 +133,7 @@ func advance_to(game_time: float) -> void:
 			_set_message("Daily driver wages paid: R%s." % commas(wages))
 		_reset_demand(int(floor(boundary / DAY_SECONDS)))
 		_build_contract_offers(int(floor(boundary / DAY_SECONDS)))
+		_build_network_jobs(int(floor(boundary / DAY_SECONDS)))
 		boundary += DAY_SECONDS
 	_complete_until(game_time)
 	last_time = game_time
@@ -141,6 +163,7 @@ func _complete_until(game_time: float) -> void:
 			if str(vehicle.get("id", "")) == str(trip.get("vehicle_id", "")):
 				vehicle["status"] = "available"
 				vehicle["driver_id"] = ""
+				vehicle["location"] = HOME
 		for driver in drivers:
 			if str(driver.get("id", "")) == str(trip.get("driver_id", "")):
 				driver["status"] = "available"
@@ -155,6 +178,7 @@ func _reset_demand(day_index: int) -> void:
 			demand[key] = 3 + int(abs(hash(key + str(day_index))) % 7)
 	_build_jobs(day_index)
 	_build_contract_offers(day_index)
+	_build_network_jobs(day_index)
 
 
 func _build_contract_offers(day_index: int) -> void:
@@ -172,6 +196,24 @@ func _build_contract_offers(day_index: int) -> void:
 		contracts.append({"id":contract_id,"day":day_index,"origin":HOME,"destination":route["destination"],"km":int(route["km"]),"hours":float(route["hours"]),"cargo_id":route["cargo_id"],"cargo_name":route["cargo_name"],"units":units,"revenue":int(int(route["km"]) * float(route["rate"]) * units),"deadline":float(day_index * DAY_SECONDS + int(route["deadline_days"]) * DAY_SECONDS),"status":"offer"})
 	if not contracts.is_empty():
 		selected_contract = posmod(selected_contract, maxi(1, _offered_contracts().size()))
+
+
+func _build_network_jobs(day_index: int) -> void:
+	network_jobs.clear()
+	for terminal in TERMINAL_MARKET:
+		var destination := str(terminal["name"])
+		if not owned_terminals.has(destination):
+			continue
+		for cargo in CARGO:
+			var key := _network_key(destination, str(cargo["id"]))
+			if not demand.has(key):
+				demand[key] = 4 + int(abs(hash(key + str(day_index))) % 6)
+			var available := int(demand.get(key, 0))
+			if available <= 0:
+				continue
+			network_jobs.append({"id":key,"destination":destination,"km":int(terminal["km"]),"hours":float(terminal["km"]) / 45.0,"cargo_id":cargo["id"],"cargo_name":cargo["name"],"rate":float(cargo["rate"]) + 4.0,"demand":available})
+	if not network_jobs.is_empty():
+		selected_network_job = posmod(selected_network_job, network_jobs.size())
 
 
 func _build_jobs(day_index: int) -> void:
@@ -201,6 +243,50 @@ func buy_vehicle() -> void:
 	selected_vehicle = fleet.size() - 1
 	vehicle_offer = (vehicle_offer + 1) % VEHICLES.size()
 	_set_message("Purchased %s for R%s." % [definition["name"], commas(price)])
+
+
+func buy_terminal() -> void:
+	var terminal := _next_terminal()
+	if terminal.is_empty():
+		_set_message("Your company already owns all four remote terminals in this prototype.")
+		return
+	var price := int(terminal["price"])
+	if cash < price:
+		_set_message("Not enough cash. The %s terminal costs R%s." % [terminal["name"], commas(price)])
+		return
+	cash -= price
+	owned_terminals.append(str(terminal["name"]))
+	terminal_offer = (TERMINAL_MARKET.find(terminal) + 1) % TERMINAL_MARKET.size()
+	_build_network_jobs(int(floor(last_time / DAY_SECONDS)))
+	_set_message("Opened your %s terminal. Line-haul jobs are now available." % terminal["name"])
+
+
+func cycle_terminal_offer() -> void:
+	if owned_terminals.size() >= TERMINAL_MARKET.size() + 1:
+		_set_message("All remote terminals are already owned.")
+		return
+	terminal_offer = (terminal_offer + 1) % TERMINAL_MARKET.size()
+	_set_message("Terminal market selection: %s." % _next_terminal().get("name", "none"))
+
+
+func _next_terminal() -> Dictionary:
+	for offset in range(TERMINAL_MARKET.size()):
+		var index := posmod(terminal_offer + offset, TERMINAL_MARKET.size())
+		var candidate: Dictionary = TERMINAL_MARKET[index]
+		if not owned_terminals.has(str(candidate["name"])):
+			return candidate
+	return {}
+
+
+func next_terminal_label() -> String:
+	var terminal := _next_terminal()
+	if terminal.is_empty():
+		return "All remote terminals owned"
+	return "%s • R%s" % [terminal["name"], commas(int(terminal["price"]))]
+
+
+func owned_terminal_summary() -> String:
+	return "Owned terminals (%d): %s" % [owned_terminals.size(), ", ".join(owned_terminals)]
 
 
 func hire_driver() -> void:
@@ -236,6 +322,67 @@ func cycle_job() -> void:
 	_set_message("Selected %s to %s." % [jobs[selected_job]["cargo_name"], jobs[selected_job]["destination"]])
 
 
+func cycle_network_job() -> void:
+	_build_network_jobs(int(floor(last_time / DAY_SECONDS)))
+	if network_jobs.is_empty():
+		_set_message("Buy a remote terminal to unlock line-haul jobs.")
+		return
+	selected_network_job = (selected_network_job + 1) % network_jobs.size()
+	_set_message("Selected line haul to %s." % network_jobs[selected_network_job]["destination"])
+
+
+func network_job_label() -> String:
+	_build_network_jobs(int(floor(last_time / DAY_SECONDS)))
+	if network_jobs.is_empty():
+		return "Buy a remote terminal to unlock line-haul jobs."
+	selected_network_job = posmod(selected_network_job, network_jobs.size())
+	var job: Dictionary = network_jobs[selected_network_job]
+	var units := mini(int(job["demand"]), int(fleet[selected_vehicle]["capacity"])) if not fleet.is_empty() else int(job["demand"])
+	var revenue := int(300 + int(job["km"]) * float(job["rate"]) * units)
+	return "Cape Town → %s • %d km\n%s • %d units • Est. R%s" % [job["destination"], int(job["km"]), job["cargo_name"], units, commas(revenue)]
+
+
+func dispatch_network(game_time: float) -> void:
+	_build_network_jobs(int(floor(game_time / DAY_SECONDS)))
+	if fleet.is_empty() or drivers.is_empty():
+		_set_message("Buy a vehicle and hire a driver before dispatching.")
+		return
+	if network_jobs.is_empty():
+		_set_message("Buy a remote terminal to unlock line-haul jobs.")
+		return
+	selected_vehicle = posmod(selected_vehicle, fleet.size())
+	selected_driver = posmod(selected_driver, drivers.size())
+	selected_network_job = posmod(selected_network_job, network_jobs.size())
+	var vehicle: Dictionary = fleet[selected_vehicle]
+	var driver: Dictionary = drivers[selected_driver]
+	var job: Dictionary = network_jobs[selected_network_job]
+	if vehicle.get("status", "") != "available" or driver.get("status", "") != "available":
+		_set_message("Choose an available vehicle and driver.")
+		return
+	if not vehicle.get("cargo", []).has(job["cargo_id"]):
+		_set_message("%s cannot carry %s." % [vehicle["name"], job["cargo_name"]])
+		return
+	var units := mini(int(job["demand"]), int(vehicle["capacity"]))
+	var revenue := int(300 + int(job["km"]) * float(job["rate"]) * units)
+	var expense := int(int(job["km"]) * 2 * float(vehicle["km_cost"]) + 100)
+	if cash < expense:
+		_set_message("Insufficient cash for estimated R%s line-haul costs." % commas(expense))
+		return
+	var vehicle_id := str(vehicle["id"])
+	var driver_id := str(driver["id"])
+	var duration := maxf(2.0, float(job["hours"]) * 2.0)
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_name":job["cargo_name"],"revenue":revenue,"arrival":game_time + duration * 3600.0,"operation_type":"linehaul","status":"in_transit"})
+	vehicle["status"] = "in_transit"
+	vehicle["driver_id"] = driver_id
+	vehicle["location"] = str(job["destination"])
+	driver["status"] = "in_transit"
+	cash -= expense
+	var key := str(job["id"])
+	demand[key] = maxi(0, int(demand.get(key, 0)) - units)
+	_build_network_jobs(int(floor(game_time / DAY_SECONDS)))
+	_set_message("Line haul dispatched to %s: R%s expected return payment." % [job["destination"], commas(revenue)])
+
+
 func dispatch(game_time: float) -> void:
 	_build_jobs(int(floor(game_time / DAY_SECONDS)))
 	if fleet.is_empty() or drivers.is_empty():
@@ -266,9 +413,10 @@ func dispatch(game_time: float) -> void:
 	var duration := maxf(2.0, float(job["hours"]) * 2.0)
 	var driver_id := str(driver["id"])
 	var vehicle_id := str(vehicle["id"])
-	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_name":job["cargo_name"],"revenue":revenue,"arrival":game_time + duration * 3600.0,"status":"in_transit"})
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_name":job["cargo_name"],"revenue":revenue,"arrival":game_time + duration * 3600.0,"operation_type":"local","status":"in_transit"})
 	vehicle["status"] = "in_transit"
 	vehicle["driver_id"] = driver_id
+	vehicle["location"] = str(job["destination"])
 	driver["status"] = "in_transit"
 	cash -= expense
 	var key := str(job["id"])
@@ -337,10 +485,11 @@ func dispatch_contract(game_time: float) -> void:
 		return
 	var vehicle_id := str(vehicle["id"])
 	var driver_id := str(driver["id"])
-	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":contract["destination"],"cargo_name":contract["cargo_name"],"revenue":int(contract["revenue"]),"arrival":game_time + float(contract["hours"]) * 2.0 * 3600.0,"deadline":float(contract["deadline"]),"contract_id":contract["id"],"bond":int(contract.get("bond", 0)),"status":"in_transit"})
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":contract["destination"],"cargo_name":contract["cargo_name"],"revenue":int(contract["revenue"]),"arrival":game_time + float(contract["hours"]) * 2.0 * 3600.0,"deadline":float(contract["deadline"]),"contract_id":contract["id"],"bond":int(contract.get("bond", 0)),"operation_type":"contract","status":"in_transit"})
 	contract["status"] = "in_transit"
 	vehicle["status"] = "in_transit"
 	vehicle["driver_id"] = driver_id
+	vehicle["location"] = str(contract["destination"])
 	driver["status"] = "in_transit"
 	cash -= expense
 	_set_message("Long haul dispatched to %s: R%s contract value, %d km one way." % [contract["destination"], commas(int(contract["revenue"])), int(contract["km"])])
@@ -439,7 +588,8 @@ func trip_summary() -> String:
 	for trip in trips:
 		if trip["status"] == "in_transit":
 			var hours_left := maxf(0.0, (float(trip["arrival"]) - SimulationClock.game_time_seconds) / 3600.0)
-			return "En route to %s with %s • %.1f game hours left" % [trip["destination"], trip["cargo_name"], hours_left]
+			var label := "Line haul" if str(trip.get("operation_type", "")) == "linehaul" else ("Contract" if str(trip.get("contract_id", "")) != "" else "Local delivery")
+			return "%s returning from %s with %s • %.1f game hours left" % [label, trip["destination"], trip["cargo_name"], hours_left]
 	return "No active trips. Dispatch a job to start earning."
 
 
@@ -451,6 +601,10 @@ func _set_message(value: String) -> void:
 
 func _key(destination: String, cargo_id: String) -> String:
 	return destination + "|" + cargo_id
+
+
+func _network_key(destination: String, cargo_id: String) -> String:
+	return "line|" + destination + "|" + cargo_id
 
 
 func commas(amount: int) -> String:

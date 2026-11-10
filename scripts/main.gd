@@ -20,6 +20,7 @@ var c_divider := Color("#BFE8FF")
 var c_route_shadow := Color("#FFFFFF")
 var c_marker_outline := Color("#FFFFFF")
 var c_terminal_outline := Color("#FFFFFF")
+var c_owned_terminal := Color("#16A34A")
 var c_button := Color("#FFFFFF")
 var c_button_text := Color("#0B3A5A")
 var c_button_border := Color("#FF7A00")
@@ -188,6 +189,7 @@ func _apply_theme() -> void:
 		c_route_shadow = Color("#FFFFFF")
 		c_marker_outline = Color("#FFFFFF")
 		c_terminal_outline = Color("#FFFFFF")
+		c_owned_terminal = Color("#16A34A")
 		c_button = Color("#FFFFFF")
 		c_button_text = Color("#0B3A5A")
 		c_button_border = Color("#FF7A00")
@@ -214,6 +216,7 @@ func _apply_theme() -> void:
 		c_route_shadow = Color("#07101D")
 		c_marker_outline = Color("#FFFFFF")
 		c_terminal_outline = Color("#FFD400")
+		c_owned_terminal = Color("#34D399")
 		c_button = Color("#1A2F4A")
 		c_button_text = Color("#FFFFFF")
 		c_button_border = Color("#FF7A00")
@@ -466,7 +469,8 @@ func _draw_markers(font: Font) -> void:
 		var is_city := kind == "city" or kind == "town"
 		if is_terminal:
 			var terminal_rect := Rect2(p - Vector2(6, 6), Vector2(12, 12))
-			draw_rect(terminal_rect, c_orange, true)
+			var owned := CompanyOperations.owned_terminals.has(str(item.get("city", name)))
+			draw_rect(terminal_rect, c_owned_terminal if owned else c_orange, true)
 			draw_rect(terminal_rect, c_terminal_outline, false, 2.0)
 		else:
 			draw_circle(p, 6.0 if is_city else 3.4, c_marker_outline)
@@ -540,7 +544,13 @@ func _draw_info(font: Font) -> void:
 		title = "" if GameSave.recovered_backup else "Offline company ready"
 		detail = startup_status
 	if selected_item.get("type", "") == "terminal":
-		detail = str(selected_item.get("info", selected_place)) + " • Demo, not owned"
+		var terminal_city := str(selected_item.get("city", selected_place))
+		if CompanyOperations.owned_terminals.has(terminal_city):
+			detail = str(selected_item.get("info", selected_place)) + " • Owned by your company"
+		elif terminal_city in ["Gqeberha", "Bloemfontein", "Johannesburg", "Durban"]:
+			detail = str(selected_item.get("info", selected_place)) + " • Purchase in Operations to unlock line-haul jobs"
+		else:
+			detail = str(selected_item.get("info", selected_place)) + " • Not yet available in the terminal market"
 	draw_string(font, Vector2(14, info_rect.position.y + 19), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, c_cyan)
 	draw_string(font, Vector2(14, info_rect.position.y + 38), detail, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, c_info_detail)
 
@@ -573,10 +583,14 @@ func _draw_operations_screen(font: Font) -> void:
 	_draw_operation_button("cycle_driver", "SELECT DRIVER", Rect2(left.position.x + 12.0, left.position.y + 175.0, card_w - 24.0, 32.0), font)
 	_draw_operation_button("hire_driver", "HIRE: " + CompanyOperations.next_driver_label(), Rect2(left.position.x + 12.0, left.position.y + 213.0, card_w - 24.0, 38.0), font)
 	draw_string(font, left.position + Vector2(16, 275), "Driver wages are charged once per game day.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
+	draw_string(font, left.position + Vector2(16, 305), "TERMINAL NETWORK • %d / 5 OWNED" % CompanyOperations.owned_terminals.size(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 10, c_cyan)
+	_draw_operation_button("cycle_terminal", "NEXT TERMINAL: " + CompanyOperations.next_terminal_label(), Rect2(left.position.x + 12.0, left.position.y + 314.0, card_w - 24.0, 32.0), font)
+	_draw_operation_button("buy_terminal", "BUY SELECTED TERMINAL", Rect2(left.position.x + 12.0, left.position.y + 352.0, card_w - 24.0, 36.0), font)
 
-	var tab_w := (card_w - 30.0) * 0.5
-	_draw_operation_button("tab_local", "LOCAL JOBS", Rect2(right.position.x + 12.0, right.position.y + 10.0, tab_w, 30.0), font)
-	_draw_operation_button("tab_contracts", "LONG HAUL", Rect2(right.position.x + 18.0 + tab_w, right.position.y + 10.0, tab_w, 30.0), font)
+	var tab_w := (card_w - 36.0) / 3.0
+	_draw_operation_button("tab_local", "LOCAL", Rect2(right.position.x + 12.0, right.position.y + 10.0, tab_w, 30.0), font)
+	_draw_operation_button("tab_contracts", "CONTRACTS", Rect2(right.position.x + 18.0 + tab_w, right.position.y + 10.0, tab_w, 30.0), font)
+	_draw_operation_button("tab_network", "NETWORK", Rect2(right.position.x + 24.0 + tab_w * 2.0, right.position.y + 10.0, tab_w, 30.0), font)
 	if operations_tab == 0:
 		draw_string(font, right.position + Vector2(16, 62), "CAPE TOWN LOCAL JOB MARKET", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, c_cyan)
 		draw_string(font, right.position + Vector2(16, 90), CompanyOperations.job_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 11, c_text)
@@ -585,13 +599,20 @@ func _draw_operations_screen(font: Font) -> void:
 		_draw_operation_button("dispatch", "DISPATCH SELECTED JOB", Rect2(right.position.x + 12.0, right.position.y + 171.0, card_w - 24.0, 42.0), font)
 		draw_string(font, right.position + Vector2(16, 245), "ACTIVE DELIVERY", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, c_cyan)
 		draw_string(font, right.position + Vector2(16, 267), CompanyOperations.trip_summary(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 10, c_text)
-	else:
+	elif operations_tab == 1:
 		draw_string(font, right.position + Vector2(16, 62), "SOUTH AFRICA LONG-HAUL BOARD", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, c_cyan)
 		draw_string(font, right.position + Vector2(16, 92), CompanyOperations.contract_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 11, c_text)
 		draw_string(font, right.position + Vector2(16, 135), CompanyOperations.contract_deadline_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 10, c_muted)
 		_draw_operation_button("next_contract", "CONTRACT RESERVED" if CompanyOperations.accepted_contract_id != "" else "NEXT CONTRACT OFFER", Rect2(right.position.x + 12.0, right.position.y + 153.0, card_w - 24.0, 36.0), font)
 		_draw_operation_button("contract_action", CompanyOperations.contract_action_label(), Rect2(right.position.x + 12.0, right.position.y + 196.0, card_w - 24.0, 42.0), font)
 		draw_string(font, right.position + Vector2(16, 264), "Eligible rigid or refrigerated trucks only. Late returns pay 75%; the bond is forfeited.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
+	else:
+		draw_string(font, right.position + Vector2(16, 62), "OWNED TERMINAL LINE-HAULS", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, c_cyan)
+		draw_string(font, right.position + Vector2(16, 92), CompanyOperations.network_job_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 11, c_text)
+		draw_string(font, right.position + Vector2(16, 137), "Jobs run from Cape Town to an owned terminal and return.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
+		_draw_operation_button("next_network_job", "NEXT LINE-HAUL JOB", Rect2(right.position.x + 12.0, right.position.y + 153.0, card_w - 24.0, 36.0), font)
+		_draw_operation_button("dispatch_network", "DISPATCH LINE-HAUL", Rect2(right.position.x + 12.0, right.position.y + 196.0, card_w - 24.0, 42.0), font)
+		draw_string(font, right.position + Vector2(16, 264), "Terminal purchase unlocks daily freight demand at that destination.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
 	draw_string(font, right.position + Vector2(16, card_h - 18.0), CompanyOperations.trip_summary(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 10, c_text)
 
 
@@ -673,10 +694,20 @@ func _handle_operation_action(action: String) -> void:
 				CompanyOperations.bid_contract()
 			else:
 				CompanyOperations.dispatch_contract(SimulationClock.game_time_seconds)
+		"buy_terminal":
+			CompanyOperations.buy_terminal()
+		"cycle_terminal":
+			CompanyOperations.cycle_terminal_offer()
+		"next_network_job":
+			CompanyOperations.cycle_network_job()
+		"dispatch_network":
+			CompanyOperations.dispatch_network(SimulationClock.game_time_seconds)
 		"tab_local":
 			operations_tab = 0
 		"tab_contracts":
 			operations_tab = 1
+		"tab_network":
+			operations_tab = 2
 
 
 func _handle_tap(position: Vector2) -> void:

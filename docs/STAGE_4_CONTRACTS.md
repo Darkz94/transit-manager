@@ -11,11 +11,13 @@
 - Contract loads require a compatible rigid or refrigerated vehicle with enough capacity; the van is too small for these prototype loads.
 - Contract trips occupy the assigned vehicle and driver until the simulated round trip returns to Cape Town.
 - On-time completion returns the bond and pays the contract value. A late return forfeits the bond and pays 75% of the contract value.
-- Contract board state and active contract trips are included in local save schema 3. Existing schema 1 and 2 saves migrate forward.
+- Buy remote terminals in Gqeberha, Bloemfontein, Johannesburg, and Durban. Ownership unlocks daily line-haul demand from Cape Town to that city.
+- Dispatch local freight loads on unlocked line hauls. Vehicle and driver stay occupied for a round trip, the load demand is consumed, and the vehicle returns to Cape Town.
+- Contract board, terminal ownership, line-haul demand, and active trips are included in local save schema 4. Existing schema 1, 2, and 3 saves migrate forward.
 - Fixed local delivery cost accounting so the estimated trip cost is charged once.
 
 ## Prototype limits and review
 
-Routes, travel times, deadline windows, freight values, and expenses are illustrative balance values rather than commercial quotes. All current long-haul routes start at Cape Town and return there; there is no terminal ownership, intermediate stop, actual bidding price input, line-haul backhaul, or South Africa road-graph pathfinding yet.
+Routes, travel times, deadline windows, freight values, terminal prices, and expenses are illustrative balance values rather than commercial quotes. All current routes start at Cape Town and return there; there is no intermediate stop, custom bid amount, line-haul backhaul, or South Africa road-graph pathfinding yet.
 
 On Android, check contract switching and acceptance, the held bond, vehicle eligibility, dispatch, deadline feedback, return payment, and save/resume. Review how the panel reads on the target landscape screen before expanding the contract network.
