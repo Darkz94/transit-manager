@@ -333,9 +333,15 @@ func _draw_markers(font: Font) -> void:
 		else:
 			draw_circle(p, 6.0 if is_city else 3.4, c_marker_outline)
 			draw_circle(p, 4.0 if is_city else 2.2, c_city)
-		var should_label := is_terminal or is_city or kind == "suburb_district" or map_mode == 2
+		var terminal_at_city := false
+		if is_city:
+			for terminal in terminals:
+				if absf(float(terminal.get("lat", 99.0)) - lat) < 0.01 and absf(float(terminal.get("lon", 99.0)) - lon) < 0.01:
+					terminal_at_city = true
+					break
+		var should_label := is_terminal or (is_city and not terminal_at_city) or kind == "suburb_district" or map_mode == 2
 		if should_label:
-			var label := str(item.get("name", ""))
+			var label := str(item.get("map_label", item.get("name", "")))
 			draw_string(font, p + Vector2(8, -4), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 10 if map_mode == 2 else 11, c_text)
 		hit_places.append({"name": name, "position": p, "radius": 15.0 if is_terminal else 12.0, "item": item})
 
