@@ -143,6 +143,7 @@ func _draw() -> void:
 	_draw_map(font)
 	_draw_markers(font)
 	_draw_map_legend(font)
+	_draw_scale(font)
 
 	draw_rect(info_rect, c_topbar, true)
 	draw_line(info_rect.position, Vector2(info_rect.end.x, info_rect.position.y), c_divider, 1.0)
@@ -361,6 +362,29 @@ func _draw_map_legend(font: Font) -> void:
 	draw_string(font, Vector2(box.position.x + 27, y2), "City", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, c_text)
 	draw_rect(Rect2(box.position.x + 83, y2 - 7, 7, 7), c_orange, true)
 	draw_string(font, Vector2(box.position.x + 96, y2), "Terminal", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, c_text)
+
+
+func _draw_scale(font: Font) -> void:
+	var content := map_rect.grow(-12.0)
+	var west := world_bounds.x * world_cos
+	var east := world_bounds.z * world_cos
+	var world_w := maxf(0.001, east - west)
+	var world_h := maxf(0.001, world_bounds.w - world_bounds.y)
+	var pixels_per_degree := minf(content.size.x / world_w, content.size.y / world_h)
+	var choices := [1000.0, 500.0, 200.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.0, 1.0]
+	var distance_km := 1.0
+	for candidate in choices:
+		var bar_width := float(candidate) * pixels_per_degree / 111.32
+		if bar_width <= 112.0 and bar_width >= 42.0:
+			distance_km = float(candidate)
+			break
+	var width := distance_km * pixels_per_degree / 111.32
+	var x := map_rect.end.x - width - 20.0
+	var y := map_rect.end.y - 20.0
+	draw_line(Vector2(x, y), Vector2(x + width, y), c_text, 2.0, true)
+	draw_line(Vector2(x, y - 5.0), Vector2(x, y + 2.0), c_text, 2.0, true)
+	draw_line(Vector2(x + width, y - 5.0), Vector2(x + width, y + 2.0), c_text, 2.0, true)
+	draw_string(font, Vector2(x, y - 7.0), str(int(distance_km)) + " km", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, c_text)
 
 
 func _draw_info(font: Font) -> void:
