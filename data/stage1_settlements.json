@@ -158,5 +158,187 @@
     "province": "Northern Cape",
     "lat": -29.6667,
     "lon": 17.8833
+  },
+  {
+    "id": "stellenbosch",
+    "name": "Stellenbosch",
+    "type": "city",
+    "province": "Western Cape",
+    "lat": -33.9346,
+    "lon": 18.8668,
+    "info": "Western Cape • Winelands"
+  },
+  {
+    "id": "upington",
+    "name": "Upington",
+    "type": "city",
+    "province": "Northern Cape",
+    "lat": -28.4478,
+    "lon": 21.2561,
+    "info": "Northern Cape • City"
+  },
+  {
+    "id": "de-aar",
+    "name": "De Aar",
+    "type": "town",
+    "province": "Northern Cape",
+    "lat": -30.6497,
+    "lon": 24.0123,
+    "info": "Northern Cape • N1 junction"
+  },
+  {
+    "id": "mthatha",
+    "name": "Mthatha",
+    "type": "city",
+    "province": "Eastern Cape",
+    "lat": -31.5889,
+    "lon": 28.7844,
+    "info": "Eastern Cape • City"
+  },
+  {
+    "id": "welkom",
+    "name": "Welkom",
+    "type": "city",
+    "province": "Free State",
+    "lat": -27.9774,
+    "lon": 26.7351,
+    "info": "Free State • City"
+  },
+  {
+    "id": "kroonstad",
+    "name": "Kroonstad",
+    "type": "town",
+    "province": "Free State",
+    "lat": -27.6507,
+    "lon": 27.2349,
+    "info": "Free State • N1"
+  },
+  {
+    "id": "bethlehem",
+    "name": "Bethlehem",
+    "type": "town",
+    "province": "Free State",
+    "lat": -28.2308,
+    "lon": 28.3071,
+    "info": "Free State • City"
+  },
+  {
+    "id": "pietermaritzburg",
+    "name": "Pietermaritzburg",
+    "type": "city",
+    "province": "KwaZulu-Natal",
+    "lat": -29.6006,
+    "lon": 30.3794,
+    "info": "KwaZulu-Natal • Capital"
+  },
+  {
+    "id": "richards-bay",
+    "name": "Richards Bay",
+    "type": "city",
+    "province": "KwaZulu-Natal",
+    "lat": -28.7807,
+    "lon": 32.0383,
+    "info": "KwaZulu-Natal • Port city"
+  },
+  {
+    "id": "newcastle",
+    "name": "Newcastle",
+    "type": "city",
+    "province": "KwaZulu-Natal",
+    "lat": -27.757,
+    "lon": 29.9318,
+    "info": "KwaZulu-Natal • City"
+  },
+  {
+    "id": "rustenburg",
+    "name": "Rustenburg",
+    "type": "city",
+    "province": "North West",
+    "lat": -25.6676,
+    "lon": 27.2421,
+    "info": "North West • N4"
+  },
+  {
+    "id": "klerksdorp",
+    "name": "Klerksdorp",
+    "type": "city",
+    "province": "North West",
+    "lat": -26.8667,
+    "lon": 26.6667,
+    "info": "North West • City"
+  },
+  {
+    "id": "potchefstroom",
+    "name": "Potchefstroom",
+    "type": "city",
+    "province": "North West",
+    "lat": -26.7145,
+    "lon": 27.097,
+    "info": "North West • City"
+  },
+  {
+    "id": "soweto",
+    "name": "Soweto",
+    "type": "suburb_district",
+    "province": "Gauteng",
+    "lat": -26.2678,
+    "lon": 27.8585,
+    "info": "Gauteng • Metro district",
+    "city": "Johannesburg"
+  },
+  {
+    "id": "centurion",
+    "name": "Centurion",
+    "type": "suburb_district",
+    "province": "Gauteng",
+    "lat": -25.8603,
+    "lon": 28.1894,
+    "info": "Gauteng • Metro district",
+    "city": "Pretoria"
+  },
+  {
+    "id": "emalahleni",
+    "name": "eMalahleni",
+    "type": "city",
+    "province": "Mpumalanga",
+    "lat": -25.8713,
+    "lon": 29.2332,
+    "info": "Mpumalanga • N4"
+  },
+  {
+    "id": "mokopane",
+    "name": "Mokopane",
+    "type": "city",
+    "province": "Limpopo",
+    "lat": -24.1874,
+    "lon": 29.0097,
+    "info": "Limpopo • City"
+  },
+  {
+    "id": "tzaneen",
+    "name": "Tzaneen",
+    "type": "city",
+    "province": "Limpopo",
+    "lat": -23.8332,
+    "lon": 30.1635,
+    "info": "Limpopo • City"
+  },
+  {
+    "id": "thohoyandou",
+    "name": "Thohoyandou",
+    "type": "city",
+    "province": "Limpopo",
+    "lat": -22.9456,
+    "lon": 30.484,
+    "info": "Limpopo • City"
+  },
+  {
+    "id": "musina",
+    "name": "Musina",
+    "type": "town",
+    "province": "Limpopo",
+    "lat": -22.344,
+    "lon": 30.039,
+    "info": "Limpopo • Northern border"
   }
 ]
