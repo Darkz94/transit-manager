@@ -1,6 +1,6 @@
 # Stage 5: Fleet depth and maintenance
 
-**Status:** First vehicle-condition loop implemented; Android play review and balance tuning remain.
+**Status:** Vehicle condition, repair, and cargo-equipment specialization implemented; Android play review and balance tuning remain.
 **Target:** Android phones and tablets in landscape orientation.
 
 ## Included in this pass
@@ -11,6 +11,9 @@
 - The Operations fleet panel shows selected-vehicle condition and offers a repair action.
 - Repair is available only while the selected vehicle is back and available. It restores condition to 100%, costs R850 per missing percentage point, and checks available cash before charging.
 - Repair cost, trip wear, condition, and the repair action are saved as part of the existing local operations data. Older saves migrate implicitly through defaults; no fleet reset is required.
+- Vehicles now carry equipment tags. Fresh produce requires refrigeration, building supplies require a flatbed, and industrial machinery requires a machinery platform. The Operations job and contract summaries show the equipment requirement, and dispatch explains why a selected truck is unsuitable.
+- Added the Longhaul Prime Mover as the specialist machinery truck, with higher capacity, running cost, and purchase price. Industrial machinery jobs use a higher cargo wear factor.
+- Legacy fleets infer suitable equipment from the saved cargo capabilities so existing saves remain usable.
 
 ## Initial balance rules
 
@@ -28,4 +31,4 @@ These values are first-pass game balance, not real fleet-maintenance estimates. 
 
 ## Next slice
 
-After the wear and repair numbers feel right, add meaningful cargo and vehicle specialization: cargo equipment requirements, capacity trade-offs, and additional vehicle roles. Only then add inspection schedules or incident risk, so maintenance stays understandable rather than punitive.
+The next fleet slice can add driver endorsements and more cargo families, followed by fuel choices and inspection intervals. Keep breakdown events out until the existing maintenance costs have been reviewed on Android, so the system stays understandable rather than punitive.

@@ -7,9 +7,10 @@ const DAY_SECONDS := 86400.0
 const STARTING_CASH := 1250000
 const HOME := "Cape Town"
 const VEHICLES := [
-	{"id":"van","name":"Coastal Courier Van","price":280000,"capacity":8,"km_cost":10.0,"cargo":["parcels","dry"]},
-	{"id":"rigid","name":"Regional Rigid 8T","price":760000,"capacity":28,"km_cost":22.0,"cargo":["dry","produce","building"]},
-	{"id":"reefer","name":"ColdLink Refrigerated","price":920000,"capacity":20,"km_cost":25.0,"cargo":["produce","dry"]}
+	{"id":"van","name":"Coastal Courier Van","class":"van","price":280000,"capacity":8,"km_cost":10.0,"equipment":["standard"],"cargo":["parcels","dry"]},
+	{"id":"rigid","name":"Regional Rigid 8T","class":"rigid","price":760000,"capacity":28,"km_cost":22.0,"equipment":["standard","flatbed"],"cargo":["dry","building"]},
+	{"id":"reefer","name":"ColdLink Refrigerated","class":"reefer","price":920000,"capacity":20,"km_cost":25.0,"equipment":["standard","refrigerated"],"cargo":["produce","dry"]},
+	{"id":"prime_mover","name":"Longhaul Prime Mover","class":"tractor","price":1350000,"capacity":40,"km_cost":32.0,"equipment":["standard","flatbed","machinery_platform"],"cargo":["dry","building","machinery"]}
 ]
 const DRIVERS := [
 	{"name":"Lebo Mokoena","wage":900},
@@ -17,10 +18,11 @@ const DRIVERS := [
 	{"name":"Nadia Jacobs","wage":1150}
 ]
 const CARGO := [
-	{"id":"parcels","name":"Parcel freight","rate":22.0},
-	{"id":"dry","name":"Packaged goods","rate":17.0},
-	{"id":"produce","name":"Fresh produce","rate":20.0},
-	{"id":"building","name":"Building supplies","rate":15.0}
+	{"id":"parcels","name":"Parcel freight","rate":22.0,"equipment":"standard","wear_factor":0.8},
+	{"id":"dry","name":"Packaged goods","rate":17.0,"equipment":"standard","wear_factor":1.0},
+	{"id":"produce","name":"Fresh produce","rate":20.0,"equipment":"refrigerated","wear_factor":1.0},
+	{"id":"building","name":"Building supplies","rate":15.0,"equipment":"flatbed","wear_factor":1.2},
+	{"id":"machinery","name":"Industrial machinery","rate":28.0,"equipment":"machinery_platform","wear_factor":1.45}
 ]
 const DESTINATIONS := [
 	{"name":"Stellenbosch","km":52,"hours":1.0},
@@ -219,6 +221,10 @@ func load_state(state: Dictionary, game_time: float) -> void:
 	fleet = state.get("fleet", [])
 	for vehicle in fleet:
 		vehicle["condition"] = clampf(float(vehicle.get("condition", 100.0)), 0.0, 100.0)
+		if not vehicle.has("equipment"):
+			vehicle["equipment"] = _infer_legacy_equipment(vehicle)
+		if not vehicle.has("class"):
+			vehicle["class"] = "reefer" if vehicle.get("equipment", []).has("refrigerated") else ("van" if int(vehicle.get("capacity", 0)) <= 8 else "rigid")
 	drivers = state.get("drivers", [])
 	trips = state.get("trips", [])
 	demand = state.get("demand", {})
@@ -391,7 +397,7 @@ func buy_vehicle() -> void:
 		_set_message("Not enough cash. %s costs R%s." % [definition["name"], commas(price)])
 		return
 	cash -= price
-	fleet.append({"id":"vehicle_%d" % (fleet.size()+1),"name":definition["name"],"price":price,"capacity":definition["capacity"],"km_cost":definition["km_cost"],"cargo":definition["cargo"].duplicate(),"condition":100.0,"status":"available","driver_id":"","location":HOME})
+	fleet.append({"id":"vehicle_%d" % (fleet.size()+1),"name":definition["name"],"class":definition.get("class", "rigid"),"price":price,"capacity":definition["capacity"],"km_cost":definition["km_cost"],"equipment":definition.get("equipment", ["standard"]).duplicate(),"cargo":definition["cargo"].duplicate(),"condition":100.0,"status":"available","driver_id":"","location":HOME})
 	selected_vehicle = fleet.size() - 1
 	vehicle_offer = (vehicle_offer + 1) % VEHICLES.size()
 	_set_message("Purchased %s for R%s." % [definition["name"], commas(price)])
@@ -514,7 +520,7 @@ func network_job_label() -> String:
 	var job: Dictionary = network_jobs[selected_network_job]
 	var units := mini(int(job["demand"]), int(fleet[selected_vehicle]["capacity"])) if not fleet.is_empty() else int(job["demand"])
 	var revenue := int(300 + int(job["km"]) * float(job["rate"]) * units)
-	return "Cape Town → %s • %d km\n%s • %d units • Est. R%s" % [job["destination"], int(job["km"]), job["cargo_name"], units, commas(revenue)]
+	return "Cape Town → %s • %d km\n%s • %d units • Est. R%s • Need: %s" % [job["destination"], int(job["km"]), job["cargo_name"], units, commas(revenue), _cargo_equipment_label(str(job["cargo_id"]))]
 
 
 func dispatch_network(game_time: float) -> void:
@@ -534,8 +540,8 @@ func dispatch_network(game_time: float) -> void:
 	if vehicle.get("status", "") != "available" or driver.get("status", "") != "available":
 		_set_message("Choose an available vehicle and driver.")
 		return
-	if not vehicle.get("cargo", []).has(job["cargo_id"]):
-		_set_message("%s cannot carry %s." % [vehicle["name"], job["cargo_name"]])
+	if not _vehicle_can_carry(vehicle, str(job["cargo_id"])):
+		_set_message(_cargo_incompatibility_message(vehicle, str(job["cargo_id"])))
 		return
 	var units := mini(int(job["demand"]), int(vehicle["capacity"]))
 	var revenue := int(300 + int(job["km"]) * float(job["rate"]) * units)
@@ -546,7 +552,7 @@ func dispatch_network(game_time: float) -> void:
 	var vehicle_id := str(vehicle["id"])
 	var driver_id := str(driver["id"])
 	var duration := maxf(2.0, float(job["hours"]) * 2.0)
-	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_name":job["cargo_name"],"revenue":revenue,"start_time":game_time,"arrival":game_time + duration * 3600.0,"route_km":job["km"],"wear":_trip_wear(int(job["km"]), units, int(vehicle["capacity"])),"route_points":job.get("route_points", []).duplicate(true),"operation_type":"linehaul","status":"in_transit"})
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_id":job["cargo_id"],"cargo_name":job["cargo_name"],"revenue":revenue,"start_time":game_time,"arrival":game_time + duration * 3600.0,"route_km":job["km"],"wear":_trip_wear(int(job["km"]), units, int(vehicle["capacity"]), str(job["cargo_id"])),"route_points":job.get("route_points", []).duplicate(true),"operation_type":"linehaul","status":"in_transit"})
 	vehicle["status"] = "in_transit"
 	vehicle["driver_id"] = driver_id
 	vehicle["location"] = str(job["destination"])
@@ -575,8 +581,8 @@ func dispatch(game_time: float) -> void:
 	if vehicle["status"] != "available" or driver["status"] != "available":
 		_set_message("Choose an available vehicle and driver.")
 		return
-	if not vehicle["cargo"].has(job["cargo_id"]):
-		_set_message("%s cannot carry %s." % [vehicle["name"], job["cargo_name"]])
+	if not _vehicle_can_carry(vehicle, str(job["cargo_id"])):
+		_set_message(_cargo_incompatibility_message(vehicle, str(job["cargo_id"])))
 		return
 	var units := mini(int(job["demand"]), int(vehicle["capacity"]))
 	var km := int(job["km"])
@@ -588,7 +594,7 @@ func dispatch(game_time: float) -> void:
 	var duration := maxf(2.0, float(job["hours"]) * 2.0)
 	var driver_id := str(driver["id"])
 	var vehicle_id := str(vehicle["id"])
-	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_name":job["cargo_name"],"revenue":revenue,"arrival":game_time + duration * 3600.0,"route_km":km,"wear":_trip_wear(km, units, int(vehicle["capacity"])),"operation_type":"local","status":"in_transit"})
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_id":job["cargo_id"],"cargo_name":job["cargo_name"],"revenue":revenue,"arrival":game_time + duration * 3600.0,"route_km":km,"wear":_trip_wear(km, units, int(vehicle["capacity"]), str(job["cargo_id"])),"operation_type":"local","status":"in_transit"})
 	vehicle["status"] = "in_transit"
 	vehicle["driver_id"] = driver_id
 	vehicle["location"] = str(job["destination"])
@@ -651,7 +657,10 @@ func dispatch_contract(game_time: float) -> void:
 	if vehicle.get("status", "") != "available" or driver.get("status", "") != "available":
 		_set_message("Choose an available vehicle and driver.")
 		return
-	if not vehicle.get("cargo", []).has(contract.get("cargo_id", "")) or int(vehicle.get("capacity", 0)) < int(contract.get("units", 0)):
+	if not _vehicle_can_carry(vehicle, str(contract.get("cargo_id", "dry"))) or int(vehicle.get("capacity", 0)) < int(contract.get("units", 0)):
+		if not _vehicle_can_carry(vehicle, str(contract.get("cargo_id", "dry"))):
+			_set_message(_cargo_incompatibility_message(vehicle, str(contract.get("cargo_id", "dry"))))
+			return
 		_set_message("This contract needs a compatible vehicle with at least %s units of capacity." % contract.get("units", 0))
 		return
 	var expense := int(ceil((int(contract["km"]) * 2 * float(vehicle["km_cost"]) + 1000) * _vehicle_cost_multiplier(vehicle)))
@@ -660,7 +669,7 @@ func dispatch_contract(game_time: float) -> void:
 		return
 	var vehicle_id := str(vehicle["id"])
 	var driver_id := str(driver["id"])
-	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":contract["destination"],"cargo_name":contract["cargo_name"],"revenue":int(contract["revenue"]),"arrival":game_time + float(contract["hours"]) * 2.0 * 3600.0,"start_time":game_time,"route_km":contract["km"],"wear":_trip_wear(int(contract["km"]), int(contract["units"]), int(vehicle["capacity"])),"route_points":contract.get("route_points", []).duplicate(true),"deadline":float(contract["deadline"]),"contract_id":contract["id"],"bond":int(contract.get("bond", 0)),"operation_type":"contract","status":"in_transit"})
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":contract["destination"],"cargo_id":contract.get("cargo_id", "dry"),"cargo_name":contract["cargo_name"],"revenue":int(contract["revenue"]),"arrival":game_time + float(contract["hours"]) * 2.0 * 3600.0,"start_time":game_time,"route_km":contract["km"],"wear":_trip_wear(int(contract["km"]), int(contract["units"]), int(vehicle["capacity"]), str(contract.get("cargo_id", "dry"))),"route_points":contract.get("route_points", []).duplicate(true),"deadline":float(contract["deadline"]),"contract_id":contract["id"],"bond":int(contract.get("bond", 0)),"operation_type":"contract","status":"in_transit"})
 	contract["status"] = "in_transit"
 	vehicle["status"] = "in_transit"
 	vehicle["driver_id"] = driver_id
@@ -674,7 +683,7 @@ func contract_label() -> String:
 	var contract := _contract_by_id(accepted_contract_id) if accepted_contract_id != "" else _selected_offer()
 	if contract.is_empty():
 		return "No contract offers available."
-	return "%s → %s • %d km\n%s • %d units • R%s • %s" % [contract.get("origin", HOME), contract["destination"], int(contract["km"]), contract["cargo_name"], int(contract["units"]), commas(int(contract["revenue"])), str(contract.get("status", "offer")).to_upper()]
+	return "%s → %s • %d km\n%s • %d units • R%s • %s • Need: %s" % [contract.get("origin", HOME), contract["destination"], int(contract["km"]), contract["cargo_name"], int(contract["units"]), commas(int(contract["revenue"])), str(contract.get("status", "offer")).to_upper(), _cargo_equipment_label(str(contract.get("cargo_id", "dry")))]
 
 
 func contract_deadline_label() -> String:
@@ -724,7 +733,47 @@ func vehicle_condition_label() -> String:
 	if fleet.is_empty():
 		return "Condition —"
 	var item: Dictionary = fleet[posmod(selected_vehicle, fleet.size())]
-	return "Condition %.0f%%" % float(item.get("condition", 100.0))
+	return "Condition %.0f%% • %s" % [float(item.get("condition", 100.0)), ", ".join(item.get("equipment", ["standard"]))]
+
+
+func _vehicle_can_carry(vehicle: Dictionary, cargo_id: String) -> bool:
+	if not vehicle.get("cargo", []).has(cargo_id):
+		return false
+	var cargo := _cargo_definition(cargo_id)
+	return cargo.is_empty() or vehicle.get("equipment", ["standard"]).has(str(cargo.get("equipment", "standard")))
+
+
+func _cargo_definition(cargo_id: String) -> Dictionary:
+	for cargo in CARGO:
+		if str(cargo.get("id", "")) == cargo_id:
+			return cargo
+	return {}
+
+
+func _cargo_equipment_label(cargo_id: String) -> String:
+	return str(_cargo_definition(cargo_id).get("equipment", "standard")).replace("_", " ")
+
+
+func _cargo_incompatibility_message(vehicle: Dictionary, cargo_id: String) -> String:
+	var cargo := _cargo_definition(cargo_id)
+	if cargo.is_empty():
+		return "%s cannot carry this load." % vehicle.get("name", "This vehicle")
+	var equipment := str(cargo.get("equipment", "standard"))
+	if vehicle.get("cargo", []).has(cargo_id) and not vehicle.get("equipment", ["standard"]).has(equipment):
+		return "%s needs %s equipment for %s." % [cargo.get("name", "This load"), equipment.replace("_", " "), vehicle.get("name", "this vehicle")]
+	return "%s cannot carry %s." % [vehicle.get("name", "This vehicle"), cargo.get("name", "this load")]
+
+
+func _infer_legacy_equipment(vehicle: Dictionary) -> Array:
+	var equipment: Array = ["standard"]
+	var old_cargo: Array = vehicle.get("cargo", [])
+	if old_cargo.has("produce"):
+		equipment.append("refrigerated")
+	if old_cargo.has("building"):
+		equipment.append("flatbed")
+	if old_cargo.has("machinery"):
+		equipment.append("machinery_platform")
+	return equipment
 
 
 func repair_label() -> String:
@@ -740,9 +789,14 @@ func _vehicle_cost_multiplier(vehicle: Dictionary) -> float:
 	return 1.0 + (100.0 - condition) * 0.005
 
 
-func _trip_wear(one_way_km: int, units: int, capacity: int) -> float:
+func _trip_wear(one_way_km: int, units: int, capacity: int, cargo_id: String) -> float:
 	var load_factor := 0.85 + 0.45 * clampf(float(units) / maxf(1.0, float(capacity)), 0.0, 1.0)
-	return minf(45.0, float(one_way_km) * 2.0 / 100.0 * WEAR_PER_100_KM * load_factor)
+	var cargo_factor := 1.0
+	for cargo in CARGO:
+		if str(cargo["id"]) == cargo_id:
+			cargo_factor = float(cargo.get("wear_factor", 1.0))
+			break
+	return minf(45.0, float(one_way_km) * 2.0 / 100.0 * WEAR_PER_100_KM * load_factor * cargo_factor)
 
 
 func next_vehicle_label() -> String:
@@ -771,7 +825,8 @@ func job_label() -> String:
 	var job: Dictionary = jobs[selected_job]
 	var units := mini(int(job["demand"]), int(fleet[selected_vehicle]["capacity"])) if not fleet.is_empty() else int(job["demand"])
 	var revenue := int(500 + int(job["km"]) * float(job["rate"]) * units)
-	return "%s → %s • %d km each way • %d units • Est. R%s" % [job["cargo_name"], job["destination"], int(job["km"]), units, commas(revenue)]
+	var equipment := _cargo_equipment_label(str(job["cargo_id"]))
+	return "%s → %s • %d km each way • %d units • %s • Est. R%s" % [job["cargo_name"], job["destination"], int(job["km"]), units, equipment, commas(revenue)]
 
 
 func fleet_summary() -> String:
