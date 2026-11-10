@@ -3,7 +3,7 @@ extends Node
 const SAVE_PATH := "user://transit_manager_save.json"
 const BACKUP_PATH := "user://transit_manager_save.bak"
 const TEMP_PATH := "user://transit_manager_save.tmp"
-const CURRENT_SCHEMA := 4
+const CURRENT_SCHEMA := 5
 
 var recovered_backup := false
 
@@ -77,6 +77,9 @@ func _read_save(path: String) -> Dictionary:
 		operations["terminal_offer"] = 0
 		data["operations"] = operations
 		data["schema_version"] = 4
+		version = 4
+	if version == 4:
+		data["schema_version"] = 5
 		return data
 	if version != CURRENT_SCHEMA:
 		return {}

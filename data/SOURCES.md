@@ -21,7 +21,13 @@
 
 ## Road corridors
 
-The Stage 1 road strokes are schematic planning corridors. They are not turn-by-turn routes or a complete road graph. We will select and document a suitable source and licensing approach before importing detailed offline road geometry.
+The Stage 1 road strokes are schematic planning corridors. Stage 4 now treats their points as a lightweight prototype graph for route finding and truck animation. They are not surveyed road centerlines, turn-by-turn routes, or a complete road graph; their route distances are provisional and must not be presented as authoritative real-world distances.
+
+Before importing production offline road geometry, the current candidate is the Geofabrik South Africa OpenStreetMap extract. The extract is available under ODbL 1.0; OpenStreetMap requires attribution and that the data's license be made clear. This source has not been downloaded or included in the game yet.
+
+- **Candidate country extract:** https://download.geofabrik.de/africa/south-africa.html
+- **OpenStreetMap attribution and license:** https://www.openstreetmap.org/copyright
+- **Project implementation:** Current Stage 4 route graph is generated from `stage1_corridors.json`, the project schematic data described above.
 
 ## Stage 1 prototype layers
 
@@ -35,4 +41,4 @@ The Stage 1 road strokes are schematic planning corridors. They are not turn-by-
 - **Source:** Project-created sample locations for the Stage 1 interface.
 - **Data file:** `data/stage1_terminals.json`.
 - **Scope:** Ten fictional, unowned demo terminal pins near Cape Town, Kimberley, Gqeberha, Bloemfontein, Durban, Mahikeng, Johannesburg, Pretoria, Polokwane, and Mbombela. The coordinates reuse sample city anchors or approximate city-center coordinates for visual placement.
-- **Use limits:** These are interface placeholders only. They do not represent existing facilities, operating rights, port access, or surveyed terminal sites. Do not use them for route distance, capacity, contracts, or financial calculations.
+- **Use limits:** These are interface placeholders, not existing facilities, operating rights, port access, or surveyed terminal sites. Stage 4 uses their city-center coordinates as provisional endpoints for the schematic N1–N4 route graph; resulting distances are game estimates, not authoritative road distances.

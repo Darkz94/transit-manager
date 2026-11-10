@@ -378,6 +378,8 @@ func _draw_map(font: Font) -> void:
 	if map_mode == 0:
 		_draw_neighbor_labels(font)
 	_draw_corridors()
+	if map_mode == 0:
+		_draw_active_trips()
 	if map_mode == 2:
 		_draw_local_links()
 
@@ -414,6 +416,62 @@ func _draw_corridors() -> void:
 			var mp := _map_point(float(middle[0]), float(middle[1]))
 			if map_rect.grow(-15).has_point(mp):
 				draw_string(ThemeDB.fallback_font, mp + Vector2(5, -5), route_name, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, route_color)
+
+
+func _draw_active_trips() -> void:
+	for trip in CompanyOperations.trips:
+		if str(trip.get("status", "")) != "in_transit":
+			continue
+		var route: Variant = trip.get("route_points", [])
+		if not route is Array or route.size() < 2:
+			continue
+		var path := PackedVector2Array()
+		for coordinate in route:
+			path.append(_map_point(float(coordinate[0]), float(coordinate[1])))
+		draw_polyline(path, c_route_shadow, 7.0, true)
+		draw_polyline(path, c_cyan, 3.0, true)
+		var trip_start := float(trip.get("start_time", SimulationClock.game_time_seconds))
+		var trip_end := float(trip.get("arrival", trip_start))
+		var total_time := maxf(1.0, trip_end - trip_start)
+		var journey_progress := clampf((SimulationClock.game_time_seconds - trip_start) / total_time, 0.0, 1.0)
+		var route_progress := journey_progress * 2.0 if journey_progress <= 0.5 else (1.0 - journey_progress) * 2.0
+		var location := _point_on_route(route, route_progress)
+		var marker := _map_point(location.x, location.y)
+		draw_rect(Rect2(marker - Vector2(7, 5), Vector2(14, 10)), c_orange, true)
+		draw_rect(Rect2(marker - Vector2(7, 5), Vector2(14, 10)), c_text, false, 1.0)
+		draw_circle(marker + Vector2(-4, 5), 2.0, c_bg)
+		draw_circle(marker + Vector2(4, 5), 2.0, c_bg)
+
+
+func _point_on_route(route: Array, progress: float) -> Vector2:
+	var segment_lengths: Array[float] = []
+	var total_length := 0.0
+	for i in range(route.size() - 1):
+		var a: Array = route[i]
+		var b: Array = route[i + 1]
+		var length := _map_haversine_km(float(a[0]), float(a[1]), float(b[0]), float(b[1]))
+		segment_lengths.append(length)
+		total_length += length
+	if total_length <= 0.0:
+		return Vector2(float(route[0][0]), float(route[0][1]))
+	var target := total_length * clampf(progress, 0.0, 1.0)
+	var traversed := 0.0
+	for i in range(segment_lengths.size()):
+		var length: float = segment_lengths[i]
+		if traversed + length >= target or i == segment_lengths.size() - 1:
+			var ratio := clampf((target - traversed) / maxf(0.001, length), 0.0, 1.0)
+			var start: Array = route[i]
+			var finish: Array = route[i + 1]
+			return Vector2(lerpf(float(start[0]), float(finish[0]), ratio), lerpf(float(start[1]), float(finish[1]), ratio))
+		traversed += length
+	return Vector2(float(route[route.size() - 1][0]), float(route[route.size() - 1][1]))
+
+
+func _map_haversine_km(lon_a: float, lat_a: float, lon_b: float, lat_b: float) -> float:
+	var lat_delta := deg_to_rad(lat_b - lat_a)
+	var lon_delta := deg_to_rad(lon_b - lon_a)
+	var a := pow(sin(lat_delta * 0.5), 2.0) + cos(deg_to_rad(lat_a)) * cos(deg_to_rad(lat_b)) * pow(sin(lon_delta * 0.5), 2.0)
+	return 6371.0 * 2.0 * atan2(sqrt(a), sqrt(maxf(0.0, 1.0 - a)))
 
 
 func _draw_local_links() -> void:

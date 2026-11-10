@@ -12,7 +12,7 @@
 - Delivery revenue is paid when the truck returns to Cape Town.
 - Available demand is limited by cargo and destination, then replenishes at the next in-game day boundary.
 - Drivers receive a daily wage when the in-game day boundary passes.
-- Cash, staff, fleet, demand, active trips, and selections are stored in the local save. Stage 4 extended the schema to version 4 for contracts and terminal ownership, with migration from existing schema 1, 2, and 3 saves.
+- Cash, staff, fleet, demand, active trips, and selections are stored in the local save. Stage 4 extended the schema to version 5 for contracts, terminal ownership, and saved route progress, with migration from earlier schemas.
 
 ## Prototype content
 

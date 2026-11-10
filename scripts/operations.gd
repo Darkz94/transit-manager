@@ -62,6 +62,131 @@ var vehicle_offer := 0
 var driver_offer := 0
 var terminal_offer := 0
 var message := "Company ready. Buy a vehicle and hire a driver to begin."
+var road_nodes: Dictionary = {}
+var terminal_coordinates: Dictionary = {}
+
+
+func _ready() -> void:
+	_load_terminal_coordinates()
+	_build_road_graph()
+
+
+func _load_terminal_coordinates() -> void:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/stage1_terminals.json"))
+	if not parsed is Array:
+		return
+	for terminal in parsed:
+		var city := str(terminal.get("city", ""))
+		if city != "":
+			terminal_coordinates[city] = Vector2(float(terminal.get("lon", 0.0)), float(terminal.get("lat", 0.0)))
+
+
+func _build_road_graph() -> void:
+	road_nodes.clear()
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/stage1_corridors.json"))
+	if not parsed is Array:
+		return
+	for corridor in parsed:
+		var points: Array = corridor.get("points", [])
+		for i in range(points.size() - 1):
+			var a: Array = points[i]
+			var b: Array = points[i + 1]
+			var key_a := _road_key(float(a[0]), float(a[1]))
+			var key_b := _road_key(float(b[0]), float(b[1]))
+			_ensure_road_node(key_a, float(a[0]), float(a[1]))
+			_ensure_road_node(key_b, float(b[0]), float(b[1]))
+			var distance := _haversine_km(float(a[0]), float(a[1]), float(b[0]), float(b[1])) * 1.12
+			_add_road_edge(key_a, key_b, distance, str(corridor.get("name", "Road")))
+			_add_road_edge(key_b, key_a, distance, str(corridor.get("name", "Road")))
+
+
+func _ensure_road_node(key: String, lon: float, lat: float) -> void:
+	if not road_nodes.has(key):
+		road_nodes[key] = {"lon":lon,"lat":lat,"edges":[]}
+
+
+func _add_road_edge(from_key: String, to_key: String, distance_km: float, road_name: String) -> void:
+	var node: Dictionary = road_nodes[from_key]
+	var edges: Array = node.get("edges", [])
+	for edge in edges:
+		if str(edge.get("to", "")) == to_key:
+			return
+	edges.append({"to":to_key,"km":distance_km,"road":road_name})
+	node["edges"] = edges
+	road_nodes[from_key] = node
+
+
+func _find_road_route(origin: String, destination: String) -> Dictionary:
+	if not terminal_coordinates.has(origin) or not terminal_coordinates.has(destination) or road_nodes.is_empty():
+		return {}
+	var origin_point: Vector2 = terminal_coordinates[origin]
+	var destination_point: Vector2 = terminal_coordinates[destination]
+	var start_key := _nearest_road_node(origin_point)
+	var end_key := _nearest_road_node(destination_point)
+	if start_key == "" or end_key == "":
+		return {}
+	var distances: Dictionary = {start_key:0.0}
+	var previous: Dictionary = {}
+	var frontier: Array = [start_key]
+	while not frontier.is_empty():
+		var best_index := 0
+		for i in range(1, frontier.size()):
+			if float(distances.get(frontier[i], INF)) < float(distances.get(frontier[best_index], INF)):
+				best_index = i
+		var current := str(frontier.pop_at(best_index))
+		if current == end_key:
+			break
+		var node: Dictionary = road_nodes[current]
+		for edge in node.get("edges", []):
+			var neighbor := str(edge["to"])
+			var candidate := float(distances[current]) + float(edge["km"])
+			if candidate >= float(distances.get(neighbor, INF)):
+				continue
+			distances[neighbor] = candidate
+			previous[neighbor] = current
+			if not frontier.has(neighbor):
+				frontier.append(neighbor)
+	if not distances.has(end_key):
+		return {}
+	var reversed_points: Array = []
+	var cursor := end_key
+	while cursor != "":
+		var node: Dictionary = road_nodes[cursor]
+		reversed_points.append([float(node["lon"]), float(node["lat"])])
+		if cursor == start_key:
+			break
+		cursor = str(previous.get(cursor, ""))
+	reversed_points.reverse()
+	var connector_km := _haversine_km(origin_point.x, origin_point.y, float(road_nodes[start_key]["lon"]), float(road_nodes[start_key]["lat"]))
+	connector_km += _haversine_km(destination_point.x, destination_point.y, float(road_nodes[end_key]["lon"]), float(road_nodes[end_key]["lat"]))
+	if _haversine_km(origin_point.x, origin_point.y, float(reversed_points[0][0]), float(reversed_points[0][1])) > 0.1:
+		reversed_points.push_front([origin_point.x, origin_point.y])
+	if _haversine_km(destination_point.x, destination_point.y, float(reversed_points[reversed_points.size() - 1][0]), float(reversed_points[reversed_points.size() - 1][1])) > 0.1:
+		reversed_points.append([destination_point.x, destination_point.y])
+	return {"km":float(distances[end_key]) + connector_km * 1.12,"points":reversed_points}
+
+
+func _nearest_road_node(point: Vector2) -> String:
+	var nearest := ""
+	var best_distance := INF
+	for key in road_nodes:
+		var node: Dictionary = road_nodes[key]
+		var distance := _haversine_km(point.x, point.y, float(node["lon"]), float(node["lat"]))
+		if distance < best_distance:
+			best_distance = distance
+			nearest = str(key)
+	return nearest
+
+
+func _road_key(lon: float, lat: float) -> String:
+	return "%.4f,%.4f" % [lon, lat]
+
+
+func _haversine_km(lon_a: float, lat_a: float, lon_b: float, lat_b: float) -> float:
+	var lat_delta := deg_to_rad(lat_b - lat_a)
+	var lon_delta := deg_to_rad(lon_b - lon_a)
+	var a := pow(sin(lat_delta * 0.5), 2.0) + cos(deg_to_rad(lat_a)) * cos(deg_to_rad(lat_b)) * pow(sin(lon_delta * 0.5), 2.0)
+	return 6371.0 * 2.0 * atan2(sqrt(a), sqrt(maxf(0.0, 1.0 - a)))
 
 
 func start_new_game(game_time: float) -> void:
@@ -111,6 +236,24 @@ func load_state(state: Dictionary, game_time: float) -> void:
 	_build_jobs(int(floor(game_time / DAY_SECONDS)))
 	_build_contract_offers(int(floor(game_time / DAY_SECONDS)))
 	_build_network_jobs(int(floor(game_time / DAY_SECONDS)))
+	for trip in trips:
+		if str(trip.get("status", "")) != "in_transit" or (trip.get("route_points", []) as Array).size() >= 2:
+			continue
+		var route_info := _find_road_route(HOME, str(trip.get("destination", "")))
+		if route_info.is_empty():
+			continue
+		trip["route_points"] = route_info["points"]
+		trip["route_km"] = int(round(float(route_info["km"])))
+		var arrival := float(trip.get("arrival", game_time))
+		trip["start_time"] = arrival - float(trip["route_km"]) / 45.0 * 2.0 * 3600.0
+	for contract in contracts:
+		if str(contract.get("status", "")) == "offer":
+			continue
+		if (contract.get("route_points", []) as Array).size() >= 2:
+			continue
+		var route_info := _find_road_route(HOME, str(contract.get("destination", "")))
+		if not route_info.is_empty():
+			contract["route_points"] = route_info["points"]
 	advance_to(game_time)
 	_set_message("Company progress loaded from this device.")
 
@@ -182,7 +325,7 @@ func _reset_demand(day_index: int) -> void:
 
 
 func _build_contract_offers(day_index: int) -> void:
-	contracts = contracts.filter(func(contract: Dictionary) -> bool: return str(contract.get("status", "offer")) != "offer" or int(contract.get("day", day_index)) == day_index)
+	contracts = contracts.filter(func(contract: Dictionary) -> bool: return str(contract.get("status", "offer")) != "offer")
 	for route in CONTRACT_ROUTES:
 		var contract_id := "contract_%d_%s" % [day_index, str(route["destination"]).to_lower()]
 		var exists := false
@@ -193,7 +336,9 @@ func _build_contract_offers(day_index: int) -> void:
 		if exists:
 			continue
 		var units := int(route["units"])
-		contracts.append({"id":contract_id,"day":day_index,"origin":HOME,"destination":route["destination"],"km":int(route["km"]),"hours":float(route["hours"]),"cargo_id":route["cargo_id"],"cargo_name":route["cargo_name"],"units":units,"revenue":int(int(route["km"]) * float(route["rate"]) * units),"deadline":float(day_index * DAY_SECONDS + int(route["deadline_days"]) * DAY_SECONDS),"status":"offer"})
+		var route_info := _find_road_route(HOME, str(route["destination"]))
+		var route_km := int(round(float(route_info.get("km", route["km"]))))
+		contracts.append({"id":contract_id,"day":day_index,"origin":HOME,"destination":route["destination"],"km":route_km,"hours":float(route_km) / 45.0,"route_points":route_info.get("points", []),"cargo_id":route["cargo_id"],"cargo_name":route["cargo_name"],"units":units,"revenue":int(route_km * float(route["rate"]) * units),"deadline":float(day_index * DAY_SECONDS + int(route["deadline_days"]) * DAY_SECONDS),"status":"offer"})
 	if not contracts.is_empty():
 		selected_contract = posmod(selected_contract, maxi(1, _offered_contracts().size()))
 
@@ -211,7 +356,9 @@ func _build_network_jobs(day_index: int) -> void:
 			var available := int(demand.get(key, 0))
 			if available <= 0:
 				continue
-			network_jobs.append({"id":key,"destination":destination,"km":int(terminal["km"]),"hours":float(terminal["km"]) / 45.0,"cargo_id":cargo["id"],"cargo_name":cargo["name"],"rate":float(cargo["rate"]) + 4.0,"demand":available})
+			var route_info := _find_road_route(HOME, destination)
+			var route_km := int(round(float(route_info.get("km", terminal["km"]))))
+			network_jobs.append({"id":key,"destination":destination,"km":route_km,"hours":float(route_km) / 45.0,"route_points":route_info.get("points", []),"cargo_id":cargo["id"],"cargo_name":cargo["name"],"rate":float(cargo["rate"]) + 4.0,"demand":available})
 	if not network_jobs.is_empty():
 		selected_network_job = posmod(selected_network_job, network_jobs.size())
 
@@ -371,7 +518,7 @@ func dispatch_network(game_time: float) -> void:
 	var vehicle_id := str(vehicle["id"])
 	var driver_id := str(driver["id"])
 	var duration := maxf(2.0, float(job["hours"]) * 2.0)
-	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_name":job["cargo_name"],"revenue":revenue,"arrival":game_time + duration * 3600.0,"operation_type":"linehaul","status":"in_transit"})
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":job["destination"],"cargo_name":job["cargo_name"],"revenue":revenue,"start_time":game_time,"arrival":game_time + duration * 3600.0,"route_km":job["km"],"route_points":job.get("route_points", []).duplicate(true),"operation_type":"linehaul","status":"in_transit"})
 	vehicle["status"] = "in_transit"
 	vehicle["driver_id"] = driver_id
 	vehicle["location"] = str(job["destination"])
@@ -485,7 +632,7 @@ func dispatch_contract(game_time: float) -> void:
 		return
 	var vehicle_id := str(vehicle["id"])
 	var driver_id := str(driver["id"])
-	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":contract["destination"],"cargo_name":contract["cargo_name"],"revenue":int(contract["revenue"]),"arrival":game_time + float(contract["hours"]) * 2.0 * 3600.0,"deadline":float(contract["deadline"]),"contract_id":contract["id"],"bond":int(contract.get("bond", 0)),"operation_type":"contract","status":"in_transit"})
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":contract["destination"],"cargo_name":contract["cargo_name"],"revenue":int(contract["revenue"]),"arrival":game_time + float(contract["hours"]) * 2.0 * 3600.0,"start_time":game_time,"route_km":contract["km"],"route_points":contract.get("route_points", []).duplicate(true),"deadline":float(contract["deadline"]),"contract_id":contract["id"],"bond":int(contract.get("bond", 0)),"operation_type":"contract","status":"in_transit"})
 	contract["status"] = "in_transit"
 	vehicle["status"] = "in_transit"
 	vehicle["driver_id"] = driver_id
