@@ -28,3 +28,11 @@ The Stage 1 road strokes are schematic planning corridors. They are not turn-by-
 - **Major city and town pins:** 20 manually curated seed coordinates for a first map pass. These points are approximate visual anchors and must be checked against the selected road dataset before being used to calculate travel distance or delivery time.
 - **Cape Town metro demo:** 11 manually curated suburb-district seed coordinates, including Table View. These are interface placeholders for zoom and selection; they are not a complete suburb boundary dataset.
 - **National route strokes:** simplified, schematic centerlines for N1, N2, N3, N4, and N7. Their purpose is to preview map hierarchy; they are not authoritative road geometry or routing paths. SANRAL's interactive network map and route data will guide the later road-graph research: https://www.nra.co.za/interactive-map/
+
+
+## Terminal demonstration points
+
+- **Source:** Project-created sample locations for the Stage 1 interface.
+- **Data file:** `data/stage1_terminals.json`.
+- **Scope:** Three fictional, unowned demo terminal pins near Cape Town, Johannesburg, and Durban. The coordinates reuse the sample city anchors for visual placement.
+- **Use limits:** These are interface placeholders only. They do not represent existing facilities, operating rights, port access, or surveyed terminal sites. Do not use them for route distance, capacity, contracts, or financial calculations.
