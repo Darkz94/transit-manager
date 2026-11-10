@@ -17,6 +17,7 @@ The target map includes all nine provinces, major cities and towns, and metro su
 - **Game target for this phase:** Android phones and tablets in landscape orientation.
 - **PC game builds:** Out of scope for this phase. A computer may still be used as a development tool, but the build and visual review target is Android.
 - **Design viewport:** 1280 x 720, with 2D canvas-item scaling and an expanding aspect ratio.
+- **Orientation:** Android landscape is explicitly set in the project configuration.
 - **Rendering:** Godot Compatibility renderer for broad 2D device support.
 - **Connectivity:** Core play must not require network access, accounts, ads, or remote services.
 - **Save location:** Local device storage using versioned save data and atomic writes.
