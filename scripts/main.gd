@@ -306,23 +306,27 @@ func _draw_info_panel(font: Font, rect: Rect2) -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.position.x < 76.0:
+		_handle_map_tap(event.position)
+	elif event is InputEventScreenTouch and event.pressed:
+		_handle_map_tap(event.position)
+
+
+func _handle_map_tap(position: Vector2) -> void:
+	if position.x < 76.0:
+		return
+	if position.x >= map_rect.position.x and position.x <= map_rect.end.x:
+		if position.y < map_rect.position.y + 55.0:
+			map_mode = (map_mode + 1) % 3
+			selected_place = ["South Africa", "Western Cape", "Cape Town"][map_mode]
+			selected_item = {"name": selected_place, "type": "Map view", "province": selected_place}
+			queue_redraw()
+			accept_event()
 			return
-		if event.position.x >= map_rect.position.x and event.position.x <= map_rect.end.x:
-			if event.position.y < map_rect.position.y + 55.0:
-				map_mode = (map_mode + 1) % 3
-				selected_place = ["South Africa", "Western Cape", "Cape Town"][map_mode]
-				selected_item = {"name": selected_place, "type": "Map view", "province": selected_place}
+		for i in range(hit_places.size() - 1, -1, -1):
+			var entry: Dictionary = hit_places[i]
+			if position.distance_to(entry["position"]) <= entry["radius"]:
+				selected_place = entry["name"]
+				selected_item = entry["item"]
 				queue_redraw()
 				accept_event()
-				return
-			for i in range(hit_places.size() - 1, -1, -1):
-				var entry: Dictionary = hit_places[i]
-				if event.position.distance_to(entry["position"]) <= entry["radius"]:
-					selected_place = entry["name"]
-					selected_item = entry["item"]
-					queue_redraw()
-					accept_event()
-					return
-			if map_rect.has_point(event.position):
 				return
