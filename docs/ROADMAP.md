@@ -76,27 +76,29 @@ Stages are sequenced by dependency. A stage is complete when its exit criteria a
 - Long-haul contracts are part of the core game. Introduce a simple contract flow by Stage 4, then deepen contract tiers and backhaul planning as the South Africa network expands. Trailer swapping can follow once tractor and trailer compatibility is established.
 - Keep all simulation rules data-driven so new cities, vehicles, cargo, routes, and upgrades can be added without rewriting the core engine.
 
-## Stage 0 starting checklist
+## Stage 0 handoff
 
-The research and roadmap are now the first design artifact. Before implementation, confirm or revise these choices:
+Stage 0 foundation decisions and the project shell are in place. Remaining product choices that can be made during implementation are recorded below:
 
-- [x] Engine: Godot 4.7.2 stable with GDScript; Android landscape first, desktop development builds
-- [ ] Confirm whether desktop release support is required
-- [ ] South Africa geographic data source, national map style, and province/metro/suburb hierarchy
-- [ ] 2D map icons versus a 2.5D presentation
-- [ ] Simulation time scale and offline catch-up cap
-- [ ] Whether save export/import is required in the first release
-- [ ] Initial economy: currency name, starting funds, and opening fleet size
+- [x] Engine: Godot 4.7.2 stable with GDScript.
+- [x] Primary target: Android landscape; desktop builds support development and may be considered for release.
+- [x] Full-map goal: South Africa, with nine provinces and city, town, and metro-district layers.
+- [x] Visual direction: 2D landscape, map-first interface.
+- [ ] Choose simulation time scale and offline catch-up cap during the offline simulation stage.
+- [ ] Decide whether save export/import is needed before release.
+- [ ] Set starting funds, currency display, and opening fleet during economy balancing.
 
-Then create the Stage 0 implementation issues:
+Stage 0 outputs:
 
-1. Build the Godot project shell and landscape entry screen.
-2. Define the landscape screen map and navigation.
-3. Define the data schema for province, metro area, town/city, suburb district, road segment, terminal, vehicle, driver, cargo, contract, trip, delivery, and save.
-4. Create the South Africa overview map with a detailed Western Cape prototype layer.
-5. Research an offline geographic data source and document any attribution requirements.
-6. Implement the local simulation clock and save/load spike before adding content.
-7. Prototype a long-haul contract between two distant destinations and show its route, deadline, vehicle needs, and expected costs.
+1. Godot project shell and landscape entry scene.
+2. Screen map and geographic hierarchy in [docs/STAGE_0_FOUNDATION.md](STAGE_0_FOUNDATION.md).
+3. Initial data schema for places, roads, terminals, vehicles, drivers, cargo, contracts, trips, deliveries, and saves.
+
+Next implementation work:
+
+1. Stage 1: choose an offline geographic data source, document attribution, and create the South Africa overview with a detailed Western Cape prototype layer.
+2. Stage 2: implement and save the local simulation clock.
+3. Stage 4: prototype the long-haul contract flow between distant destinations.
 
 ## Initial simulation entities
 
