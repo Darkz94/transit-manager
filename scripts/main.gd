@@ -73,8 +73,12 @@ func _draw() -> void:
 			draw_rect(Rect2(8, y - 25, 60, 46), Color("#263c55"), true)
 		draw_string(font, Vector2(18, y + 4), nav_labels[i], HORIZONTAL_ALIGNMENT_LEFT, -1, 10, COLOR_GOLD if active else COLOR_MUTED)
 
+	var compact := w < 1150.0
 	var panel_x := maxf(850.0, w - 414.0)
-	map_rect = Rect2(96, 96, panel_x - 114.0, h - 126.0)
+	if compact:
+		map_rect = Rect2(86, 96, w - 106.0, h - 126.0)
+	else:
+		map_rect = Rect2(96, 96, panel_x - 114.0, h - 126.0)
 	draw_rect(map_rect, COLOR_SEA, true)
 	draw_rect(map_rect, Color("#214a5b"), false, 2.0)
 
@@ -89,10 +93,16 @@ func _draw() -> void:
 	_draw_map_data(font)
 	_draw_place_markers(font)
 
-	var panel_rect := Rect2(panel_x, 96, w - panel_x - 22.0, h - 126.0)
-	draw_rect(panel_rect, COLOR_PANEL, true)
-	draw_rect(panel_rect, Color("#31435b"), false, 1.0)
-	_draw_info_panel(font, panel_rect)
+	if compact:
+		var compact_rect := Rect2(map_rect.position.x + 10.0, map_rect.end.y - 79.0, map_rect.size.x - 20.0, 66.0)
+		draw_rect(compact_rect, Color("#10243a"), true)
+		draw_rect(compact_rect, Color("#526a78"), false, 1.0)
+		_draw_compact_info(font, compact_rect)
+	else:
+		var panel_rect := Rect2(panel_x, 96, w - panel_x - 22.0, h - 126.0)
+		draw_rect(panel_rect, COLOR_PANEL, true)
+		draw_rect(panel_rect, Color("#31435b"), false, 1.0)
+		_draw_info_panel(font, panel_rect)
 
 	draw_string(font, Vector2(96, h - 11), "NATURAL EARTH • OPEN ADMIN DATA (CC BY 4.0) • OFFLINE MAP DATA", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, COLOR_MUTED)
 
@@ -194,6 +204,14 @@ func _draw_place_markers(font: Font) -> void:
 		if is_major or map_mode == 2:
 			draw_string(font, p + Vector2(7, 4), name, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("#fff7e5"))
 		hit_places.append({"name": name, "position": p, "radius": 13.0, "item": item})
+
+
+func _draw_compact_info(font: Font, rect: Rect2) -> void:
+	var title := ["NATIONAL NETWORK", "WESTERN CAPE", "CAPE TOWN METRO"][map_mode]
+	draw_string(font, rect.position + Vector2(12, 21), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, COLOR_GOLD)
+	draw_string(font, rect.position + Vector2(12, 45), selected_place, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, COLOR_TEXT)
+	var summary := "9 provinces • 213 municipality anchors" if map_mode == 0 else ("Regional anchors + sample towns" if map_mode == 1 else "11 sample suburb districts")
+	draw_string(font, Vector2(rect.position.x + rect.size.x - 270.0, rect.position.y + 38.0), summary, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, COLOR_MUTED)
 
 
 func _draw_info_panel(font: Font, rect: Rect2) -> void:
