@@ -316,7 +316,8 @@ func _gui_input(event: InputEvent) -> void:
 				queue_redraw()
 				accept_event()
 				return
-			for entry in hit_places:
+			for i in range(hit_places.size() - 1, -1, -1):
+				var entry: Dictionary = hit_places[i]
 				if event.position.distance_to(entry["position"]) <= entry["radius"]:
 					selected_place = entry["name"]
 					selected_item = entry["item"]
