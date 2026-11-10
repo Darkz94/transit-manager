@@ -1,32 +1,112 @@
 [
   {
-    "id": "terminal-cape-town",
-    "name": "Cape Town Depot",
+    "id": "cape-town-terminal",
+    "name": "Cape Town Terminal",
     "type": "terminal",
     "city": "Cape Town",
     "province": "Western Cape",
     "lat": -33.9249,
     "lon": 18.4241,
-    "stage": "Demo location"
+    "info": "Western Cape • Main terminal • N1 + N2",
+    "stage": "Demo point • not owned"
   },
   {
-    "id": "terminal-johannesburg",
-    "name": "Gauteng Freight Hub",
+    "id": "kimberley-terminal",
+    "name": "Kimberley Terminal",
     "type": "terminal",
-    "city": "Johannesburg",
-    "province": "Gauteng",
-    "lat": -26.2041,
-    "lon": 28.0473,
-    "stage": "Demo location"
+    "city": "Kimberley",
+    "province": "Northern Cape",
+    "lat": -28.7282,
+    "lon": 24.7623,
+    "info": "Northern Cape • Terminal",
+    "stage": "Demo point • not owned"
   },
   {
-    "id": "terminal-durban",
-    "name": "Durban Port Depot",
+    "id": "gqeberha-terminal",
+    "name": "Gqeberha Terminal",
+    "type": "terminal",
+    "city": "Gqeberha",
+    "province": "Eastern Cape",
+    "lat": -33.9608,
+    "lon": 25.6022,
+    "info": "Eastern Cape • Terminal • N2",
+    "stage": "Demo point • not owned"
+  },
+  {
+    "id": "bloemfontein-terminal",
+    "name": "Bloemfontein Terminal",
+    "type": "terminal",
+    "city": "Bloemfontein",
+    "province": "Free State",
+    "lat": -29.0852,
+    "lon": 26.214,
+    "info": "Free State • Terminal • N1",
+    "stage": "Demo point • not owned"
+  },
+  {
+    "id": "durban-terminal",
+    "name": "Durban Terminal",
     "type": "terminal",
     "city": "Durban",
     "province": "KwaZulu-Natal",
     "lat": -29.8587,
     "lon": 31.0218,
-    "stage": "Demo location"
+    "info": "KwaZulu-Natal • Terminal • N2 + N3",
+    "stage": "Demo point • not owned"
+  },
+  {
+    "id": "mahikeng-terminal",
+    "name": "Mahikeng Terminal",
+    "type": "terminal",
+    "city": "Mahikeng",
+    "province": "North West",
+    "lat": -25.865,
+    "lon": 25.644,
+    "info": "North West • Terminal",
+    "stage": "Demo point • not owned"
+  },
+  {
+    "id": "johannesburg-terminal",
+    "name": "Johannesburg Terminal",
+    "type": "terminal",
+    "city": "Johannesburg",
+    "province": "Gauteng",
+    "lat": -26.2041,
+    "lon": 28.0473,
+    "info": "Gauteng • Main terminal • N1 + N3",
+    "stage": "Demo point • not owned"
+  },
+  {
+    "id": "pretoria-terminal",
+    "name": "Pretoria Terminal",
+    "type": "terminal",
+    "city": "Pretoria",
+    "province": "Gauteng",
+    "lat": -25.7479,
+    "lon": 28.2293,
+    "info": "Gauteng • Terminal • N1 + N4",
+    "stage": "Demo point • not owned"
+  },
+  {
+    "id": "polokwane-terminal",
+    "name": "Polokwane Terminal",
+    "type": "terminal",
+    "city": "Polokwane",
+    "province": "Limpopo",
+    "lat": -23.9045,
+    "lon": 29.45,
+    "info": "Limpopo • Terminal • N1",
+    "stage": "Demo point • not owned"
+  },
+  {
+    "id": "mbombela-terminal",
+    "name": "Mbombela Terminal",
+    "type": "terminal",
+    "city": "Mbombela",
+    "province": "Mpumalanga",
+    "lat": -25.4658,
+    "lon": 30.97,
+    "info": "Mpumalanga • Terminal • N4",
+    "stage": "Demo point • not owned"
   }
 ]
