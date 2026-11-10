@@ -21,8 +21,10 @@ var provinces: Array = []
 var municipalities: Array = []
 var settlements: Array = []
 var suburbs: Array = []
+var terminals: Array = []
 var corridors: Array = []
 var selected_place := "South Africa"
+var selected_item: Dictionary = {"name": "South Africa", "type": "National map", "province": "All nine provinces"}
 var hit_places: Array = []
 
 
@@ -32,6 +34,7 @@ func _ready() -> void:
 	municipalities = _read_json("res://data/municipalities.json")
 	settlements = _read_json("res://data/stage1_settlements.json")
 	suburbs = _read_json("res://data/cape_town_suburbs.json")
+	terminals = _read_json("res://data/stage1_terminals.json")
 	corridors = _read_json("res://data/stage1_corridors.json")
 	queue_redraw()
 
@@ -183,11 +186,17 @@ func _draw_place_markers(font: Font) -> void:
 	var marker_list: Array = []
 	if map_mode == 2:
 		marker_list = suburbs
+		for item in terminals:
+			if item.get("city", "") == "Cape Town":
+				marker_list.append(item)
 	else:
 		for item in municipalities:
 			if map_mode == 0 or item.get("province", "") == "Western Cape":
 				marker_list.append(item)
 		for item in settlements:
+			if map_mode == 0 or item.get("province", "") == "Western Cape":
+				marker_list.append(item)
+		for item in terminals:
 			if map_mode == 0 or item.get("province", "") == "Western Cape":
 				marker_list.append(item)
 
@@ -196,11 +205,17 @@ func _draw_place_markers(font: Font) -> void:
 		if not map_rect.grow(-5).has_point(p):
 			continue
 		var name := str(item.get("name", "Place"))
-		var is_major := item.get("type", "") in ["city", "suburb_district"]
-		var radius := 4.2 if is_major else 2.3
+		var kind := str(item.get("type", "Municipality"))
+		var is_terminal := kind == "terminal"
+		var is_major := kind in ["city", "suburb_district", "terminal"]
+		var radius := 5.2 if is_terminal else (4.2 if is_major else 2.3)
 		var tint := COLOR_GOLD if name == selected_place else (Color("#f6efe0") if is_major else COLOR_MUNICIPALITY)
-		draw_circle(p, radius + 2.0, Color("#172b34"))
-		draw_circle(p, radius, tint)
+		if is_terminal:
+			draw_rect(Rect2(p - Vector2(radius + 2.0, radius + 2.0), Vector2((radius + 2.0) * 2.0, (radius + 2.0) * 2.0)), Color("#172b34"), true)
+			draw_rect(Rect2(p - Vector2(radius, radius), Vector2(radius * 2.0, radius * 2.0)), tint, true)
+		else:
+			draw_circle(p, radius + 2.0, Color("#172b34"))
+			draw_circle(p, radius, tint)
 		if is_major or map_mode == 2:
 			draw_string(font, p + Vector2(7, 4), name, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("#fff7e5"))
 		hit_places.append({"name": name, "position": p, "radius": 13.0, "item": item})
@@ -225,7 +240,20 @@ func _draw_info_panel(font: Font, rect: Rect2) -> void:
 	draw_string(font, Vector2(x, y), "SELECTED", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, COLOR_MUTED)
 	y += 21.0
 	draw_string(font, Vector2(x, y), selected_place, HORIZONTAL_ALIGNMENT_LEFT, -1, 16, COLOR_TEXT)
-	y += 34.0
+	y += 23.0
+	var selected_kind := str(selected_item.get("type", "Place"))
+	var selected_parent := str(selected_item.get("province", selected_item.get("district", "")))
+	draw_string(font, Vector2(x, y), selected_kind.replace("_", " ").capitalize(), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, COLOR_GOLD)
+	y += 20.0
+	if selected_parent != "":
+		draw_string(font, Vector2(x, y), selected_parent, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, COLOR_MUTED)
+		y += 20.0
+	if selected_kind == "terminal":
+		draw_string(font, Vector2(x, y), "Demo terminal • not yet owned", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, COLOR_MUTED)
+		y += 21.0
+	else:
+		y += 5.0
+	y += 8.0
 	draw_line(Vector2(x, y), Vector2(line_end, y), Color("#31435b"), 1.0)
 	y += 28.0
 
@@ -280,11 +308,9 @@ func _gui_input(event: InputEvent) -> void:
 			for entry in hit_places:
 				if event.position.distance_to(entry["position"]) <= entry["radius"]:
 					selected_place = entry["name"]
+					selected_item = entry["item"]
 					queue_redraw()
 					accept_event()
 					return
 			if map_rect.has_point(event.position):
-				map_mode = (map_mode + 1) % 3
-				selected_place = ["South Africa", "Western Cape", "Cape Town"][map_mode]
-				queue_redraw()
-				accept_event()
+				return
