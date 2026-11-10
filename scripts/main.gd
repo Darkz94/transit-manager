@@ -90,7 +90,7 @@ func _draw() -> void:
 	draw_rect(mode_button, Color("#122b3c"), true)
 	draw_rect(mode_button, Color("#6f8790"), false, 1.0)
 	draw_string(font, mode_button.position + Vector2(12, 22), mode_names[map_mode] + "  ▾", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, COLOR_TEXT)
-	draw_string(font, Vector2(map_rect.end.x - 232, map_rect.position.y + 33), "Tap a place • tap view to zoom", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("#d4dfd8"))
+	draw_string(font, Vector2(map_rect.end.x - 232, map_rect.position.y + 33), "Tap a place • use selector to zoom", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("#d4dfd8"))
 
 	_set_bounds()
 	_draw_map_data(font)
@@ -185,7 +185,7 @@ func _draw_place_markers(font: Font) -> void:
 	hit_places.clear()
 	var marker_list: Array = []
 	if map_mode == 2:
-		marker_list = suburbs
+		marker_list = suburbs.duplicate()
 		for item in terminals:
 			if item.get("city", "") == "Cape Town":
 				marker_list.append(item)
@@ -225,8 +225,14 @@ func _draw_compact_info(font: Font, rect: Rect2) -> void:
 	var title := ["NATIONAL NETWORK", "WESTERN CAPE", "CAPE TOWN METRO"][map_mode]
 	draw_string(font, rect.position + Vector2(12, 21), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, COLOR_GOLD)
 	draw_string(font, rect.position + Vector2(12, 45), selected_place, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, COLOR_TEXT)
-	var summary := "9 provinces • 213 municipality anchors" if map_mode == 0 else ("Regional anchors + sample towns" if map_mode == 1 else "11 sample suburb districts")
-	draw_string(font, Vector2(rect.position.x + rect.size.x - 270.0, rect.position.y + 38.0), summary, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, COLOR_MUTED)
+	var selected_kind := str(selected_item.get("type", "Map overview")).replace("_", " ").capitalize()
+	var selected_area := str(selected_item.get("province", selected_item.get("district", "")))
+	var detail := selected_kind if selected_area == "" else selected_kind + " • " + selected_area
+	if selected_item.get("type", "") == "terminal":
+		detail = "Demo terminal • " + str(selected_item.get("city", ""))
+	draw_string(font, Vector2(rect.position.x + rect.size.x - 270.0, rect.position.y + 21.0), detail, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, COLOR_MUTED)
+	var summary := "9 provinces • 213 anchors" if map_mode == 0 else ("Municipal anchors + sample towns" if map_mode == 1 else "11 sample suburb districts")
+	draw_string(font, Vector2(rect.position.x + rect.size.x - 270.0, rect.position.y + 42.0), summary, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, COLOR_MUTED)
 
 
 func _draw_info_panel(font: Font, rect: Rect2) -> void:
@@ -265,6 +271,8 @@ func _draw_info_panel(font: Font, rect: Rect2) -> void:
 		draw_string(font, Vector2(x, y), "213 municipality anchors", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, COLOR_MUTED)
 		y += 22.0
 		draw_string(font, Vector2(x, y), "20 sample cities and towns", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, COLOR_MUTED)
+		y += 22.0
+		draw_string(font, Vector2(x, y), "3 demo terminal pins", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, COLOR_MUTED)
 	elif map_mode == 1:
 		draw_string(font, Vector2(x, y), "Western Cape network seed", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, COLOR_TEXT)
 		y += 22.0
