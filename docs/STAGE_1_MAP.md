@@ -1,58 +1,62 @@
 # Stage 1: South Africa map explorer
 
-**Status:** Map, selection details, and demo terminal pins implemented; Stage 1 remains in progress.  
+**Status:** User-directed daytime/nighttime map design and national city/terminal pins are implemented; Stage 1 remains in progress pending Android visual review.  
 **Project:** Transit Manager  
-**Target:** Offline-first Android game for phones and tablets in landscape orientation. PC builds are out of scope for this phase.
+**Target:** Android phones and tablets in landscape orientation.
 
-## What is in the first pass
+## Map design
 
-The main scene now loads local map data and draws a geographic overview with three selectable views:
+The current Godot map follows the user's supplied daytime and nighttime examples: a clean light-blue daytime map with a cream land fill, and a deep navy nighttime version. A theme button switches between the two. The map uses the existing generalized province geometry, so its country outline follows South Africa's nine provinces rather than the sketch's illustrative outline.
 
-1. **South Africa:** generalized outlines for all nine provinces, 213 municipality anchor points, and selected major-city/town pins.
-2. **Western Cape:** provincial outline, its municipality anchors, and the Western Cape sample settlement pins.
-3. **Cape Town metro:** a close-in view with eleven sample suburb/district pins.
+The national view shows province labels, nearby country names, ocean labels, city and town pins, terminal markers, and color-coded N1, N2, N3, N4, and N7 route strokes. The N7 stroke is retained as an additional national corridor. The legend distinguishes routes, cities, and terminals.
 
-Tap the view selector to cycle between views. Tap a visible place marker to select it; blank map taps do not change the view. The information panel shows the selected place type and its province or district. Three fictional demo terminal pins, near Cape Town, Johannesburg, and Durban, can also be selected. They are visual examples, not actual facilities or owned locations. The layout uses a side information panel on wide landscape screens and a compact overlay on narrower landscape screens.
+## Zoom and selection
 
-The country overview also includes schematic N1, N2, N3, N4, and N7 strokes. The interface calls these illustrative corridors and explicitly says they are not routing geometry or distances. They exist to establish the long-haul visual layer only; contract routing and delivery-time calculations must wait for a properly sourced road graph.
+Three map levels are available:
 
-## Local data files
+1. **Country:** all nine province outlines, national corridors, the full city/town pin set, and demo terminals.
+2. **Province:** tap a province to zoom into its outline and locations; the view buttons also return to the currently selected province.
+3. **City or town:** tap a city, town, or terminal to open a close-in view. Cape Town shows its sample suburb-district pins. Johannesburg and Pretoria show the supplied Soweto and Centurion district seeds when they fall in view. Other city views are ready to accept further local-area data.
+
+The small orange links between a city center and included suburb-district pins are visual planning links, not street routes. The map does not calculate mileage, trip time, or contract values from the schematic lines. Smaller local contracts can use the city-level view after we add sourced local road geometry.
+
+The information strip shows the selected place or terminal. The terminal locations are demo pins; no terminal is owned and there is no purchase action yet. The view buttons support country, province, and city/town levels, and touch input is handled directly for Android.
+
+## Offline data files
 
 - `data/south_africa_provinces.geojson`: generalized outlines for all nine provinces.
-- `data/municipalities.json`: 213 municipality anchors and their parent administrative area.
-- `data/stage1_settlements.json`: 20 manually curated sample cities and towns.
-- `data/cape_town_suburbs.json`: 11 manually curated Cape Town suburb/district examples.
-- `data/stage1_terminals.json`: three fictional demo terminal points for selection and panel layout.
-- `data/stage1_corridors.json`: illustrative route strokes for the national overview.
-- `data/SOURCES.md`: licensing, attribution, transformations, and known data limits.
+- `data/municipalities.json`: 213 municipality anchors and their administrative parents.
+- `data/stage1_settlements.json`: 40 sample cities, towns, and metro-district pins.
+- `data/cape_town_suburbs.json`: 11 sample Cape Town suburb/district pins.
+- `data/stage1_terminals.json`: 10 fictional, unowned terminal demo pins.
+- `data/stage1_corridors.json`: illustrative national route strokes.
+- `data/SOURCES.md`: licenses, attribution, transformations, and accuracy limits.
 
-This is an offline data load: the running game reads files packaged with the project and does not request map tiles or a network service.
+The game loads these files from the project; it does not request online map tiles or a network service.
 
 ## Known limits
 
-- The settlement and suburb pins are visual seed coordinates, not verified delivery-zone boundaries.
-- Municipality anchors are administrative points, not a full catalogue of every town, suburb, or settlement.
-- The simplified province polygons are suitable for a first overview, not detailed navigation.
-- Corridor lines must not be used for mileage, travel time, route selection, or contract pricing.
-- Terminal purchase, ownership, capacity, and operations are not implemented; the three visible pins are demo locations only.
-- Road-network navigation and gesture-based zoom are not implemented yet.
-- Godot and Android visual review remains outstanding; this code pass has not been run in the engine.
+- The manually curated city/town and terminal coordinates are visual anchors, not surveyed terminal locations or guaranteed street-level coordinates.
+- The 213 municipality anchors are administrative points, not a complete town/suburb catalogue.
+- Cape Town, Soweto, and Centurion are the only metro-district samples in this pass; the local-link strokes are schematic spokes, not roads.
+- The national route strokes are illustrative, not routing geometry. No distance, travel time, or contract value should use them.
+- Province borders and map pins are present, but no road graph, terminal ownership, capacity, or dispatch mechanics exist yet.
+- The Android map has not yet been opened on-device for a visual fit review.
 
 ## Remaining Stage 1 work
 
-1. Open the project in Godot and review the national, Western Cape, and Cape Town views on target Android phone and tablet landscape sizes.
-2. Adjust scale, label density, selection targets, and panel layout based on that visual review.
-3. Review and refine place/terminal detail panel content and selection behavior from a visual pass.
-4. Add terminal ownership actions only after the Stage 2 save model exists.
-5. Replace the schematic corridor art only after selecting a road source, documenting its terms, and preparing an offline routing graph.
-6. Record the final Stage 1 exit review in this document and update the roadmap status.
+1. Review the day and night palettes, labels, and touch targets on Android phone and tablet landscape screens.
+2. Tune the map bounds and label placement from that review.
+3. Expand metro-district data beyond the current Cape Town, Soweto, and Centurion examples.
+4. Select and document a suitable offline road source before adding usable local or national routes.
+5. Add terminal ownership and actions only after the Stage 2 save model exists.
+6. Record the Android visual review and update the roadmap status.
 
 ## Stage 1 exit criteria
 
-- [ ] All nine province outlines can be inspected in the national view.
-- [ ] The player can move from the national view to a detailed Western Cape view and Cape Town metro view.
-- [x] Place selection shows its name, type, and administrative area; demo terminal pins can be selected.
-- [ ] A terminal can be opened as a gameplay location with a future ownership action.
-- [ ] The map and touch targets remain readable in target landscape aspect ratios.
-- [ ] All included data has a source, license, attribution, and documented accuracy limits.
-- [ ] No gameplay distance or contract value is derived from illustrative lines.
+- [ ] All nine province outlines are readable in the country view.
+- [ ] The player can drill down country → province → city/town and return using the view buttons.
+- [x] The player can select sample places and demo terminals and see location details.
+- [ ] Day and night palettes, labels, and touch targets are readable across target Android landscape sizes.
+- [ ] Every included data layer has attribution and documented accuracy limits.
+- [ ] No gameplay route distance or contract value is derived from illustrative strokes.
