@@ -88,7 +88,7 @@ func _apply_theme() -> void:
 		c_button_text = Color("#0B3A5A")
 		c_button_border = Color("#FF7A00")
 		c_legend = Color(1.0, 1.0, 1.0, 0.9)
-		route_colors = {"N1": Color("#E53935"), "N2": Color("#B77900"), "N3": Color("#E65100"), "N4": Color("#2D8DFF"), "N7": Color("#7C3AED")}
+		route_colors = {"N1": Color("#E53935"), "N2": Color("#B77900"), "N3": Color("#E65100"), "N4": Color("#2D8DFF")}
 	else:
 		c_header_title = Color("#FFFFFF")
 		c_header_subtitle = Color("#94A3B8")
@@ -114,7 +114,7 @@ func _apply_theme() -> void:
 		c_button_text = Color("#FFFFFF")
 		c_button_border = Color("#FF7A00")
 		c_legend = Color(0.0, 0.0, 0.0, 0.72)
-		route_colors = {"N1": Color("#FF2D2D"), "N2": Color("#FFD400"), "N3": Color("#FF7A00"), "N4": Color("#2D8DFF"), "N7": Color("#A78BFA")}
+		route_colors = {"N1": Color("#FF2D2D"), "N2": Color("#FFD400"), "N3": Color("#FF7A00"), "N4": Color("#2D8DFF")}
 
 
 func _read_json(path: String) -> Variant:
