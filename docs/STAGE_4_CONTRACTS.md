@@ -16,6 +16,7 @@
 - Line-haul and contract distance, costs, and travel time are now derived from a shortest-path graph built from the N1–N4 prototype corridor points. Active trucks animate outbound and back along the saved path on the country overview.
 - Contract board, terminal ownership, line-haul demand, and active trip routes are included in local save schema 5. Existing schema 1–4 saves migrate forward; active older trips are assigned a prototype corridor path when possible.
 - Fixed local delivery cost accounting so the estimated trip cost is charged once.
+- Corrected province bounds to ignore distant island polygons, removed national highway strokes and decorative spokes from city drill-down, adjusted city framing for landscape viewports, and separated Android touch handling so theme taps are processed once.
 
 ## Prototype limits and review
 

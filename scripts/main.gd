@@ -262,10 +262,11 @@ func _draw() -> void:
 	draw_rect(clock_button_rect, c_button, true)
 	draw_rect(clock_button_rect, c_button_border, false, 2.0)
 	draw_string(font, clock_button_rect.position + Vector2(0, 18), SimulationClock.speed_label(), HORIZONTAL_ALIGNMENT_CENTER, clock_button_rect.size.x, 10, c_button_text)
-	theme_button_rect = Rect2(w - 132.0, 11.0, 120.0, 48.0)
-	draw_rect(theme_button_rect, c_button, true)
-	draw_rect(theme_button_rect, c_button_border, false, 2.0)
-	draw_string(font, theme_button_rect.position + Vector2(0, 29), "NIGHT MODE" if theme_mode == 0 else "DAY MODE", HORIZONTAL_ALIGNMENT_CENTER, theme_button_rect.size.x, 11, c_button_text)
+	theme_button_rect = Rect2(w - 210.0, 0.0, 210.0, 70.0)
+	var theme_visual_rect := Rect2(w - 132.0, 11.0, 120.0, 48.0)
+	draw_rect(theme_visual_rect, c_button, true)
+	draw_rect(theme_visual_rect, c_button_border, false, 2.0)
+	draw_string(font, theme_visual_rect.position + Vector2(0, 29), "NIGHT MODE" if theme_mode == 0 else "DAY MODE", HORIZONTAL_ALIGNMENT_CENTER, theme_visual_rect.size.x, 11, c_button_text)
 
 	map_rect = Rect2(0, header_h, w, maxf(120.0, h - header_h - info_h - controls_h))
 	info_rect = Rect2(0, map_rect.end.y, w, info_h)
@@ -298,8 +299,10 @@ func _set_bounds() -> void:
 	if map_mode == 1:
 		world_bounds = _province_bounds(selected_province)
 	elif map_mode == 2:
-		var lon_radius := 0.43 if selected_city == "Cape Town" else 0.34
-		var lat_radius := 0.34 if selected_city == "Cape Town" else 0.28
+		var lat_radius := 0.30 if selected_city == "Cape Town" else 0.22
+		var center_cos := maxf(0.5, cos(deg_to_rad(city_focus_lat)))
+		var view_aspect := map_rect.size.x / maxf(1.0, map_rect.size.y)
+		var lon_radius := lat_radius * view_aspect / center_cos
 		world_bounds = Vector4(city_focus_lon - lon_radius, city_focus_lat - lat_radius, city_focus_lon + lon_radius, city_focus_lat + lat_radius)
 	else:
 		world_bounds = Vector4(15.8, -35.7, 33.2, -21.0)
@@ -318,6 +321,8 @@ func _province_bounds(province_name: String) -> Vector4:
 		var geometry: Dictionary = feature.get("geometry", {})
 		var polygons: Array = _geometry_polygons(geometry)
 		for polygon in polygons:
+			if not _polygon_in_sa_extent(polygon):
+				continue
 			for ring in polygon:
 				for coord in ring:
 					west = minf(west, float(coord[0]))
@@ -329,6 +334,24 @@ func _province_bounds(province_name: String) -> Vector4:
 	var lon_pad := maxf(0.35, (east - west) * 0.06)
 	var lat_pad := maxf(0.3, (north - south) * 0.06)
 	return Vector4(west - lon_pad, south - lat_pad, east + lon_pad, north + lat_pad)
+
+
+func _polygon_in_sa_extent(polygon: Array) -> bool:
+	if polygon.is_empty() or polygon[0].is_empty():
+		return false
+	var ring: Array = polygon[0]
+	var west := 180.0
+	var east := -180.0
+	var south := 90.0
+	var north := -90.0
+	for coord in ring:
+		west = minf(west, float(coord[0]))
+		east = maxf(east, float(coord[0]))
+		south = minf(south, float(coord[1]))
+		north = maxf(north, float(coord[1]))
+	var center_lon := (west + east) * 0.5
+	var center_lat := (south + north) * 0.5
+	return center_lon >= 15.8 and center_lon <= 33.2 and center_lat >= -35.7 and center_lat <= -21.0
 
 
 func _geometry_polygons(geometry: Dictionary) -> Array:
@@ -361,7 +384,7 @@ func _draw_map(font: Font) -> void:
 				continue
 			var polygons: Array = _geometry_polygons(feature.get("geometry", {}))
 			for polygon in polygons:
-				if polygon.is_empty():
+				if polygon.is_empty() or not _polygon_in_sa_extent(polygon):
 					continue
 				var outer: Array = polygon[0]
 				var points := PackedVector2Array()
@@ -377,11 +400,10 @@ func _draw_map(font: Font) -> void:
 
 	if map_mode == 0:
 		_draw_neighbor_labels(font)
-	_draw_corridors()
+	if map_mode != 2:
+		_draw_corridors()
 	if map_mode == 0:
 		_draw_active_trips()
-	if map_mode == 2:
-		_draw_local_links()
 
 
 func _draw_neighbor_labels(font: Font) -> void:
@@ -856,7 +878,7 @@ func _handle_tap(position: Vector2) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	if OS.has_feature("mobile") and event is InputEventScreenTouch and event.pressed:
 		_handle_tap(event.position)
-	elif event is InputEventScreenTouch and event.pressed:
+	elif not OS.has_feature("mobile") and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_handle_tap(event.position)
