@@ -1,0 +1,1919 @@
+[
+  {
+    "id": "ZA5263",
+    "name": "Abaqulusi",
+    "local_code": "KZN263",
+    "district": "Zululand",
+    "province": "KwaZulu-Natal",
+    "lat": -27.807,
+    "lon": 31.068
+  },
+  {
+    "id": "ZA5238",
+    "name": "Alfred Duma",
+    "local_code": "KZN238",
+    "district": "Uthukela",
+    "province": "KwaZulu-Natal",
+    "lat": -28.446,
+    "lon": 29.9
+  },
+  {
+    "id": "ZA2124",
+    "name": "Amahlathi",
+    "local_code": "EC124",
+    "district": "Amathole",
+    "province": "Eastern Cape",
+    "lat": -32.516,
+    "lon": 27.389
+  },
+  {
+    "id": "ZA9334",
+    "name": "Ba-Phalaborwa",
+    "local_code": "LIM334",
+    "district": "Mopani",
+    "province": "Limpopo",
+    "lat": -23.681,
+    "lon": 31.331
+  },
+  {
+    "id": "ZA1053",
+    "name": "Beaufort West",
+    "local_code": "WC053",
+    "district": "Central Karoo",
+    "province": "Western Cape",
+    "lat": -32.307,
+    "lon": 22.609
+  },
+  {
+    "id": "ZA9366",
+    "name": "Bela-Bela",
+    "local_code": "LIM366",
+    "district": "Waterberg",
+    "province": "Limpopo",
+    "lat": -24.95,
+    "lon": 28.349
+  },
+  {
+    "id": "ZA1013",
+    "name": "Bergrivier",
+    "local_code": "WC013",
+    "district": "West Coast",
+    "province": "Western Cape",
+    "lat": -32.811,
+    "lon": 18.585
+  },
+  {
+    "id": "ZA5276",
+    "name": "Big Five Hlabisa",
+    "local_code": "KZN276",
+    "district": "Umkhanyakude",
+    "province": "KwaZulu-Natal",
+    "lat": -28.043,
+    "lon": 32.144
+  },
+  {
+    "id": "ZA1047",
+    "name": "Bitou",
+    "local_code": "WC047",
+    "district": "Eden",
+    "province": "Western Cape",
+    "lat": -33.947,
+    "lon": 23.432
+  },
+  {
+    "id": "ZA9351",
+    "name": "Blouberg",
+    "local_code": "LIM351",
+    "district": "Capricorn",
+    "province": "Limpopo",
+    "lat": -23.018,
+    "lon": 28.757
+  },
+  {
+    "id": "ZA2102",
+    "name": "Blue Crane Route",
+    "local_code": "EC102",
+    "district": "Cacadu",
+    "province": "Eastern Cape",
+    "lat": -32.774,
+    "lon": 25.488
+  },
+  {
+    "id": "ZA1025",
+    "name": "Breede Valley",
+    "local_code": "WC025",
+    "district": "Cape Winelands",
+    "province": "Western Cape",
+    "lat": -33.584,
+    "lon": 19.511
+  },
+  {
+    "id": "ZA2920",
+    "name": "Buffalo City",
+    "local_code": "BUF",
+    "district": "Buffalo City",
+    "province": "Eastern Cape",
+    "lat": -32.98,
+    "lon": 27.681
+  },
+  {
+    "id": "ZA8325",
+    "name": "Bushbuckridge",
+    "local_code": "MP325",
+    "district": "Ehlanzeni",
+    "province": "Mpumalanga",
+    "lat": -24.585,
+    "lon": 31.408
+  },
+  {
+    "id": "ZA1033",
+    "name": "Cape Agulhas",
+    "local_code": "WC033",
+    "district": "Overberg",
+    "province": "Western Cape",
+    "lat": -34.519,
+    "lon": 20.062
+  },
+  {
+    "id": "ZA1012",
+    "name": "Cederberg",
+    "local_code": "WC012",
+    "district": "West Coast",
+    "province": "Western Cape",
+    "lat": -32.361,
+    "lon": 18.876
+  },
+  {
+    "id": "ZA8301",
+    "name": "Chief Albert Luthuli",
+    "local_code": "MP301",
+    "district": "Gert Sibande",
+    "province": "Mpumalanga",
+    "lat": -26.112,
+    "lon": 30.428
+  },
+  {
+    "id": "ZA1910",
+    "name": "City of Cape Town",
+    "local_code": "CPT",
+    "district": "City of Cape Town",
+    "province": "Western Cape",
+    "lat": -33.915,
+    "lon": 18.583
+  },
+  {
+    "id": "ZA7980",
+    "name": "City of Johannesburg",
+    "local_code": "JHB",
+    "district": "City of Johannesburg",
+    "province": "Gauteng",
+    "lat": -26.215,
+    "lon": 27.919
+  },
+  {
+    "id": "ZA6403",
+    "name": "City of Matlosana",
+    "local_code": "NW403",
+    "district": "Dr Kenneth Kaunda",
+    "province": "North West",
+    "lat": -26.832,
+    "lon": 26.496
+  },
+  {
+    "id": "ZA7990",
+    "name": "City of Tshwane",
+    "local_code": "TSH",
+    "district": "City of Tshwane",
+    "province": "Gauteng",
+    "lat": -25.594,
+    "lon": 28.303
+  },
+  {
+    "id": "ZA9345",
+    "name": "Collins Chabane",
+    "local_code": "LIM345",
+    "district": "Vhembe",
+    "province": "Limpopo",
+    "lat": -22.96,
+    "lon": 31.06
+  },
+  {
+    "id": "ZA5254",
+    "name": "Dannhauser",
+    "local_code": "KZN254",
+    "district": "Amajuba",
+    "province": "KwaZulu-Natal",
+    "lat": -28.002,
+    "lon": 30.067
+  },
+  {
+    "id": "ZA3087",
+    "name": "Dawid Kruiper",
+    "local_code": "NC087",
+    "district": "Z F Mgcawu",
+    "province": "Northern Cape",
+    "lat": -26.739,
+    "lon": 20.315
+  },
+  {
+    "id": "ZA4192",
+    "name": "Dihlabeng",
+    "local_code": "FS192",
+    "district": "Thabo Mofutsanyane",
+    "province": "Free State",
+    "lat": -28.371,
+    "lon": 28.249
+  },
+  {
+    "id": "ZA3092",
+    "name": "Dikgatlong",
+    "local_code": "NC092",
+    "district": "Frances Baard",
+    "province": "Northern Cape",
+    "lat": -28.196,
+    "lon": 24.255
+  },
+  {
+    "id": "ZA8306",
+    "name": "Dipaleseng",
+    "local_code": "MP306",
+    "district": "Gert Sibande",
+    "province": "Mpumalanga",
+    "lat": -26.784,
+    "lon": 28.626
+  },
+  {
+    "id": "ZA6384",
+    "name": "Ditsobotla",
+    "local_code": "NW384",
+    "district": "Ngaka Modiri Molema",
+    "province": "North West",
+    "lat": -26.129,
+    "lon": 26.191
+  },
+  {
+    "id": "ZA2101",
+    "name": "Dr Beyers Naude",
+    "local_code": "EC101",
+    "district": "Cacadu",
+    "province": "Eastern Cape",
+    "lat": -32.733,
+    "lon": 23.884
+  },
+  {
+    "id": "ZA8316",
+    "name": "Dr JS Moroka",
+    "local_code": "MP316",
+    "district": "Nkangala",
+    "province": "Mpumalanga",
+    "lat": -25.115,
+    "lon": 28.936
+  },
+  {
+    "id": "ZA5436",
+    "name": "Dr Nkosazana Dlamini Zuma",
+    "local_code": "KZN436",
+    "district": "Sisonke",
+    "province": "KwaZulu-Natal",
+    "lat": -29.807,
+    "lon": 29.542
+  },
+  {
+    "id": "ZA8304",
+    "name": "Dr Pixley Ka Isaka Seme",
+    "local_code": "MP304",
+    "district": "Gert Sibande",
+    "province": "Mpumalanga",
+    "lat": -27.102,
+    "lon": 29.994
+  },
+  {
+    "id": "ZA1023",
+    "name": "Drakenstein",
+    "local_code": "WC023",
+    "district": "Cape Winelands",
+    "province": "Western Cape",
+    "lat": -33.504,
+    "lon": 19.023
+  },
+  {
+    "id": "ZA5261",
+    "name": "eDumbe",
+    "local_code": "KZN261",
+    "district": "Zululand",
+    "province": "KwaZulu-Natal",
+    "lat": -27.484,
+    "lon": 30.843
+  },
+  {
+    "id": "ZA7970",
+    "name": "Ekurhuleni",
+    "local_code": "EKU",
+    "district": "Ekurhuleni",
+    "province": "Gauteng",
+    "lat": -26.185,
+    "lon": 28.321
+  },
+  {
+    "id": "ZA9472",
+    "name": "Elias Motsoaledi",
+    "local_code": "LIM472",
+    "district": "Sekhukhune",
+    "province": "Limpopo",
+    "lat": -25.17,
+    "lon": 29.525
+  },
+  {
+    "id": "ZA2141",
+    "name": "Elundini",
+    "local_code": "EC141",
+    "district": "Joe Gqabi",
+    "province": "Eastern Cape",
+    "lat": -30.927,
+    "lon": 28.344
+  },
+  {
+    "id": "ZA5253",
+    "name": "Emadlangeni",
+    "local_code": "KZN253",
+    "district": "Amajuba",
+    "province": "KwaZulu-Natal",
+    "lat": -27.638,
+    "lon": 30.305
+  },
+  {
+    "id": "ZA8314",
+    "name": "Emakhazeni",
+    "local_code": "MP314",
+    "district": "Nkangala",
+    "province": "Mpumalanga",
+    "lat": -25.569,
+    "lon": 30.131
+  },
+  {
+    "id": "ZA2136",
+    "name": "Emalahleni",
+    "local_code": "EC136",
+    "district": "Chris Hani",
+    "province": "Eastern Cape",
+    "lat": -31.586,
+    "lon": 27.151
+  },
+  {
+    "id": "ZA8312",
+    "name": "Emalahleni",
+    "local_code": "MP312",
+    "district": "Nkangala",
+    "province": "Mpumalanga",
+    "lat": -26.018,
+    "lon": 29.161
+  },
+  {
+    "id": "ZA7421",
+    "name": "Emfuleni",
+    "local_code": "GT421",
+    "district": "Sedibeng",
+    "province": "Gauteng",
+    "lat": -26.609,
+    "lon": 27.825
+  },
+  {
+    "id": "ZA3073",
+    "name": "Emthanjeni",
+    "local_code": "NC073",
+    "district": "Pixley ka Seme",
+    "province": "Northern Cape",
+    "lat": -30.692,
+    "lon": 23.762
+  },
+  {
+    "id": "ZA5241",
+    "name": "Endumeni",
+    "local_code": "KZN241",
+    "district": "Umzinyathi",
+    "province": "KwaZulu-Natal",
+    "lat": -28.185,
+    "lon": 30.26
+  },
+  {
+    "id": "ZA2137",
+    "name": "Engcobo",
+    "local_code": "EC137",
+    "district": "Chris Hani",
+    "province": "Eastern Cape",
+    "lat": -31.707,
+    "lon": 28.064
+  },
+  {
+    "id": "ZA2139",
+    "name": "Enoch Mgijima",
+    "local_code": "EC139",
+    "district": "Chris Hani",
+    "province": "Eastern Cape",
+    "lat": -31.805,
+    "lon": 26.271
+  },
+  {
+    "id": "ZA9471",
+    "name": "Ephraim Mogale",
+    "local_code": "LIM471",
+    "district": "Sekhukhune",
+    "province": "Limpopo",
+    "lat": -24.858,
+    "lon": 29.458
+  },
+  {
+    "id": "ZA5950",
+    "name": "eThekwini",
+    "local_code": "ETH",
+    "district": "eThekwini",
+    "province": "KwaZulu-Natal",
+    "lat": -29.885,
+    "lon": 30.838
+  },
+  {
+    "id": "ZA3452",
+    "name": "Ga-Segonyana",
+    "local_code": "NC452",
+    "district": "John Taolo Gaetsewe",
+    "province": "Northern Cape",
+    "lat": -27.549,
+    "lon": 23.513
+  },
+  {
+    "id": "ZA3453",
+    "name": "Gamagara",
+    "local_code": "NC453",
+    "district": "John Taolo Gaetsewe",
+    "province": "Northern Cape",
+    "lat": -27.672,
+    "lon": 22.979
+  },
+  {
+    "id": "ZA1044",
+    "name": "George",
+    "local_code": "WC044",
+    "district": "Eden",
+    "province": "Western Cape",
+    "lat": -33.724,
+    "lon": 22.892
+  },
+  {
+    "id": "ZA8307",
+    "name": "Govan Mbeki",
+    "local_code": "MP307",
+    "district": "Gert Sibande",
+    "province": "Mpumalanga",
+    "lat": -26.452,
+    "lon": 29.196
+  },
+  {
+    "id": "ZA2123",
+    "name": "Great Kei",
+    "local_code": "EC123",
+    "district": "Amathole",
+    "province": "Eastern Cape",
+    "lat": -32.682,
+    "lon": 28.053
+  },
+  {
+    "id": "ZA9331",
+    "name": "Greater Giyani",
+    "local_code": "LIM331",
+    "district": "Mopani",
+    "province": "Limpopo",
+    "lat": -23.386,
+    "lon": 30.839
+  },
+  {
+    "id": "ZA5433",
+    "name": "Greater Kokstad",
+    "local_code": "KZN433",
+    "district": "Sisonke",
+    "province": "KwaZulu-Natal",
+    "lat": -30.288,
+    "lon": 29.386
+  },
+  {
+    "id": "ZA9332",
+    "name": "Greater Letaba",
+    "local_code": "LIM332",
+    "district": "Mopani",
+    "province": "Limpopo",
+    "lat": -23.534,
+    "lon": 30.228
+  },
+  {
+    "id": "ZA6394",
+    "name": "Greater Taung",
+    "local_code": "NW394",
+    "district": "Dr Ruth Segomotsi Mompati",
+    "province": "North West",
+    "lat": -27.55,
+    "lon": 24.532
+  },
+  {
+    "id": "ZA9476",
+    "name": "Greater Tubatse/Fetakgomo",
+    "local_code": "LIM476",
+    "district": "Sekhukhune",
+    "province": "Limpopo",
+    "lat": -24.664,
+    "lon": 30.406
+  },
+  {
+    "id": "ZA9333",
+    "name": "Greater Tzaneen",
+    "local_code": "LIM333",
+    "district": "Mopani",
+    "province": "Limpopo",
+    "lat": -23.833,
+    "lon": 30.231
+  },
+  {
+    "id": "ZA3065",
+    "name": "Hantam",
+    "local_code": "NC065",
+    "district": "Namakwa",
+    "province": "Northern Cape",
+    "lat": -31.136,
+    "lon": 19.663
+  },
+  {
+    "id": "ZA1042",
+    "name": "Hessequa",
+    "local_code": "WC042",
+    "district": "Eden",
+    "province": "Western Cape",
+    "lat": -34.118,
+    "lon": 21.179
+  },
+  {
+    "id": "ZA5224",
+    "name": "Impendle",
+    "local_code": "KZN224",
+    "district": "Umgungundlovu",
+    "province": "KwaZulu-Natal",
+    "lat": -29.572,
+    "lon": 29.788
+  },
+  {
+    "id": "ZA5237",
+    "name": "Inkosi Langalibalele",
+    "local_code": "KZN237",
+    "district": "Uthukela",
+    "province": "KwaZulu-Natal",
+    "lat": -28.996,
+    "lon": 29.796
+  },
+  {
+    "id": "ZA2135",
+    "name": "Intsika Yethu",
+    "local_code": "EC135",
+    "district": "Chris Hani",
+    "province": "Eastern Cape",
+    "lat": -31.992,
+    "lon": 27.67
+  },
+  {
+    "id": "ZA2131",
+    "name": "Inxuba Yethemba",
+    "local_code": "EC131",
+    "district": "Chris Hani",
+    "province": "Eastern Cape",
+    "lat": -31.864,
+    "lon": 25.271
+  },
+  {
+    "id": "ZA3451",
+    "name": "Joe Morolong",
+    "local_code": "NC451",
+    "district": "John Taolo Gaetsewe",
+    "province": "Northern Cape",
+    "lat": -26.768,
+    "lon": 22.672
+  },
+  {
+    "id": "ZA5272",
+    "name": "Jozini",
+    "local_code": "KZN272",
+    "district": "Umkhanyakude",
+    "province": "KwaZulu-Natal",
+    "lat": -27.368,
+    "lon": 32.116
+  },
+  {
+    "id": "ZA6397",
+    "name": "Kagisano/Molopo",
+    "local_code": "NW397",
+    "district": "Dr Ruth Segomotsi Mompati",
+    "province": "North West",
+    "lat": -26.199,
+    "lon": 24.04
+  },
+  {
+    "id": "ZA3082",
+    "name": "Kai Garib",
+    "local_code": "NC082",
+    "district": "Z F Mgcawu",
+    "province": "Northern Cape",
+    "lat": -28.884,
+    "lon": 20.473
+  },
+  {
+    "id": "ZA3064",
+    "name": "Kamiesberg",
+    "local_code": "NC064",
+    "district": "Namakwa",
+    "province": "Northern Cape",
+    "lat": -30.504,
+    "lon": 17.89
+  },
+  {
+    "id": "ZA1041",
+    "name": "Kannaland",
+    "local_code": "WC041",
+    "district": "Eden",
+    "province": "Western Cape",
+    "lat": -33.619,
+    "lon": 21.228
+  },
+  {
+    "id": "ZA3074",
+    "name": "Kareeberg",
+    "local_code": "NC074",
+    "district": "Pixley ka Seme",
+    "province": "Northern Cape",
+    "lat": -30.61,
+    "lon": 22.192
+  },
+  {
+    "id": "ZA3066",
+    "name": "Karoo Hoogland",
+    "local_code": "NC066",
+    "district": "Namakwa",
+    "province": "Northern Cape",
+    "lat": -31.671,
+    "lon": 21.268
+  },
+  {
+    "id": "ZA3086",
+    "name": "Kgatelopele",
+    "local_code": "NC086",
+    "district": "Z F Mgcawu",
+    "province": "Northern Cape",
+    "lat": -28.233,
+    "lon": 23.64
+  },
+  {
+    "id": "ZA6374",
+    "name": "Kgetlengrivier",
+    "local_code": "NW374",
+    "district": "Bojanala",
+    "province": "North West",
+    "lat": -25.751,
+    "lon": 26.805
+  },
+  {
+    "id": "ZA3067",
+    "name": "Khâi-Ma",
+    "local_code": "NC067",
+    "district": "Namakwa",
+    "province": "Northern Cape",
+    "lat": -29.495,
+    "lon": 19.267
+  },
+  {
+    "id": "ZA3084",
+    "name": "Kheis",
+    "local_code": "NC084",
+    "district": "Z F Mgcawu",
+    "province": "Northern Cape",
+    "lat": -29.213,
+    "lon": 21.583
+  },
+  {
+    "id": "ZA2157",
+    "name": "King Sabata Dalindyebo",
+    "local_code": "EC157",
+    "district": "O.R.Tambo",
+    "province": "Eastern Cape",
+    "lat": -31.751,
+    "lon": 28.614
+  },
+  {
+    "id": "ZA1048",
+    "name": "Knysna",
+    "local_code": "WC048",
+    "district": "Eden",
+    "province": "Western Cape",
+    "lat": -33.947,
+    "lon": 22.976
+  },
+  {
+    "id": "ZA4162",
+    "name": "Kopanong",
+    "local_code": "FS162",
+    "district": "Xhariep",
+    "province": "Free State",
+    "lat": -29.945,
+    "lon": 25.541
+  },
+  {
+    "id": "ZA2109",
+    "name": "Kou-Kamma",
+    "local_code": "EC109",
+    "district": "Cacadu",
+    "province": "Eastern Cape",
+    "lat": -33.851,
+    "lon": 24.148
+  },
+  {
+    "id": "ZA2108",
+    "name": "Kouga",
+    "local_code": "EC108",
+    "district": "Cacadu",
+    "province": "Eastern Cape",
+    "lat": -33.912,
+    "lon": 24.85
+  },
+  {
+    "id": "ZA5292",
+    "name": "KwaDukuza",
+    "local_code": "KZN292",
+    "district": "iLembe",
+    "province": "KwaZulu-Natal",
+    "lat": -29.354,
+    "lon": 31.28
+  },
+  {
+    "id": "ZA1051",
+    "name": "Laingsburg",
+    "local_code": "WC051",
+    "district": "Central Karoo",
+    "province": "Western Cape",
+    "lat": -33.016,
+    "lon": 20.937
+  },
+  {
+    "id": "ZA1026",
+    "name": "Langeberg",
+    "local_code": "WC026",
+    "district": "Cape Winelands",
+    "province": "Western Cape",
+    "lat": -33.791,
+    "lon": 20.082
+  },
+  {
+    "id": "ZA8305",
+    "name": "Lekwa",
+    "local_code": "MP305",
+    "district": "Gert Sibande",
+    "province": "Mpumalanga",
+    "lat": -26.896,
+    "lon": 29.27
+  },
+  {
+    "id": "ZA6396",
+    "name": "Lekwa-Teemane",
+    "local_code": "NW396",
+    "district": "Dr Ruth Segomotsi Mompati",
+    "province": "North West",
+    "lat": -27.661,
+    "lon": 25.334
+  },
+  {
+    "id": "ZA9355",
+    "name": "Lepele-Nkumpi",
+    "local_code": "LIM355",
+    "district": "Capricorn",
+    "province": "Limpopo",
+    "lat": -24.292,
+    "lon": 29.55
+  },
+  {
+    "id": "ZA9362",
+    "name": "Lephalale",
+    "local_code": "LIM362",
+    "district": "Waterberg",
+    "province": "Limpopo",
+    "lat": -23.634,
+    "lon": 27.619
+  },
+  {
+    "id": "ZA7423",
+    "name": "Lesedi",
+    "local_code": "GT423",
+    "district": "Sedibeng",
+    "province": "Gauteng",
+    "lat": -26.424,
+    "lon": 28.656
+  },
+  {
+    "id": "ZA4161",
+    "name": "Letsemeng",
+    "local_code": "FS161",
+    "district": "Xhariep",
+    "province": "Free State",
+    "lat": -29.431,
+    "lon": 25.001
+  },
+  {
+    "id": "ZA6372",
+    "name": "Local Municipality of Madibeng",
+    "local_code": "NW372",
+    "district": "Bojanala",
+    "province": "North West",
+    "lat": -25.431,
+    "lon": 27.774
+  },
+  {
+    "id": "ZA6383",
+    "name": "Mafikeng",
+    "local_code": "NW383",
+    "district": "Ngaka Modiri Molema",
+    "province": "North West",
+    "lat": -25.947,
+    "lon": 25.6
+  },
+  {
+    "id": "ZA4205",
+    "name": "Mafube",
+    "local_code": "FS205",
+    "district": "Fezile Dabi",
+    "province": "Free State",
+    "lat": -27.281,
+    "lon": 28.6
+  },
+  {
+    "id": "ZA3093",
+    "name": "Magareng",
+    "local_code": "NC093",
+    "district": "Frances Baard",
+    "province": "Northern Cape",
+    "lat": -28.175,
+    "lon": 24.804
+  },
+  {
+    "id": "ZA2104",
+    "name": "Makana",
+    "local_code": "EC104",
+    "district": "Cacadu",
+    "province": "Eastern Cape",
+    "lat": -33.252,
+    "lon": 26.512
+  },
+  {
+    "id": "ZA9344",
+    "name": "Makhado",
+    "local_code": "LIM344",
+    "district": "Vhembe",
+    "province": "Limpopo",
+    "lat": -23.02,
+    "lon": 29.804
+  },
+  {
+    "id": "ZA9473",
+    "name": "Makhuduthamaga",
+    "local_code": "LIM473",
+    "district": "Sekhukhune",
+    "province": "Limpopo",
+    "lat": -24.737,
+    "lon": 29.799
+  },
+  {
+    "id": "ZA4194",
+    "name": "Maluti a Phofung",
+    "local_code": "FS194",
+    "district": "Thabo Mofutsanyane",
+    "province": "Free State",
+    "lat": -28.374,
+    "lon": 29.007
+  },
+  {
+    "id": "ZA6393",
+    "name": "Mamusa",
+    "local_code": "NW393",
+    "district": "Dr Ruth Segomotsi Mompati",
+    "province": "North West",
+    "lat": -27.2,
+    "lon": 25.36
+  },
+  {
+    "id": "ZA5291",
+    "name": "Mandeni",
+    "local_code": "KZN291",
+    "district": "iLembe",
+    "province": "KwaZulu-Natal",
+    "lat": -29.12,
+    "lon": 31.474
+  },
+  {
+    "id": "ZA4940",
+    "name": "Mangaung",
+    "local_code": "MAN",
+    "district": "Mangaung",
+    "province": "Free State",
+    "lat": -29.382,
+    "lon": 26.464
+  },
+  {
+    "id": "ZA4196",
+    "name": "Mantsopa",
+    "local_code": "FS196",
+    "district": "Thabo Mofutsanyane",
+    "province": "Free State",
+    "lat": -29.15,
+    "lon": 27.289
+  },
+  {
+    "id": "ZA5294",
+    "name": "Maphumulo",
+    "local_code": "KZN294",
+    "district": "iLembe",
+    "province": "KwaZulu-Natal",
+    "lat": -29.104,
+    "lon": 31.06
+  },
+  {
+    "id": "ZA6404",
+    "name": "Maquassi Hills",
+    "local_code": "NW404",
+    "district": "Dr Kenneth Kaunda",
+    "province": "North West",
+    "lat": -27.286,
+    "lon": 26.145
+  },
+  {
+    "id": "ZA9335",
+    "name": "Maruleng",
+    "local_code": "LIM335",
+    "district": "Mopani",
+    "province": "Limpopo",
+    "lat": -24.27,
+    "lon": 30.711
+  },
+  {
+    "id": "ZA4181",
+    "name": "Masilonyana",
+    "local_code": "FS181",
+    "district": "Lejweleputswa",
+    "province": "Free State",
+    "lat": -28.627,
+    "lon": 26.59
+  },
+  {
+    "id": "ZA2441",
+    "name": "Matatiele",
+    "local_code": "EC441",
+    "district": "Alfred Nzo",
+    "province": "Eastern Cape",
+    "lat": -30.349,
+    "lon": 28.78
+  },
+  {
+    "id": "ZA4184",
+    "name": "Matjhabeng",
+    "local_code": "FS184",
+    "district": "Lejweleputswa",
+    "province": "Free State",
+    "lat": -28.048,
+    "lon": 26.968
+  },
+  {
+    "id": "ZA1011",
+    "name": "Matzikama",
+    "local_code": "WC011",
+    "district": "West Coast",
+    "province": "Western Cape",
+    "lat": -31.218,
+    "lon": 18.382
+  },
+  {
+    "id": "ZA2121",
+    "name": "Mbhashe",
+    "local_code": "EC121",
+    "district": "Amathole",
+    "province": "Eastern Cape",
+    "lat": -32.118,
+    "lon": 28.642
+  },
+  {
+    "id": "ZA2443",
+    "name": "Mbizana",
+    "local_code": "EC443",
+    "district": "Alfred Nzo",
+    "province": "Eastern Cape",
+    "lat": -30.947,
+    "lon": 29.847
+  },
+  {
+    "id": "ZA8326",
+    "name": "Mbombela",
+    "local_code": "MP326",
+    "district": "Ehlanzeni",
+    "province": "Mpumalanga",
+    "lat": -25.447,
+    "lon": 30.999
+  },
+  {
+    "id": "ZA7484",
+    "name": "Merafong City",
+    "local_code": "GT484",
+    "district": "West Rand",
+    "province": "Gauteng",
+    "lat": -26.369,
+    "lon": 27.374
+  },
+  {
+    "id": "ZA4204",
+    "name": "Metsimaholo",
+    "local_code": "FS204",
+    "district": "Fezile Dabi",
+    "province": "Free State",
+    "lat": -26.928,
+    "lon": 28.031
+  },
+  {
+    "id": "ZA5281",
+    "name": "Mfolozi",
+    "local_code": "KZN281",
+    "district": "Uthungulu",
+    "province": "KwaZulu-Natal",
+    "lat": -28.554,
+    "lon": 32.131
+  },
+  {
+    "id": "ZA2156",
+    "name": "Mhlontlo",
+    "local_code": "EC156",
+    "district": "O.R.Tambo",
+    "province": "Eastern Cape",
+    "lat": -31.14,
+    "lon": 28.909
+  },
+  {
+    "id": "ZA7422",
+    "name": "Midvaal",
+    "local_code": "GT422",
+    "district": "Sedibeng",
+    "province": "Gauteng",
+    "lat": -26.629,
+    "lon": 28.089
+  },
+  {
+    "id": "ZA5226",
+    "name": "Mkhambathini",
+    "local_code": "KZN226",
+    "district": "Umgungundlovu",
+    "province": "KwaZulu-Natal",
+    "lat": -29.846,
+    "lon": 30.49
+  },
+  {
+    "id": "ZA8303",
+    "name": "Mkhondo",
+    "local_code": "MP303",
+    "district": "Gert Sibande",
+    "province": "Mpumalanga",
+    "lat": -26.927,
+    "lon": 30.621
+  },
+  {
+    "id": "ZA2122",
+    "name": "Mnquma",
+    "local_code": "EC122",
+    "district": "Amathole",
+    "province": "Eastern Cape",
+    "lat": -32.353,
+    "lon": 28.068
+  },
+  {
+    "id": "ZA9368",
+    "name": "Modimolle/Mookgophong",
+    "local_code": "LIM368",
+    "district": "Waterberg",
+    "province": "Limpopo",
+    "lat": -24.484,
+    "lon": 28.526
+  },
+  {
+    "id": "ZA9367",
+    "name": "Mogalakwena",
+    "local_code": "LIM367",
+    "district": "Waterberg",
+    "province": "Limpopo",
+    "lat": -23.873,
+    "lon": 28.653
+  },
+  {
+    "id": "ZA7481",
+    "name": "Mogale City",
+    "local_code": "GT481",
+    "district": "West Rand",
+    "province": "Gauteng",
+    "lat": -26.004,
+    "lon": 27.687
+  },
+  {
+    "id": "ZA4163",
+    "name": "Mohokare",
+    "local_code": "FS163",
+    "district": "Xhariep",
+    "province": "Free State",
+    "lat": -30.129,
+    "lon": 26.741
+  },
+  {
+    "id": "ZA9353",
+    "name": "Molemole",
+    "local_code": "LIM353",
+    "district": "Capricorn",
+    "province": "Limpopo",
+    "lat": -23.525,
+    "lon": 29.55
+  },
+  {
+    "id": "ZA4201",
+    "name": "Moqhaka",
+    "local_code": "FS201",
+    "district": "Fezile Dabi",
+    "province": "Free State",
+    "lat": -27.568,
+    "lon": 27.205
+  },
+  {
+    "id": "ZA6371",
+    "name": "Moretele",
+    "local_code": "NW371",
+    "district": "Bojanala",
+    "province": "North West",
+    "lat": -25.181,
+    "lon": 27.992
+  },
+  {
+    "id": "ZA6375",
+    "name": "Moses Kotane",
+    "local_code": "NW375",
+    "district": "Bojanala",
+    "province": "North West",
+    "lat": -25.121,
+    "lon": 26.952
+  },
+  {
+    "id": "ZA1043",
+    "name": "Mossel Bay",
+    "local_code": "WC043",
+    "district": "Eden",
+    "province": "Western Cape",
+    "lat": -34.096,
+    "lon": 21.947
+  },
+  {
+    "id": "ZA5223",
+    "name": "Mpofana",
+    "local_code": "KZN223",
+    "district": "Umgungundlovu",
+    "province": "KwaZulu-Natal",
+    "lat": -29.165,
+    "lon": 30.112
+  },
+  {
+    "id": "ZA5244",
+    "name": "Msinga",
+    "local_code": "KZN244",
+    "district": "Umzinyathi",
+    "province": "KwaZulu-Natal",
+    "lat": -28.604,
+    "lon": 30.424
+  },
+  {
+    "id": "ZA8302",
+    "name": "Msukaligwa",
+    "local_code": "MP302",
+    "district": "Gert Sibande",
+    "province": "Mpumalanga",
+    "lat": -26.515,
+    "lon": 30.083
+  },
+  {
+    "id": "ZA5285",
+    "name": "Mthonjaneni",
+    "local_code": "KZN285",
+    "district": "Uthungulu",
+    "province": "KwaZulu-Natal",
+    "lat": -28.573,
+    "lon": 31.429
+  },
+  {
+    "id": "ZA5275",
+    "name": "Mtubatuba",
+    "local_code": "KZN275",
+    "district": "Umkhanyakude",
+    "province": "KwaZulu-Natal",
+    "lat": -28.281,
+    "lon": 32.277
+  },
+  {
+    "id": "ZA9341",
+    "name": "Musina",
+    "local_code": "LIM341",
+    "district": "Vhembe",
+    "province": "Limpopo",
+    "lat": -22.472,
+    "lon": 30.122
+  },
+  {
+    "id": "ZA4185",
+    "name": "Nala",
+    "local_code": "FS185",
+    "district": "Lejweleputswa",
+    "province": "Free State",
+    "lat": -27.601,
+    "lon": 26.468
+  },
+  {
+    "id": "ZA6392",
+    "name": "Naledi",
+    "local_code": "NW392",
+    "district": "Dr Ruth Segomotsi Mompati",
+    "province": "North West",
+    "lat": -26.814,
+    "lon": 24.788
+  },
+  {
+    "id": "ZA3062",
+    "name": "Nama Khoi",
+    "local_code": "NC062",
+    "district": "Namakwa",
+    "province": "Northern Cape",
+    "lat": -29.391,
+    "lon": 18.102
+  },
+  {
+    "id": "ZA2105",
+    "name": "Ndlambe",
+    "local_code": "EC105",
+    "district": "Cacadu",
+    "province": "Eastern Cape",
+    "lat": -33.51,
+    "lon": 26.852
+  },
+  {
+    "id": "ZA5293",
+    "name": "Ndwedwe",
+    "local_code": "KZN293",
+    "district": "iLembe",
+    "province": "KwaZulu-Natal",
+    "lat": -29.402,
+    "lon": 31.027
+  },
+  {
+    "id": "ZA2930",
+    "name": "Nelson Mandela Bay",
+    "local_code": "NMA",
+    "district": "Nelson Mandela Bay",
+    "province": "Eastern Cape",
+    "lat": -33.802,
+    "lon": 25.475
+  },
+  {
+    "id": "ZA5252",
+    "name": "Newcastle",
+    "local_code": "KZN252",
+    "district": "Amajuba",
+    "province": "KwaZulu-Natal",
+    "lat": -27.696,
+    "lon": 29.873
+  },
+  {
+    "id": "ZA2126",
+    "name": "Ngqushwa",
+    "local_code": "EC126",
+    "district": "Amathole",
+    "province": "Eastern Cape",
+    "lat": -33.193,
+    "lon": 27.182
+  },
+  {
+    "id": "ZA2153",
+    "name": "Ngquza Hill",
+    "local_code": "EC153",
+    "district": "O.R.Tambo",
+    "province": "Eastern Cape",
+    "lat": -31.221,
+    "lon": 29.624
+  },
+  {
+    "id": "ZA4203",
+    "name": "Ngwathe",
+    "local_code": "FS203",
+    "district": "Fezile Dabi",
+    "province": "Free State",
+    "lat": -27.282,
+    "lon": 27.808
+  },
+  {
+    "id": "ZA5286",
+    "name": "Nkandla",
+    "local_code": "KZN286",
+    "district": "Uthungulu",
+    "province": "KwaZulu-Natal",
+    "lat": -28.647,
+    "lon": 30.965
+  },
+  {
+    "id": "ZA4193",
+    "name": "Nketoana",
+    "local_code": "FS193",
+    "district": "Thabo Mofutsanyane",
+    "province": "Free State",
+    "lat": -27.865,
+    "lon": 28.325
+  },
+  {
+    "id": "ZA8324",
+    "name": "Nkomazi",
+    "local_code": "MP324",
+    "district": "Ehlanzeni",
+    "province": "Mpumalanga",
+    "lat": -25.476,
+    "lon": 31.747
+  },
+  {
+    "id": "ZA5265",
+    "name": "Nongoma",
+    "local_code": "KZN265",
+    "district": "Zululand",
+    "province": "KwaZulu-Natal",
+    "lat": -27.906,
+    "lon": 31.745
+  },
+  {
+    "id": "ZA5242",
+    "name": "Nqutu",
+    "local_code": "KZN242",
+    "district": "Umzinyathi",
+    "province": "KwaZulu-Natal",
+    "lat": -28.298,
+    "lon": 30.742
+  },
+  {
+    "id": "ZA2444",
+    "name": "Ntabankulu",
+    "local_code": "EC444",
+    "district": "Alfred Nzo",
+    "province": "Eastern Cape",
+    "lat": -30.997,
+    "lon": 29.28
+  },
+  {
+    "id": "ZA2155",
+    "name": "Nyandeni",
+    "local_code": "EC155",
+    "district": "O.R.Tambo",
+    "province": "Eastern Cape",
+    "lat": -31.61,
+    "lon": 29.052
+  },
+  {
+    "id": "ZA5235",
+    "name": "Okhahlamba",
+    "local_code": "KZN235",
+    "district": "Uthukela",
+    "province": "KwaZulu-Natal",
+    "lat": -28.761,
+    "lon": 29.337
+  },
+  {
+    "id": "ZA1045",
+    "name": "Oudtshoorn",
+    "local_code": "WC045",
+    "district": "Eden",
+    "province": "Western Cape",
+    "lat": -33.598,
+    "lon": 22.334
+  },
+  {
+    "id": "ZA1032",
+    "name": "Overstrand",
+    "local_code": "WC032",
+    "district": "Overberg",
+    "province": "Western Cape",
+    "lat": -34.496,
+    "lon": 19.531
+  },
+  {
+    "id": "ZA3094",
+    "name": "Phokwane",
+    "local_code": "NC094",
+    "district": "Frances Baard",
+    "province": "Northern Cape",
+    "lat": -27.799,
+    "lon": 24.811
+  },
+  {
+    "id": "ZA4195",
+    "name": "Phumelela",
+    "local_code": "FS195",
+    "district": "Thabo Mofutsanyane",
+    "province": "Free State",
+    "lat": -27.635,
+    "lon": 29.223
+  },
+  {
+    "id": "ZA9354",
+    "name": "Polokwane",
+    "local_code": "LIM354",
+    "district": "Capricorn",
+    "province": "Limpopo",
+    "lat": -23.912,
+    "lon": 29.468
+  },
+  {
+    "id": "ZA2154",
+    "name": "Port St Johns",
+    "local_code": "EC154",
+    "district": "O.R.Tambo",
+    "province": "Eastern Cape",
+    "lat": -31.551,
+    "lon": 29.472
+  },
+  {
+    "id": "ZA1052",
+    "name": "Prince Albert",
+    "local_code": "WC052",
+    "district": "Central Karoo",
+    "province": "Western Cape",
+    "lat": -32.993,
+    "lon": 22.122
+  },
+  {
+    "id": "ZA6385",
+    "name": "Ramotshere Moiloa",
+    "local_code": "NW385",
+    "district": "Ngaka Modiri Molema",
+    "province": "North West",
+    "lat": -25.206,
+    "lon": 26.082
+  },
+  {
+    "id": "ZA7485",
+    "name": "Rand West City",
+    "local_code": "GT485",
+    "district": "West Rand",
+    "province": "Gauteng",
+    "lat": -26.334,
+    "lon": 27.668
+  },
+  {
+    "id": "ZA6381",
+    "name": "Ratlou",
+    "local_code": "NW381",
+    "district": "Ngaka Modiri Molema",
+    "province": "North West",
+    "lat": -26.137,
+    "lon": 25.116
+  },
+  {
+    "id": "ZA5216",
+    "name": "Ray Nkonyeni",
+    "local_code": "KZN216",
+    "district": "Ugu",
+    "province": "KwaZulu-Natal",
+    "lat": -30.81,
+    "lon": 30.201
+  },
+  {
+    "id": "ZA2129",
+    "name": "Raymond Mhlaba",
+    "local_code": "EC129",
+    "district": "Amathole",
+    "province": "Eastern Cape",
+    "lat": -32.698,
+    "lon": 26.553
+  },
+  {
+    "id": "ZA3075",
+    "name": "Renosterberg",
+    "local_code": "NC075",
+    "district": "Pixley ka Seme",
+    "province": "Northern Cape",
+    "lat": -30.285,
+    "lon": 24.407
+  },
+  {
+    "id": "ZA5227",
+    "name": "Richmond",
+    "local_code": "KZN227",
+    "district": "Umgungundlovu",
+    "province": "KwaZulu-Natal",
+    "lat": -29.918,
+    "lon": 30.291
+  },
+  {
+    "id": "ZA3061",
+    "name": "Richtersveld",
+    "local_code": "NC061",
+    "district": "Namakwa",
+    "province": "Northern Cape",
+    "lat": -28.774,
+    "lon": 16.971
+  },
+  {
+    "id": "ZA6373",
+    "name": "Rustenburg",
+    "local_code": "NW373",
+    "district": "Bojanala",
+    "province": "North West",
+    "lat": -25.702,
+    "lon": 27.333
+  },
+  {
+    "id": "ZA2138",
+    "name": "Sakhisizwe",
+    "local_code": "EC138",
+    "district": "Chris Hani",
+    "province": "Eastern Cape",
+    "lat": -31.468,
+    "lon": 27.784
+  },
+  {
+    "id": "ZA1014",
+    "name": "Saldanha Bay",
+    "local_code": "WC014",
+    "district": "West Coast",
+    "province": "Western Cape",
+    "lat": -33.011,
+    "lon": 18.273
+  },
+  {
+    "id": "ZA2142",
+    "name": "Senqu",
+    "local_code": "EC142",
+    "district": "Joe Gqabi",
+    "province": "Eastern Cape",
+    "lat": -30.866,
+    "lon": 27.628
+  },
+  {
+    "id": "ZA4191",
+    "name": "Setsoto",
+    "local_code": "FS191",
+    "district": "Thabo Mofutsanyane",
+    "province": "Free State",
+    "lat": -28.57,
+    "lon": 27.552
+  },
+  {
+    "id": "ZA3078",
+    "name": "Siyancuma",
+    "local_code": "NC078",
+    "district": "Pixley ka Seme",
+    "province": "Northern Cape",
+    "lat": -29.052,
+    "lon": 23.445
+  },
+  {
+    "id": "ZA3077",
+    "name": "Siyathemba",
+    "local_code": "NC077",
+    "district": "Pixley ka Seme",
+    "province": "Northern Cape",
+    "lat": -29.592,
+    "lon": 22.52
+  },
+  {
+    "id": "ZA3091",
+    "name": "Sol Plaatjie",
+    "local_code": "NC091",
+    "district": "Frances Baard",
+    "province": "Northern Cape",
+    "lat": -28.737,
+    "lon": 24.466
+  },
+  {
+    "id": "ZA1024",
+    "name": "Stellenbosch",
+    "local_code": "WC024",
+    "district": "Cape Winelands",
+    "province": "Western Cape",
+    "lat": -33.928,
+    "lon": 18.977
+  },
+  {
+    "id": "ZA8313",
+    "name": "Steve Tshwete",
+    "local_code": "MP313",
+    "district": "Nkangala",
+    "province": "Mpumalanga",
+    "lat": -25.831,
+    "lon": 29.558
+  },
+  {
+    "id": "ZA2106",
+    "name": "Sundays River Valley",
+    "local_code": "EC106",
+    "district": "Cacadu",
+    "province": "Eastern Cape",
+    "lat": -33.543,
+    "lon": 25.521
+  },
+  {
+    "id": "ZA1015",
+    "name": "Swartland",
+    "local_code": "WC015",
+    "district": "West Coast",
+    "province": "Western Cape",
+    "lat": -33.294,
+    "lon": 18.599
+  },
+  {
+    "id": "ZA1034",
+    "name": "Swellendam",
+    "local_code": "WC034",
+    "district": "Overberg",
+    "province": "Western Cape",
+    "lat": -34.037,
+    "lon": 20.497
+  },
+  {
+    "id": "ZA8321",
+    "name": "Thaba Chweu",
+    "local_code": "MP321",
+    "district": "Ehlanzeni",
+    "province": "Mpumalanga",
+    "lat": -24.975,
+    "lon": 30.601
+  },
+  {
+    "id": "ZA9361",
+    "name": "Thabazimbi",
+    "local_code": "LIM361",
+    "district": "Waterberg",
+    "province": "Limpopo",
+    "lat": -24.393,
+    "lon": 27.069
+  },
+  {
+    "id": "ZA5225",
+    "name": "The Msunduzi",
+    "local_code": "KZN225",
+    "district": "Umgungundlovu",
+    "province": "KwaZulu-Natal",
+    "lat": -29.674,
+    "lon": 30.273
+  },
+  {
+    "id": "ZA1031",
+    "name": "Theewaterskloof",
+    "local_code": "WC031",
+    "district": "Overberg",
+    "province": "Western Cape",
+    "lat": -34.154,
+    "lon": 19.48
+  },
+  {
+    "id": "ZA3076",
+    "name": "Thembelihle",
+    "local_code": "NC076",
+    "district": "Pixley ka Seme",
+    "province": "Northern Cape",
+    "lat": -29.641,
+    "lon": 23.782
+  },
+  {
+    "id": "ZA8315",
+    "name": "Thembisile",
+    "local_code": "MP315",
+    "district": "Nkangala",
+    "province": "Mpumalanga",
+    "lat": -25.49,
+    "lon": 28.937
+  },
+  {
+    "id": "ZA9343",
+    "name": "Thulamela",
+    "local_code": "LIM343",
+    "district": "Vhembe",
+    "province": "Limpopo",
+    "lat": -22.785,
+    "lon": 30.512
+  },
+  {
+    "id": "ZA4182",
+    "name": "Tokologo",
+    "local_code": "FS182",
+    "district": "Lejweleputswa",
+    "province": "Free State",
+    "lat": -28.375,
+    "lon": 25.327
+  },
+  {
+    "id": "ZA3085",
+    "name": "Tsantsabane",
+    "local_code": "NC085",
+    "district": "Z F Mgcawu",
+    "province": "Northern Cape",
+    "lat": -27.9,
+    "lon": 22.294
+  },
+  {
+    "id": "ZA6382",
+    "name": "Tswaing",
+    "local_code": "NW382",
+    "district": "Ngaka Modiri Molema",
+    "province": "North West",
+    "lat": -26.585,
+    "lon": 25.675
+  },
+  {
+    "id": "ZA4183",
+    "name": "Tswelopele",
+    "local_code": "FS183",
+    "district": "Lejweleputswa",
+    "province": "Free State",
+    "lat": -28.077,
+    "lon": 25.974
+  },
+  {
+    "id": "ZA5434",
+    "name": "Ubuhlebezwe",
+    "local_code": "KZN434",
+    "district": "Sisonke",
+    "province": "KwaZulu-Natal",
+    "lat": -30.225,
+    "lon": 30.167
+  },
+  {
+    "id": "ZA3071",
+    "name": "Ubuntu",
+    "local_code": "NC071",
+    "district": "Pixley ka Seme",
+    "province": "Northern Cape",
+    "lat": -31.402,
+    "lon": 23.141
+  },
+  {
+    "id": "ZA5266",
+    "name": "Ulundi",
+    "local_code": "KZN266",
+    "district": "Zululand",
+    "province": "KwaZulu-Natal",
+    "lat": -28.205,
+    "lon": 31.337
+  },
+  {
+    "id": "ZA5212",
+    "name": "Umdoni",
+    "local_code": "KZN212",
+    "district": "Ugu",
+    "province": "KwaZulu-Natal",
+    "lat": -30.294,
+    "lon": 30.55
+  },
+  {
+    "id": "ZA5271",
+    "name": "Umhlabuyalingana",
+    "local_code": "KZN271",
+    "district": "Umkhanyakude",
+    "province": "KwaZulu-Natal",
+    "lat": -27.327,
+    "lon": 32.516
+  },
+  {
+    "id": "ZA5282",
+    "name": "uMhlathuze",
+    "local_code": "KZN282",
+    "district": "Uthungulu",
+    "province": "KwaZulu-Natal",
+    "lat": -28.717,
+    "lon": 31.932
+  },
+  {
+    "id": "ZA5284",
+    "name": "uMlalazi",
+    "local_code": "KZN284",
+    "district": "Uthungulu",
+    "province": "KwaZulu-Natal",
+    "lat": -28.936,
+    "lon": 31.407
+  },
+  {
+    "id": "ZA5222",
+    "name": "uMngeni",
+    "local_code": "KZN222",
+    "district": "Umgungundlovu",
+    "province": "KwaZulu-Natal",
+    "lat": -29.443,
+    "lon": 30.066
+  },
+  {
+    "id": "ZA5221",
+    "name": "uMshwathi",
+    "local_code": "KZN221",
+    "district": "Umgungundlovu",
+    "province": "KwaZulu-Natal",
+    "lat": -29.395,
+    "lon": 30.612
+  },
+  {
+    "id": "ZA3072",
+    "name": "Umsobomvu",
+    "local_code": "NC072",
+    "district": "Pixley ka Seme",
+    "province": "Northern Cape",
+    "lat": -30.823,
+    "lon": 25.08
+  },
+  {
+    "id": "ZA5214",
+    "name": "uMuziwabantu",
+    "local_code": "KZN214",
+    "district": "Ugu",
+    "province": "KwaZulu-Natal",
+    "lat": -30.648,
+    "lon": 29.798
+  },
+  {
+    "id": "ZA5245",
+    "name": "Umvoti",
+    "local_code": "KZN245",
+    "district": "Umzinyathi",
+    "province": "KwaZulu-Natal",
+    "lat": -29.006,
+    "lon": 30.653
+  },
+  {
+    "id": "ZA5435",
+    "name": "Umzimkhulu",
+    "local_code": "KZN435",
+    "district": "Sisonke",
+    "province": "KwaZulu-Natal",
+    "lat": -30.275,
+    "lon": 29.723
+  },
+  {
+    "id": "ZA2442",
+    "name": "Umzimvubu",
+    "local_code": "EC442",
+    "district": "Alfred Nzo",
+    "province": "Eastern Cape",
+    "lat": -30.825,
+    "lon": 28.922
+  },
+  {
+    "id": "ZA5213",
+    "name": "Umzumbe",
+    "local_code": "KZN213",
+    "district": "Ugu",
+    "province": "KwaZulu-Natal",
+    "lat": -30.486,
+    "lon": 30.353
+  },
+  {
+    "id": "ZA5262",
+    "name": "uPhongolo",
+    "local_code": "KZN262",
+    "district": "Zululand",
+    "province": "KwaZulu-Natal",
+    "lat": -27.54,
+    "lon": 31.708
+  },
+  {
+    "id": "ZA6405",
+    "name": "Ventersdorp/Tlokwe",
+    "local_code": "NW405",
+    "district": "Dr Kenneth Kaunda",
+    "province": "North West",
+    "lat": -26.506,
+    "lon": 26.908
+  },
+  {
+    "id": "ZA8311",
+    "name": "Victor Khanye",
+    "local_code": "MP311",
+    "district": "Nkangala",
+    "province": "Mpumalanga",
+    "lat": -26.106,
+    "lon": 28.72
+  },
+  {
+    "id": "ZA2145",
+    "name": "Walter Sisulu",
+    "local_code": "EC145",
+    "district": "Joe Gqabi",
+    "province": "Eastern Cape",
+    "lat": -30.985,
+    "lon": 26.322
+  },
+  {
+    "id": "ZA1022",
+    "name": "Witzenberg",
+    "local_code": "WC022",
+    "district": "Cape Winelands",
+    "province": "Western Cape",
+    "lat": -32.904,
+    "lon": 19.77
+  }
+]
