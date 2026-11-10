@@ -8,7 +8,8 @@
     "lat": -33.9249,
     "lon": 18.4241,
     "info": "Western Cape • Main terminal • N1 + N2",
-    "stage": "Demo point • not owned"
+    "stage": "Demo point • not owned",
+    "map_label": "Cape Town"
   },
   {
     "id": "kimberley-terminal",
@@ -19,7 +20,8 @@
     "lat": -28.7282,
     "lon": 24.7623,
     "info": "Northern Cape • Terminal",
-    "stage": "Demo point • not owned"
+    "stage": "Demo point • not owned",
+    "map_label": "Kimberley"
   },
   {
     "id": "gqeberha-terminal",
@@ -30,7 +32,8 @@
     "lat": -33.9608,
     "lon": 25.6022,
     "info": "Eastern Cape • Terminal • N2",
-    "stage": "Demo point • not owned"
+    "stage": "Demo point • not owned",
+    "map_label": "Gqeberha"
   },
   {
     "id": "bloemfontein-terminal",
@@ -41,7 +44,8 @@
     "lat": -29.0852,
     "lon": 26.214,
     "info": "Free State • Terminal • N1",
-    "stage": "Demo point • not owned"
+    "stage": "Demo point • not owned",
+    "map_label": "Bloemfontein"
   },
   {
     "id": "durban-terminal",
@@ -52,7 +56,8 @@
     "lat": -29.8587,
     "lon": 31.0218,
     "info": "KwaZulu-Natal • Terminal • N2 + N3",
-    "stage": "Demo point • not owned"
+    "stage": "Demo point • not owned",
+    "map_label": "Durban"
   },
   {
     "id": "mahikeng-terminal",
@@ -63,7 +68,8 @@
     "lat": -25.865,
     "lon": 25.644,
     "info": "North West • Terminal",
-    "stage": "Demo point • not owned"
+    "stage": "Demo point • not owned",
+    "map_label": "Mahikeng"
   },
   {
     "id": "johannesburg-terminal",
@@ -74,7 +80,8 @@
     "lat": -26.2041,
     "lon": 28.0473,
     "info": "Gauteng • Main terminal • N1 + N3",
-    "stage": "Demo point • not owned"
+    "stage": "Demo point • not owned",
+    "map_label": "Johannesburg"
   },
   {
     "id": "pretoria-terminal",
@@ -85,7 +92,8 @@
     "lat": -25.7479,
     "lon": 28.2293,
     "info": "Gauteng • Terminal • N1 + N4",
-    "stage": "Demo point • not owned"
+    "stage": "Demo point • not owned",
+    "map_label": "Pretoria"
   },
   {
     "id": "polokwane-terminal",
@@ -96,7 +104,8 @@
     "lat": -23.9045,
     "lon": 29.45,
     "info": "Limpopo • Terminal • N1",
-    "stage": "Demo point • not owned"
+    "stage": "Demo point • not owned",
+    "map_label": "Polokwane"
   },
   {
     "id": "mbombela-terminal",
@@ -107,6 +116,7 @@
     "lat": -25.4658,
     "lon": 30.97,
     "info": "Mpumalanga • Terminal • N4",
-    "stage": "Demo point • not owned"
+    "stage": "Demo point • not owned",
+    "map_label": "Mbombela"
   }
 ]
