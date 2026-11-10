@@ -10,19 +10,22 @@ const VEHICLES := [
 	{"id":"van","name":"Coastal Courier Van","class":"van","price":280000,"capacity":8,"km_cost":10.0,"equipment":["standard"],"cargo":["parcels","dry"]},
 	{"id":"rigid","name":"Regional Rigid 8T","class":"rigid","price":760000,"capacity":28,"km_cost":22.0,"equipment":["standard","flatbed"],"cargo":["dry","building"]},
 	{"id":"reefer","name":"ColdLink Refrigerated","class":"reefer","price":920000,"capacity":20,"km_cost":25.0,"equipment":["standard","refrigerated"],"cargo":["produce","dry"]},
-	{"id":"prime_mover","name":"Longhaul Prime Mover","class":"tractor","price":1350000,"capacity":40,"km_cost":32.0,"equipment":["standard","flatbed","machinery_platform"],"cargo":["dry","building","machinery"]}
+	{"id":"prime_mover","name":"Longhaul Prime Mover","class":"tractor","price":1350000,"capacity":40,"km_cost":32.0,"equipment":["standard","flatbed","machinery_platform"],"cargo":["dry","building","machinery"]},
+	{"id":"safechem_rigid","name":"SafeRoute DG Rigid","class":"rigid","price":1180000,"capacity":22,"km_cost":29.0,"equipment":["standard","hazmat"],"cargo":["dry","hazmat"]}
 ]
 const DRIVERS := [
-	{"name":"Lebo Mokoena","wage":900},
-	{"name":"Siyabonga Dlamini","wage":1050},
-	{"name":"Nadia Jacobs","wage":1150}
+	{"name":"Lebo Mokoena","wage":900,"endorsements":["general"]},
+	{"name":"Siyabonga Dlamini","wage":1050,"endorsements":["general"]},
+	{"name":"Nadia Jacobs","wage":1150,"endorsements":["general"]},
+	{"name":"Thandi Ndlovu","wage":1480,"endorsements":["general","hazmat"]}
 ]
 const CARGO := [
 	{"id":"parcels","name":"Parcel freight","rate":22.0,"equipment":"standard","wear_factor":0.8},
 	{"id":"dry","name":"Packaged goods","rate":17.0,"equipment":"standard","wear_factor":1.0},
 	{"id":"produce","name":"Fresh produce","rate":20.0,"equipment":"refrigerated","wear_factor":1.0},
 	{"id":"building","name":"Building supplies","rate":15.0,"equipment":"flatbed","wear_factor":1.2},
-	{"id":"machinery","name":"Industrial machinery","rate":28.0,"equipment":"machinery_platform","wear_factor":1.45}
+	{"id":"machinery","name":"Industrial machinery","rate":28.0,"equipment":"machinery_platform","wear_factor":1.45},
+	{"id":"hazmat","name":"Controlled chemicals","rate":34.0,"equipment":"hazmat","driver_endorsement":"hazmat","wear_factor":1.35}
 ]
 const DESTINATIONS := [
 	{"name":"Stellenbosch","km":52,"hours":1.0},
@@ -226,6 +229,9 @@ func load_state(state: Dictionary, game_time: float) -> void:
 		if not vehicle.has("class"):
 			vehicle["class"] = "reefer" if vehicle.get("equipment", []).has("refrigerated") else ("van" if int(vehicle.get("capacity", 0)) <= 8 else "rigid")
 	drivers = state.get("drivers", [])
+	for driver in drivers:
+		if not driver.has("endorsements"):
+			driver["endorsements"] = ["general"]
 	trips = state.get("trips", [])
 	demand = state.get("demand", {})
 	contracts = state.get("contracts", [])
@@ -449,7 +455,7 @@ func owned_terminal_summary() -> String:
 
 func hire_driver() -> void:
 	var definition: Dictionary = DRIVERS[driver_offer]
-	drivers.append({"id":"driver_%d" % (drivers.size()+1),"name":definition["name"],"wage":definition["wage"],"status":"available"})
+	drivers.append({"id":"driver_%d" % (drivers.size()+1),"name":definition["name"],"wage":definition["wage"],"endorsements":definition.get("endorsements", ["general"]).duplicate(),"status":"available"})
 	selected_driver = drivers.size() - 1
 	driver_offer = (driver_offer + 1) % DRIVERS.size()
 	_set_message("Hired %s at R%s per game day." % [definition["name"], commas(int(definition["wage"]))])
@@ -543,6 +549,9 @@ func dispatch_network(game_time: float) -> void:
 	if not _vehicle_can_carry(vehicle, str(job["cargo_id"])):
 		_set_message(_cargo_incompatibility_message(vehicle, str(job["cargo_id"])))
 		return
+	if not _driver_can_carry(driver, str(job["cargo_id"])):
+		_set_message(_driver_incompatibility_message(driver, str(job["cargo_id"])))
+		return
 	var units := mini(int(job["demand"]), int(vehicle["capacity"]))
 	var revenue := int(300 + int(job["km"]) * float(job["rate"]) * units)
 	var expense := int(ceil((int(job["km"]) * 2 * float(vehicle["km_cost"]) + 100) * _vehicle_cost_multiplier(vehicle)))
@@ -583,6 +592,9 @@ func dispatch(game_time: float) -> void:
 		return
 	if not _vehicle_can_carry(vehicle, str(job["cargo_id"])):
 		_set_message(_cargo_incompatibility_message(vehicle, str(job["cargo_id"])))
+		return
+	if not _driver_can_carry(driver, str(job["cargo_id"])):
+		_set_message(_driver_incompatibility_message(driver, str(job["cargo_id"])))
 		return
 	var units := mini(int(job["demand"]), int(vehicle["capacity"]))
 	var km := int(job["km"])
@@ -662,6 +674,9 @@ func dispatch_contract(game_time: float) -> void:
 			_set_message(_cargo_incompatibility_message(vehicle, str(contract.get("cargo_id", "dry"))))
 			return
 		_set_message("This contract needs a compatible vehicle with at least %s units of capacity." % contract.get("units", 0))
+		return
+	if not _driver_can_carry(driver, str(contract.get("cargo_id", "dry"))):
+		_set_message(_driver_incompatibility_message(driver, str(contract.get("cargo_id", "dry"))))
 		return
 	var expense := int(ceil((int(contract["km"]) * 2 * float(vehicle["km_cost"]) + 1000) * _vehicle_cost_multiplier(vehicle)))
 	if cash < expense:
@@ -751,7 +766,17 @@ func _cargo_definition(cargo_id: String) -> Dictionary:
 
 
 func _cargo_equipment_label(cargo_id: String) -> String:
-	return str(_cargo_definition(cargo_id).get("equipment", "standard")).replace("_", " ")
+	var cargo := _cargo_definition(cargo_id)
+	var requirements := str(cargo.get("equipment", "standard")).replace("_", " ")
+	var endorsement := str(cargo.get("driver_endorsement", ""))
+	if endorsement != "":
+		requirements += " + %s driver" % endorsement
+	return requirements
+
+
+func _driver_can_carry(driver: Dictionary, cargo_id: String) -> bool:
+	var required := str(_cargo_definition(cargo_id).get("driver_endorsement", ""))
+	return required == "" or driver.get("endorsements", ["general"]).has(required)
 
 
 func _cargo_incompatibility_message(vehicle: Dictionary, cargo_id: String) -> String:
@@ -762,6 +787,12 @@ func _cargo_incompatibility_message(vehicle: Dictionary, cargo_id: String) -> St
 	if vehicle.get("cargo", []).has(cargo_id) and not vehicle.get("equipment", ["standard"]).has(equipment):
 		return "%s needs %s equipment for %s." % [cargo.get("name", "This load"), equipment.replace("_", " "), vehicle.get("name", "this vehicle")]
 	return "%s cannot carry %s." % [vehicle.get("name", "This vehicle"), cargo.get("name", "this load")]
+
+
+func _driver_incompatibility_message(driver: Dictionary, cargo_id: String) -> String:
+	var cargo := _cargo_definition(cargo_id)
+	var required := str(cargo.get("driver_endorsement", "specialist"))
+	return "%s needs a %s driver endorsement." % [cargo.get("name", "This load"), required]
 
 
 func _infer_legacy_equipment(vehicle: Dictionary) -> Array:
@@ -809,12 +840,14 @@ func driver_label() -> String:
 		return "No drivers yet"
 	selected_driver = posmod(selected_driver, drivers.size())
 	var item: Dictionary = drivers[selected_driver]
-	return "%s • %s • R%s/day" % [item["name"], str(item["status"]).capitalize(), commas(int(item["wage"]))]
+	var credentials := "Hazmat endorsed" if item.get("endorsements", []).has("hazmat") else "General"
+	return "%s • %s • %s • R%s/day" % [item["name"], str(item["status"]).capitalize(), credentials, commas(int(item["wage"]))]
 
 
 func next_driver_label() -> String:
 	var item: Dictionary = DRIVERS[driver_offer]
-	return "%s • R%s/day" % [item["name"], commas(int(item["wage"]))]
+	var credentials := "Hazmat endorsed" if item.get("endorsements", []).has("hazmat") else "General"
+	return "%s • %s • R%s/day" % [item["name"], credentials, commas(int(item["wage"]))]
 
 
 func job_label() -> String:
