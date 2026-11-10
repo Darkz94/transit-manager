@@ -1,0 +1,162 @@
+[
+  {
+    "id": "cape-town",
+    "name": "Cape Town",
+    "type": "city",
+    "province": "Western Cape",
+    "lat": -33.9249,
+    "lon": 18.4241
+  },
+  {
+    "id": "saldanha",
+    "name": "Saldanha",
+    "type": "town",
+    "province": "Western Cape",
+    "lat": -33.0117,
+    "lon": 17.9442
+  },
+  {
+    "id": "paarl",
+    "name": "Paarl",
+    "type": "town",
+    "province": "Western Cape",
+    "lat": -33.7342,
+    "lon": 18.9632
+  },
+  {
+    "id": "worcester",
+    "name": "Worcester",
+    "type": "town",
+    "province": "Western Cape",
+    "lat": -33.6465,
+    "lon": 19.4483
+  },
+  {
+    "id": "beaufort-west",
+    "name": "Beaufort West",
+    "type": "town",
+    "province": "Western Cape",
+    "lat": -32.3567,
+    "lon": 22.5829
+  },
+  {
+    "id": "mossel-bay",
+    "name": "Mossel Bay",
+    "type": "town",
+    "province": "Western Cape",
+    "lat": -34.1831,
+    "lon": 22.1274
+  },
+  {
+    "id": "george",
+    "name": "George",
+    "type": "city",
+    "province": "Western Cape",
+    "lat": -33.963,
+    "lon": 22.4613
+  },
+  {
+    "id": "oudtshoorn",
+    "name": "Oudtshoorn",
+    "type": "town",
+    "province": "Western Cape",
+    "lat": -33.5906,
+    "lon": 22.2014
+  },
+  {
+    "id": "knysna",
+    "name": "Knysna",
+    "type": "town",
+    "province": "Western Cape",
+    "lat": -34.0351,
+    "lon": 23.0471
+  },
+  {
+    "id": "hermanus",
+    "name": "Hermanus",
+    "type": "town",
+    "province": "Western Cape",
+    "lat": -34.4187,
+    "lon": 19.2345
+  },
+  {
+    "id": "johannesburg",
+    "name": "Johannesburg",
+    "type": "city",
+    "province": "Gauteng",
+    "lat": -26.2041,
+    "lon": 28.0473
+  },
+  {
+    "id": "pretoria",
+    "name": "Pretoria",
+    "type": "city",
+    "province": "Gauteng",
+    "lat": -25.7479,
+    "lon": 28.2293
+  },
+  {
+    "id": "durban",
+    "name": "Durban",
+    "type": "city",
+    "province": "KwaZulu-Natal",
+    "lat": -29.8587,
+    "lon": 31.0218
+  },
+  {
+    "id": "bloemfontein",
+    "name": "Bloemfontein",
+    "type": "city",
+    "province": "Free State",
+    "lat": -29.0852,
+    "lon": 26.214
+  },
+  {
+    "id": "kimberley",
+    "name": "Kimberley",
+    "type": "city",
+    "province": "Northern Cape",
+    "lat": -28.7282,
+    "lon": 24.7623
+  },
+  {
+    "id": "gqeberha",
+    "name": "Gqeberha",
+    "type": "city",
+    "province": "Eastern Cape",
+    "lat": -33.9608,
+    "lon": 25.6022
+  },
+  {
+    "id": "east-london",
+    "name": "East London",
+    "type": "city",
+    "province": "Eastern Cape",
+    "lat": -33.0153,
+    "lon": 27.9116
+  },
+  {
+    "id": "polokwane",
+    "name": "Polokwane",
+    "type": "city",
+    "province": "Limpopo",
+    "lat": -23.9045,
+    "lon": 29.45
+  },
+  {
+    "id": "mbombela",
+    "name": "Mbombela",
+    "type": "city",
+    "province": "Mpumalanga",
+    "lat": -25.4658,
+    "lon": 30.97
+  },
+  {
+    "id": "springbok",
+    "name": "Springbok",
+    "type": "town",
+    "province": "Northern Cape",
+    "lat": -29.6667,
+    "lon": 17.8833
+  }
+]
