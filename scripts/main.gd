@@ -34,6 +34,7 @@ var last_clock_label := ""
 var company_name := "Transit Freight"
 var company_cash := 250000
 var screen_mode := 0 # 0 map, 1 operations
+var operations_tab := 0 # 0 local jobs, 1 long-haul contracts
 var operations_ready := false
 var operation_buttons: Array = []
 
@@ -573,14 +574,25 @@ func _draw_operations_screen(font: Font) -> void:
 	_draw_operation_button("hire_driver", "HIRE: " + CompanyOperations.next_driver_label(), Rect2(left.position.x + 12.0, left.position.y + 213.0, card_w - 24.0, 38.0), font)
 	draw_string(font, left.position + Vector2(16, 275), "Driver wages are charged once per game day.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
 
-	draw_string(font, right.position + Vector2(16, 24), "CAPE TOWN LOCAL JOB MARKET", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, c_cyan)
-	draw_string(font, right.position + Vector2(16, 55), CompanyOperations.job_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 11, c_text)
-	draw_string(font, right.position + Vector2(16, 82), "One-way distance shown; vehicle returns to Cape Town.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
-	_draw_operation_button("next_job", "NEXT LOCAL JOB", Rect2(right.position.x + 12.0, right.position.y + 96.0, card_w - 24.0, 34.0), font)
-	_draw_operation_button("dispatch", "DISPATCH SELECTED JOB", Rect2(right.position.x + 12.0, right.position.y + 137.0, card_w - 24.0, 42.0), font)
-	draw_string(font, right.position + Vector2(16, 215), "ACTIVE DELIVERY", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, c_cyan)
-	draw_string(font, right.position + Vector2(16, 237), CompanyOperations.trip_summary(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 10, c_text)
-	draw_string(font, right.position + Vector2(16, 275), "Costs are paid upfront; revenue arrives on return.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
+	var tab_w := (card_w - 30.0) * 0.5
+	_draw_operation_button("tab_local", "LOCAL JOBS", Rect2(right.position.x + 12.0, right.position.y + 10.0, tab_w, 30.0), font)
+	_draw_operation_button("tab_contracts", "LONG HAUL", Rect2(right.position.x + 18.0 + tab_w, right.position.y + 10.0, tab_w, 30.0), font)
+	if operations_tab == 0:
+		draw_string(font, right.position + Vector2(16, 62), "CAPE TOWN LOCAL JOB MARKET", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, c_cyan)
+		draw_string(font, right.position + Vector2(16, 90), CompanyOperations.job_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 11, c_text)
+		draw_string(font, right.position + Vector2(16, 117), "One-way distance; vehicle returns to Cape Town.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
+		_draw_operation_button("next_job", "NEXT LOCAL JOB", Rect2(right.position.x + 12.0, right.position.y + 130.0, card_w - 24.0, 34.0), font)
+		_draw_operation_button("dispatch", "DISPATCH SELECTED JOB", Rect2(right.position.x + 12.0, right.position.y + 171.0, card_w - 24.0, 42.0), font)
+		draw_string(font, right.position + Vector2(16, 245), "ACTIVE DELIVERY", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, c_cyan)
+		draw_string(font, right.position + Vector2(16, 267), CompanyOperations.trip_summary(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 10, c_text)
+	else:
+		draw_string(font, right.position + Vector2(16, 62), "SOUTH AFRICA LONG-HAUL BOARD", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, c_cyan)
+		draw_string(font, right.position + Vector2(16, 92), CompanyOperations.contract_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 11, c_text)
+		draw_string(font, right.position + Vector2(16, 135), CompanyOperations.contract_deadline_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 10, c_muted)
+		_draw_operation_button("next_contract", "CONTRACT RESERVED" if CompanyOperations.accepted_contract_id != "" else "NEXT CONTRACT OFFER", Rect2(right.position.x + 12.0, right.position.y + 153.0, card_w - 24.0, 36.0), font)
+		_draw_operation_button("contract_action", CompanyOperations.contract_action_label(), Rect2(right.position.x + 12.0, right.position.y + 196.0, card_w - 24.0, 42.0), font)
+		draw_string(font, right.position + Vector2(16, 264), "Eligible rigid or refrigerated trucks only. Late returns pay 75%; the bond is forfeited.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
+	draw_string(font, right.position + Vector2(16, card_h - 18.0), CompanyOperations.trip_summary(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 10, c_text)
 
 
 func _draw_operation_button(button_id: String, label: String, rect: Rect2, font: Font) -> void:
@@ -654,6 +666,17 @@ func _handle_operation_action(action: String) -> void:
 			CompanyOperations.cycle_job()
 		"dispatch":
 			CompanyOperations.dispatch(SimulationClock.game_time_seconds)
+		"next_contract":
+			CompanyOperations.cycle_contract()
+		"contract_action":
+			if CompanyOperations.accepted_contract_id == "":
+				CompanyOperations.bid_contract()
+			else:
+				CompanyOperations.dispatch_contract(SimulationClock.game_time_seconds)
+		"tab_local":
+			operations_tab = 0
+		"tab_contracts":
+			operations_tab = 1
 
 
 func _handle_tap(position: Vector2) -> void:

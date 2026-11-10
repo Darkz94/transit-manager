@@ -28,6 +28,13 @@ const DESTINATIONS := [
 	{"name":"Worcester","km":112,"hours":2.0},
 	{"name":"Hermanus","km":120,"hours":2.0}
 ]
+const CONTRACT_ROUTES := [
+	{"destination":"Gqeberha","km":750,"hours":30.0,"cargo_id":"dry","cargo_name":"Packaged goods","units":20,"rate":38.0,"deadline_days":4},
+	{"destination":"Bloemfontein","km":1000,"hours":40.0,"cargo_id":"building","cargo_name":"Building supplies","units":22,"rate":36.0,"deadline_days":5},
+	{"destination":"Johannesburg","km":1400,"hours":56.0,"cargo_id":"dry","cargo_name":"Packaged goods","units":26,"rate":40.0,"deadline_days":6},
+	{"destination":"Durban","km":1650,"hours":66.0,"cargo_id":"produce","cargo_name":"Fresh produce","units":18,"rate":44.0,"deadline_days":7}
+]
+const CONTRACT_BOND := 25000
 
 var cash := STARTING_CASH
 var fleet: Array = []
@@ -35,10 +42,13 @@ var drivers: Array = []
 var trips: Array = []
 var demand: Dictionary = {}
 var jobs: Array = []
+var contracts: Array = []
 var last_time := 21600.0
 var selected_vehicle := 0
 var selected_driver := 0
 var selected_job := 0
+var selected_contract := 0
+var accepted_contract_id := ""
 var vehicle_offer := 0
 var driver_offer := 0
 var message := "Company ready. Buy a vehicle and hire a driver to begin."
@@ -50,9 +60,12 @@ func start_new_game(game_time: float) -> void:
 	drivers.clear()
 	trips.clear()
 	demand.clear()
+	contracts.clear()
 	selected_vehicle = 0
 	selected_driver = 0
 	selected_job = 0
+	selected_contract = 0
+	accepted_contract_id = ""
 	vehicle_offer = 0
 	driver_offer = 0
 	last_time = game_time
@@ -66,19 +79,23 @@ func load_state(state: Dictionary, game_time: float) -> void:
 	drivers = state.get("drivers", [])
 	trips = state.get("trips", [])
 	demand = state.get("demand", {})
+	contracts = state.get("contracts", [])
 	selected_vehicle = int(state.get("selected_vehicle", 0))
 	selected_driver = int(state.get("selected_driver", 0))
 	selected_job = int(state.get("selected_job", 0))
+	selected_contract = int(state.get("selected_contract", 0))
+	accepted_contract_id = str(state.get("accepted_contract_id", ""))
 	vehicle_offer = int(state.get("vehicle_offer", 0))
 	driver_offer = int(state.get("driver_offer", 0))
 	last_time = float(state.get("last_time", game_time))
 	_build_jobs(int(floor(game_time / DAY_SECONDS)))
+	_build_contract_offers(int(floor(game_time / DAY_SECONDS)))
 	advance_to(game_time)
 	_set_message("Company progress loaded from this device.")
 
 
 func snapshot() -> Dictionary:
-	return {"cash":cash,"fleet":fleet.duplicate(true),"drivers":drivers.duplicate(true),"trips":trips.duplicate(true),"demand":demand.duplicate(true),"selected_vehicle":selected_vehicle,"selected_driver":selected_driver,"selected_job":selected_job,"vehicle_offer":vehicle_offer,"driver_offer":driver_offer,"last_time":last_time}
+	return {"cash":cash,"fleet":fleet.duplicate(true),"drivers":drivers.duplicate(true),"trips":trips.duplicate(true),"demand":demand.duplicate(true),"contracts":contracts.duplicate(true),"selected_vehicle":selected_vehicle,"selected_driver":selected_driver,"selected_job":selected_job,"selected_contract":selected_contract,"accepted_contract_id":accepted_contract_id,"vehicle_offer":vehicle_offer,"driver_offer":driver_offer,"last_time":last_time}
 
 
 func advance_to(game_time: float) -> void:
@@ -94,6 +111,7 @@ func advance_to(game_time: float) -> void:
 		if wages > 0:
 			_set_message("Daily driver wages paid: R%s." % commas(wages))
 		_reset_demand(int(floor(boundary / DAY_SECONDS)))
+		_build_contract_offers(int(floor(boundary / DAY_SECONDS)))
 		boundary += DAY_SECONDS
 	_complete_until(game_time)
 	last_time = game_time
@@ -103,7 +121,21 @@ func _complete_until(game_time: float) -> void:
 	for trip in trips:
 		if str(trip.get("status", "")) != "in_transit" or float(trip.get("arrival", 0.0)) > game_time:
 			continue
-		cash += int(trip.get("revenue", 0))
+		var paid := int(trip.get("revenue", 0))
+		if str(trip.get("contract_id", "")) != "":
+			var on_time := game_time <= float(trip.get("deadline", game_time))
+			if on_time:
+				cash += int(trip.get("bond", 0))
+			else:
+				paid = int(float(paid) * 0.75)
+			cash += paid
+			for contract in contracts:
+				if str(contract.get("id", "")) == str(trip.get("contract_id", "")):
+					contract["status"] = "completed"
+					contract["result"] = "on time" if on_time else "late"
+			accepted_contract_id = ""
+		else:
+			cash += paid
 		trip["status"] = "returned"
 		for vehicle in fleet:
 			if str(vehicle.get("id", "")) == str(trip.get("vehicle_id", "")):
@@ -112,7 +144,7 @@ func _complete_until(game_time: float) -> void:
 		for driver in drivers:
 			if str(driver.get("id", "")) == str(trip.get("driver_id", "")):
 				driver["status"] = "available"
-		_set_message("Delivery returned from %s. R%s received." % [trip.get("destination", "local market"), commas(int(trip.get("revenue", 0)))])
+		_set_message("%s returned from %s. R%s received." % ["Contract truck" if str(trip.get("contract_id", "")) != "" else "Delivery", trip.get("destination", "local market"), commas(paid)])
 
 
 func _reset_demand(day_index: int) -> void:
@@ -122,6 +154,24 @@ func _reset_demand(day_index: int) -> void:
 			var key := _key(str(destination["name"]), str(cargo["id"]))
 			demand[key] = 3 + int(abs(hash(key + str(day_index))) % 7)
 	_build_jobs(day_index)
+	_build_contract_offers(day_index)
+
+
+func _build_contract_offers(day_index: int) -> void:
+	contracts = contracts.filter(func(contract: Dictionary) -> bool: return str(contract.get("status", "offer")) != "offer" or int(contract.get("day", day_index)) == day_index)
+	for route in CONTRACT_ROUTES:
+		var contract_id := "contract_%d_%s" % [day_index, str(route["destination"]).to_lower()]
+		var exists := false
+		for contract in contracts:
+			if str(contract.get("id", "")) == contract_id:
+				exists = true
+				break
+		if exists:
+			continue
+		var units := int(route["units"])
+		contracts.append({"id":contract_id,"day":day_index,"origin":HOME,"destination":route["destination"],"km":int(route["km"]),"hours":float(route["hours"]),"cargo_id":route["cargo_id"],"cargo_name":route["cargo_name"],"units":units,"revenue":int(int(route["km"]) * float(route["rate"]) * units),"deadline":float(day_index * DAY_SECONDS + int(route["deadline_days"]) * DAY_SECONDS),"status":"offer"})
+	if not contracts.is_empty():
+		selected_contract = posmod(selected_contract, maxi(1, _offered_contracts().size()))
 
 
 func _build_jobs(day_index: int) -> void:
@@ -221,11 +271,121 @@ func dispatch(game_time: float) -> void:
 	vehicle["driver_id"] = driver_id
 	driver["status"] = "in_transit"
 	cash -= expense
-	cash -= expense
 	var key := str(job["id"])
 	demand[key] = maxi(0, int(demand.get(key, 0)) - units)
 	_build_jobs(int(floor(game_time / DAY_SECONDS)))
 	_set_message("Dispatched to %s: R%s expected revenue, %s game hours round trip." % [job["destination"], commas(revenue), str(int(duration))])
+
+
+func cycle_contract() -> void:
+	if accepted_contract_id != "":
+		_set_message("Finish your accepted contract before selecting another offer.")
+		return
+	var offers := _offered_contracts()
+	if offers.is_empty():
+		_set_message("No long-haul offers are available today.")
+		return
+	selected_contract = (selected_contract + 1) % offers.size()
+	_set_message("Selected long-haul contract to %s." % offers[selected_contract]["destination"])
+
+
+func bid_contract() -> void:
+	var contract := _selected_offer()
+	if contract.is_empty():
+		_set_message("Select an available contract offer first.")
+		return
+	if accepted_contract_id != "":
+		_set_message("Complete your current contract before accepting another.")
+		return
+	if cash < CONTRACT_BOND:
+		_set_message("A R%s performance bond is required." % commas(CONTRACT_BOND))
+		return
+	cash -= CONTRACT_BOND
+	contract["status"] = "accepted"
+	contract["bond"] = CONTRACT_BOND
+	accepted_contract_id = str(contract["id"])
+	_set_message("Contract accepted: %s to %s. R%s bond held until return." % [contract["cargo_name"], contract["destination"], commas(CONTRACT_BOND)])
+
+
+func dispatch_contract(game_time: float) -> void:
+	var contract := _contract_by_id(accepted_contract_id)
+	if contract.is_empty():
+		_set_message("Accept a contract before dispatching long haul.")
+		return
+	if game_time > float(contract.get("deadline", game_time)):
+		cash -= int(contract.get("bond", 0))
+		contract["status"] = "failed"
+		accepted_contract_id = ""
+		_set_message("The contract deadline passed before dispatch. The performance bond was forfeited.")
+		return
+	if fleet.is_empty() or drivers.is_empty():
+		_set_message("Buy a vehicle and hire a driver before dispatching.")
+		return
+	selected_vehicle = posmod(selected_vehicle, fleet.size())
+	selected_driver = posmod(selected_driver, drivers.size())
+	var vehicle: Dictionary = fleet[selected_vehicle]
+	var driver: Dictionary = drivers[selected_driver]
+	if vehicle.get("status", "") != "available" or driver.get("status", "") != "available":
+		_set_message("Choose an available vehicle and driver.")
+		return
+	if not vehicle.get("cargo", []).has(contract.get("cargo_id", "")) or int(vehicle.get("capacity", 0)) < int(contract.get("units", 0)):
+		_set_message("This contract needs a compatible vehicle with at least %s units of capacity." % contract.get("units", 0))
+		return
+	var expense := int(int(contract["km"]) * 2 * float(vehicle["km_cost"]) + 1000)
+	if cash < expense:
+		_set_message("Insufficient cash for estimated R%s long-haul costs." % commas(expense))
+		return
+	var vehicle_id := str(vehicle["id"])
+	var driver_id := str(driver["id"])
+	trips.append({"id":"trip_%d" % (trips.size()+1),"vehicle_id":vehicle_id,"driver_id":driver_id,"destination":contract["destination"],"cargo_name":contract["cargo_name"],"revenue":int(contract["revenue"]),"arrival":game_time + float(contract["hours"]) * 2.0 * 3600.0,"deadline":float(contract["deadline"]),"contract_id":contract["id"],"bond":int(contract.get("bond", 0)),"status":"in_transit"})
+	contract["status"] = "in_transit"
+	vehicle["status"] = "in_transit"
+	vehicle["driver_id"] = driver_id
+	driver["status"] = "in_transit"
+	cash -= expense
+	_set_message("Long haul dispatched to %s: R%s contract value, %d km one way." % [contract["destination"], commas(int(contract["revenue"])), int(contract["km"])])
+
+
+func contract_label() -> String:
+	var contract := _contract_by_id(accepted_contract_id) if accepted_contract_id != "" else _selected_offer()
+	if contract.is_empty():
+		return "No contract offers available."
+	return "%s → %s • %d km\n%s • %d units • R%s • %s" % [contract.get("origin", HOME), contract["destination"], int(contract["km"]), contract["cargo_name"], int(contract["units"]), commas(int(contract["revenue"])), str(contract.get("status", "offer")).to_upper()]
+
+
+func contract_deadline_label() -> String:
+	var contract := _contract_by_id(accepted_contract_id) if accepted_contract_id != "" else _selected_offer()
+	if contract.is_empty():
+		return ""
+	var days_left := maxf(0.0, (float(contract["deadline"]) - SimulationClock.game_time_seconds) / DAY_SECONDS)
+	return "Deadline %.1f game days • R%s bond" % [days_left, commas(int(contract.get("bond", CONTRACT_BOND)))]
+
+
+func contract_action_label() -> String:
+	return "DISPATCH ACCEPTED CONTRACT" if accepted_contract_id != "" else "ACCEPT SELECTED CONTRACT"
+
+
+func _offered_contracts() -> Array:
+	var result: Array = []
+	for contract in contracts:
+		if str(contract.get("status", "")) == "offer":
+			result.append(contract)
+	return result
+
+
+func _selected_offer() -> Dictionary:
+	var offers := _offered_contracts()
+	if offers.is_empty():
+		return {}
+	selected_contract = posmod(selected_contract, offers.size())
+	return offers[selected_contract]
+
+
+func _contract_by_id(contract_id: String) -> Dictionary:
+	for contract in contracts:
+		if str(contract.get("id", "")) == contract_id:
+			return contract
+	return {}
 
 
 func vehicle_label() -> String:
