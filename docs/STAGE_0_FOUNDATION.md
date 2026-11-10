@@ -14,8 +14,8 @@ The target map includes all nine provinces, major cities and towns, and metro su
 
 - **Engine:** Godot 4.7.2 stable.
 - **Language:** GDScript.
-- **Primary target:** Android phones and tablets in landscape orientation.
-- **Development target:** Desktop builds for faster iteration and later release consideration.
+- **Game target for this phase:** Android phones and tablets in landscape orientation.
+- **PC game builds:** Out of scope for this phase. A computer may still be used as a development tool, but the build and visual review target is Android.
 - **Design viewport:** 1280 x 720, with 2D canvas-item scaling and an expanding aspect ratio.
 - **Rendering:** Godot Compatibility renderer for broad 2D device support.
 - **Connectivity:** Core play must not require network access, accounts, ads, or remote services.
