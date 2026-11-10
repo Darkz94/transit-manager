@@ -365,9 +365,9 @@ func _draw_info(font: Font) -> void:
 		title = selected_province + " • Province view"
 	elif map_mode == 2:
 		title = selected_city + " • City routes"
-	var detail := selected_place
+	var detail := str(selected_item.get("info", selected_place))
 	if selected_item.get("type", "") == "terminal":
-		detail = str(selected_item.get("name", "")) + " • Demo terminal, not owned"
+		detail = str(selected_item.get("info", selected_place)) + " • Demo, not owned"
 	draw_string(font, Vector2(14, info_rect.position.y + 19), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, c_cyan)
 	draw_string(font, Vector2(14, info_rect.position.y + 38), detail, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, c_text)
 
@@ -393,8 +393,16 @@ func _set_selected_city(item: Dictionary) -> void:
 	selected_place = str(item.get("name", "Place"))
 	selected_city = str(item.get("city", selected_place))
 	selected_province = str(item.get("province", selected_province))
-	city_focus_lat = float(item.get("lat", city_focus_lat))
-	city_focus_lon = float(item.get("lon", city_focus_lon))
+	var focus_found := false
+	for place in settlements:
+		if str(place.get("name", "")) == selected_city:
+			city_focus_lat = float(place.get("lat", city_focus_lat))
+			city_focus_lon = float(place.get("lon", city_focus_lon))
+			focus_found = true
+			break
+	if not focus_found:
+		city_focus_lat = float(item.get("lat", city_focus_lat))
+		city_focus_lon = float(item.get("lon", city_focus_lon))
 	map_mode = 2
 
 
@@ -447,7 +455,7 @@ func _handle_tap(position: Vector2) -> void:
 			continue
 		var item: Dictionary = entry["item"]
 		var kind := str(item.get("type", "municipality"))
-		if kind == "terminal" or kind == "city" or kind == "town":
+		if kind in ["terminal", "city", "town", "suburb_district"]:
 			_set_selected_city(item)
 		else:
 			selected_item = item
