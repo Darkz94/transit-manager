@@ -44,13 +44,13 @@ The official store listing says Truck Manager requires an internet connection. I
 
 These decisions make the first build small enough to finish while preserving a path to deeper management:
 
-1. **Camera and layout:** landscape-first. Use a readable South Africa road map as the main view, with compact company, fleet, cargo, and finance panels. Support touch and mouse from the start; keep the layout adaptable for tablets and desktop. The map should support national, provincial, metro, and suburb-district zoom levels.
+1. **Camera and layout:** landscape-first. Use a readable South Africa road map as the main view, with compact company, fleet, cargo, and finance panels. Design touch-first for Android phones and tablets, with landscape orientation and varied aspect ratios. The map should support national, provincial, metro, and suburb-district zoom levels.
 2. **Geography:** South Africa is the complete-map goal, with all nine provinces, major cities, towns, and metro suburb districts represented. Start implementation with a detailed Western Cape slice, but show the full national map and plan national long-haul corridors from the beginning. Use original illustrated map art and a verified offline data source.
 3. **Simulation clock:** use an in-game clock with pause, normal speed, and fast-forward. Save elapsed simulation state locally. Provide a setting for offline catch-up, with a conservative cap and clear summary.
 4. **Offline persistence:** use versioned local saves, automatic save after important actions, a manual save/export option if the selected engine supports it well, and recovery from interrupted writes.
 5. **Original content:** create fictional manufacturers, vehicle models, staff, cargo labels, map art, icons, text, pricing, and balancing. Use Truck Manager only as a feature reference.
 6. **First playable scope:** a South Africa overview map with one detailed Western Cape operating area, six initial destinations, one home terminal, three vehicle classes, four cargo types, local and line-haul dispatch, basic drivers, finite daily demand, revenue and costs, vehicle wear, a save/load cycle, and an early long-haul contract prototype. This proves the national map and contract design before the full location catalogue is built.
-7. **Platform and engine:** use Godot 4.7.2 stable with GDScript. Target Android landscape first, with desktop builds available for development and later support. Godot 4.8 is still beta in the current release snapshot, so the project starts on the stable 4.7 line. Use a 1280 x 720 landscape design canvas, 2D canvas-item scaling, and an expanding aspect ratio for varied phone and tablet screens.
+7. **Platform and engine:** use Godot 4.7.2 stable with GDScript. The game target for this phase is Android phones and tablets in landscape orientation; PC game builds are out of scope. Godot 4.8 is still beta in the current release snapshot, so the project starts on the stable 4.7 line. Use a 1280 x 720 landscape design canvas, 2D canvas-item scaling, and an expanding aspect ratio for varied Android screens. Build and review on Android devices throughout development.
 
 ## Development stages
 
@@ -81,7 +81,7 @@ Stages are sequenced by dependency. A stage is complete when its exit criteria a
 Stage 0 foundation decisions and the project shell are in place. Remaining product choices that can be made during implementation are recorded below:
 
 - [x] Engine: Godot 4.7.2 stable with GDScript.
-- [x] Primary target: Android landscape; desktop builds support development and may be considered for release.
+- [x] First release target: Android phones and tablets in landscape orientation. PC builds are out of scope for this phase.
 - [x] Full-map goal: South Africa, with nine provinces and city, town, and metro-district layers.
 - [x] Visual direction: 2D landscape, map-first interface.
 - [ ] Choose simulation time scale and offline catch-up cap during the offline simulation stage.
@@ -98,7 +98,7 @@ Stage 1 progress: the national, Western Cape, and Cape Town map views now load o
 
 Next implementation work:
 
-1. Finish Stage 1: review the map in Godot at target Android landscape and desktop sizes, tune labels and touch targets, and record the visual review.
+1. Finish Stage 1: review the map in Godot on target Android phone and tablet landscape sizes, tune labels and touch targets, and record the visual review.
 2. Stage 2: implement and save the local simulation clock.
 3. Stage 4: prototype the long-haul contract flow between distant destinations.
 
