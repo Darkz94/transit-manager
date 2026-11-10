@@ -1,5 +1,11 @@
 extends Control
 
+var c_header_title := Color("#FFFFFF")
+var c_header_subtitle := Color("#BEE6FF")
+var c_province_border := Color("#FFFFFF")
+var c_info_bg := Color("#FFFFFF")
+var c_info_detail := Color("#E65100")
+var c_footer_text := Color("#BEE6FF")
 var c_bg := Color("#DCEEFF")
 var c_map := Color("#BFE8FF")
 var c_topbar := Color("#0B3A5A")
@@ -58,6 +64,12 @@ func _ready() -> void:
 
 func _apply_theme() -> void:
 	if theme_mode == 0:
+		c_header_title = Color("#FFFFFF")
+		c_header_subtitle = Color("#BEE6FF")
+		c_province_border = Color("#FFFFFF")
+		c_info_bg = Color("#FFFFFF")
+		c_info_detail = Color("#E65100")
+		c_footer_text = Color("#BEE6FF")
 		c_bg = Color("#DCEEFF")
 		c_map = Color("#BFE8FF")
 		c_topbar = Color("#0B3A5A")
@@ -78,6 +90,12 @@ func _apply_theme() -> void:
 		c_legend = Color(1.0, 1.0, 1.0, 0.9)
 		route_colors = {"N1": Color("#E53935"), "N2": Color("#B77900"), "N3": Color("#E65100"), "N4": Color("#2D8DFF"), "N7": Color("#7C3AED")}
 	else:
+		c_header_title = Color("#FFFFFF")
+		c_header_subtitle = Color("#94A3B8")
+		c_province_border = Color("#2DD4FF")
+		c_info_bg = Color("#0B223A")
+		c_info_detail = Color("#FFFFFF")
+		c_footer_text = Color("#94A3B8")
 		c_bg = Color("#050B16")
 		c_map = Color("#0A1628")
 		c_topbar = Color("#0B223A")
@@ -126,7 +144,7 @@ func _draw() -> void:
 	draw_rect(Rect2(0, 0, w, header_h), c_topbar, true)
 	draw_line(Vector2(0, header_h), Vector2(w, header_h), c_divider, 1.0)
 	var theme_name := "DAYTIME" if theme_mode == 0 else "NIGHT"
-	draw_string(font, Vector2(0, 29), "SOUTH AFRICA MAP - " + theme_name, HORIZONTAL_ALIGNMENT_CENTER, w, 23, c_text)
+	draw_string(font, Vector2(0, 29), "SOUTH AFRICA MAP - " + theme_name, HORIZONTAL_ALIGNMENT_CENTER, w, 23, c_header_title)
 	draw_string(font, Vector2(0, 52), "9 PROVINCES  •  TERMINALS  •  CITIES  •  N1 / N2 / N3 / N4", HORIZONTAL_ALIGNMENT_CENTER, w, 10, c_muted)
 	theme_button_rect = Rect2(w - 88.0, 17.0, 78.0, 34.0)
 	draw_rect(theme_button_rect, c_button, true)
@@ -145,7 +163,7 @@ func _draw() -> void:
 	_draw_map_legend(font)
 	_draw_scale(font)
 
-	draw_rect(info_rect, c_topbar, true)
+	draw_rect(info_rect, c_info_bg, true)
 	draw_line(info_rect.position, Vector2(info_rect.end.x, info_rect.position.y), c_divider, 1.0)
 	_draw_info(font)
 
@@ -229,7 +247,7 @@ func _draw_map(font: Font) -> void:
 					points.append(_map_point(float(coord[0]), float(coord[1])))
 				if points.size() >= 3:
 					draw_colored_polygon(points, c_country)
-					draw_polyline(points, c_cyan, 1.5, true)
+					draw_polyline(points, c_province_border, 1.5, true)
 			if map_mode == 0:
 				var label_pos := _map_point(float(props.get("label_lon", 0.0)), float(props.get("label_lat", 0.0)))
 				var label_size := 10 if province_name in ["Gauteng", "Mpumalanga", "Free State"] else 12
@@ -397,7 +415,7 @@ func _draw_info(font: Font) -> void:
 	if selected_item.get("type", "") == "terminal":
 		detail = str(selected_item.get("info", selected_place)) + " • Demo, not owned"
 	draw_string(font, Vector2(14, info_rect.position.y + 19), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, c_cyan)
-	draw_string(font, Vector2(14, info_rect.position.y + 38), detail, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, c_text)
+	draw_string(font, Vector2(14, info_rect.position.y + 38), detail, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, c_info_detail)
 
 
 func _draw_view_buttons(font: Font) -> void:
