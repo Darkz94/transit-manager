@@ -27,6 +27,12 @@ var c_legend := Color(1.0, 1.0, 1.0, 0.9)
 var route_colors: Dictionary = {}
 var theme_mode := 0 # 0 daytime, 1 nighttime
 var theme_button_rect := Rect2()
+var clock_button_rect := Rect2()
+var startup_status := ""
+var autosave_elapsed := 0.0
+var last_clock_label := ""
+var company_name := "Transit Freight"
+var company_cash := 250000
 
 var map_mode := 0 # 0 country, 1 province, 2 city
 var selected_province := "Western Cape"
@@ -52,6 +58,32 @@ var view_buttons: Array = []
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	SimulationClock.time_changed.connect(_on_clock_changed)
+	var saved_state: Dictionary = GameSave.load_game()
+	if saved_state.is_empty():
+		SimulationClock.restore(6.0 * 60.0 * 60.0, 1, 0.0)
+		startup_status = "New offline company created. Your progress is saved on this device."
+	else:
+		company_name = str(saved_state.get("company_name", company_name))
+		company_cash = int(saved_state.get("company_cash", company_cash))
+		theme_mode = int(saved_state.get("theme_mode", theme_mode))
+		map_mode = int(saved_state.get("map_mode", map_mode))
+		selected_province = str(saved_state.get("selected_province", selected_province))
+		selected_city = str(saved_state.get("selected_city", selected_city))
+		selected_place = str(saved_state.get("selected_place", selected_place))
+		selected_item = {"name": selected_place, "type": "Map view"}
+		city_focus_lat = float(saved_state.get("city_focus_lat", city_focus_lat))
+		city_focus_lon = float(saved_state.get("city_focus_lon", city_focus_lon))
+		map_mode = clampi(map_mode, 0, 2)
+		theme_mode = clampi(theme_mode, 0, 1)
+		var saved_time := float(saved_state.get("game_time_seconds", 6.0 * 60.0 * 60.0))
+		var saved_speed := int(saved_state.get("speed_index", 1))
+		var elapsed_real := maxf(0.0, float(Time.get_unix_time_from_system() - int(saved_state.get("last_saved_unix", Time.get_unix_time_from_system()))))
+		var caught_up := SimulationClock.restore(saved_time, saved_speed, elapsed_real)
+		if caught_up > 0.0:
+			startup_status = "Offline time advanced %s. Catch-up is capped at 12 game hours." % _format_game_duration(caught_up)
+		elif GameSave.recovered_backup:
+			startup_status = "Recovered your last complete local save."
 	provinces = _read_json("res://data/south_africa_provinces.geojson").get("features", [])
 	municipalities = _read_json("res://data/municipalities.json")
 	settlements = _read_json("res://data/stage1_settlements.json")
@@ -59,7 +91,49 @@ func _ready() -> void:
 	terminals = _read_json("res://data/stage1_terminals.json")
 	corridors = _read_json("res://data/stage1_corridors.json")
 	_apply_theme()
+	last_clock_label = SimulationClock.clock_label()
+	_save_progress()
 	queue_redraw()
+
+
+func _process(delta: float) -> void:
+	autosave_elapsed += delta
+	if autosave_elapsed >= 30.0:
+		autosave_elapsed = 0.0
+		_save_progress()
+
+
+func _on_clock_changed(_game_time_seconds: float) -> void:
+	var current_label := SimulationClock.clock_label()
+	if current_label != last_clock_label:
+		last_clock_label = current_label
+		queue_redraw()
+
+
+func _format_game_duration(game_seconds: float) -> String:
+	var total_minutes := int(floor(game_seconds / 60.0))
+	var hours := int(total_minutes / 60)
+	var minutes := total_minutes % 60
+	if hours > 0:
+		return "%d game hours %d minutes" % [hours, minutes]
+	return "%d game minutes" % minutes
+
+
+func _save_progress() -> void:
+	var state := {
+		"game_time_seconds": SimulationClock.game_time_seconds,
+		"speed_index": SimulationClock.speed_index,
+		"company_name": company_name,
+		"company_cash": company_cash,
+		"theme_mode": theme_mode,
+		"map_mode": map_mode,
+		"selected_province": selected_province,
+		"selected_city": selected_city,
+		"selected_place": selected_place,
+		"city_focus_lat": city_focus_lat,
+		"city_focus_lon": city_focus_lon
+	}
+	GameSave.save_game(state)
 
 
 func _apply_theme() -> void:
@@ -127,6 +201,8 @@ func _read_json(path: String) -> Variant:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_RESIZED:
 		queue_redraw()
+	elif what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_WM_CLOSE_REQUEST:
+		_save_progress()
 
 
 func _draw() -> void:
@@ -146,6 +222,11 @@ func _draw() -> void:
 	var theme_name := "DAYTIME" if theme_mode == 0 else "NIGHT"
 	draw_string(font, Vector2(0, 29), "SOUTH AFRICA MAP - " + theme_name, HORIZONTAL_ALIGNMENT_CENTER, w, 23, c_header_title)
 	draw_string(font, Vector2(0, 52), "9 PROVINCES  •  TERMINALS  •  CITIES  •  N1 / N2 / N3 / N4", HORIZONTAL_ALIGNMENT_CENTER, w, 10, c_muted)
+	draw_string(font, Vector2(15, 23), SimulationClock.clock_label(), HORIZONTAL_ALIGNMENT_LEFT, 160, 11, c_header_title)
+	clock_button_rect = Rect2(12.0, 34.0, 150.0, 27.0)
+	draw_rect(clock_button_rect, c_button, true)
+	draw_rect(clock_button_rect, c_button_border, false, 2.0)
+	draw_string(font, clock_button_rect.position + Vector2(0, 18), SimulationClock.speed_label(), HORIZONTAL_ALIGNMENT_CENTER, clock_button_rect.size.x, 10, c_button_text)
 	theme_button_rect = Rect2(w - 132.0, 11.0, 120.0, 48.0)
 	draw_rect(theme_button_rect, c_button, true)
 	draw_rect(theme_button_rect, c_button_border, false, 2.0)
@@ -417,6 +498,9 @@ func _draw_info(font: Font) -> void:
 	elif map_mode == 2:
 		title = selected_city + " • City routes"
 	var detail := str(selected_item.get("info", selected_place))
+	if startup_status != "":
+		title = "" if GameSave.recovered_backup else "Offline company ready"
+		detail = startup_status
 	if selected_item.get("type", "") == "terminal":
 		detail = str(selected_item.get("info", selected_place)) + " • Demo, not owned"
 	draw_string(font, Vector2(14, info_rect.position.y + 19), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, c_cyan)
@@ -474,15 +558,25 @@ func _feature_at_position(position: Vector2) -> Dictionary:
 
 
 func _handle_tap(position: Vector2) -> void:
+	if clock_button_rect.has_point(position):
+		SimulationClock.cycle_speed()
+		startup_status = ""
+		_save_progress()
+		queue_redraw()
+		accept_event()
+		return
 	if theme_button_rect.has_point(position):
 		theme_mode = 1 - theme_mode
 		_apply_theme()
+		startup_status = ""
+		_save_progress()
 		queue_redraw()
 		accept_event()
 		return
 
 	for i in range(view_buttons.size()):
 		if view_buttons[i].has_point(position):
+			startup_status = ""
 			map_mode = i
 			if map_mode == 0:
 				selected_place = "South Africa"
@@ -505,6 +599,7 @@ func _handle_tap(position: Vector2) -> void:
 		if position.distance_to(entry["position"]) > entry["radius"]:
 			continue
 		var item: Dictionary = entry["item"]
+		startup_status = ""
 		var kind := str(item.get("type", "municipality"))
 		if kind in ["terminal", "city", "town", "suburb_district"]:
 			_set_selected_city(item)
@@ -523,6 +618,7 @@ func _handle_tap(position: Vector2) -> void:
 	if map_mode == 0:
 		var feature := _feature_at_position(position)
 		if not feature.is_empty():
+			startup_status = ""
 			selected_province = str(feature.get("name", selected_province))
 			selected_place = selected_province
 			selected_item = {"name": selected_province, "type": "Province", "province": selected_province}

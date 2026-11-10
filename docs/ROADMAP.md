@@ -60,7 +60,7 @@ Stages are sequenced by dependency. A stage is complete when its exit criteria a
 |---|---|---|---|
 | 0. Foundation and design | Set the product and technical foundations. | Godot 4.7.2 project shell, Android landscape target, screen map, geographic hierarchy, simulation entities, save plan, Stage 1 backlog. | Project shell is configured for 2D landscape play; product and data foundations are documented. |
 | 1. Landscape shell and South Africa map prototype | Make the national view and geographic hierarchy tangible before building simulation depth. | Android landscape map, day/night themes, country/province/city drill-down, 40 sample city/town pins, 10 demo terminals, data attribution. | Player can inspect the full country, select a province, zoom into a city/town, inspect place details, and use the map across Android landscape sizes. | In progress: day/night themes and city drill-down committed; Android visual review and route-data planning remain. |
-| 2. Offline simulation foundation | Build reliable time and save systems. | Simulation clock, pause/speed controls, versioned local save, autosave, new-game flow, recovery behavior. | A session can be saved, closed, reopened, and resumed with vehicles and finances intact and no network access. |
+| 2. Offline simulation foundation | Build reliable time and save systems. | Simulation clock, pause/speed controls, versioned local save, autosave, new-game flow, recovery behavior. | A session can be saved, closed, reopened, and resumed with vehicles and finances intact and no network access. | In progress: clock, map/company state, autosave and versioned recovery save implemented; Android resume and recovery review remains. |
 | 3. Core logistics MVP | Deliver the first complete management loop. | Vehicle purchase, drivers, cargo demand, local routes, dispatch, trip progress, delivery payment, daily demand reset. | Player can buy a vehicle, assign a driver and cargo, deliver, earn a profit or loss, and understand why. |
 | 4. Network logistics and first long-haul contracts | Turn isolated trips into a network and prove the contract loop early. | Terminal purchase and upgrades, South Africa road graph, terminal-to-terminal line hauls, route demand, return-leg dispatch, contract board, bidding, deadlines, eligible vehicle assignment, first long-distance contract. | A player can run local and line-haul routes, bid for a long-haul contract, assign suitable vehicles, complete it on time, and see the financial result. |
 | 5. Fleet depth and operations | Add specialization and operating pressure. | More vehicle classes, trailer/certification compatibility, additional cargo families, fuel/electricity, wear, repair, inspections, breakdown or incident events. | Fleet composition matters; maintenance and cargo selection change the economics without making routine play tedious. |
@@ -99,8 +99,9 @@ Stage 1 progress: the map now follows the supplied day/night design direction, s
 Next implementation work:
 
 1. Finish Stage 1: review the map in Godot on target Android phone and tablet landscape sizes, tune labels and touch targets, and record the visual review.
-2. Stage 2: implement and save the local simulation clock.
-3. Stage 4: prototype the long-haul contract flow between distant destinations.
+2. Stage 2: review clock speed, local save/resume, offline catch-up, and recovery on Android. See [docs/STAGE_2_SIMULATION.md](STAGE_2_SIMULATION.md).
+3. Stage 3: add the first real management loop (vehicles, drivers, cargo, local trips, and payments) on top of the saved simulation state.
+4. Stage 4: prototype the long-haul contract flow between distant destinations.
 
 ## Initial simulation entities
 
