@@ -15,7 +15,7 @@ const FONT_SIZE := 12
 
 var map_mode := 0 # 0 national, 1 Western Cape, 2 Cape Town metro
 var map_rect := Rect2()
-var world_bounds := Rect4(16.0, -35.3, 33.3, -21.8) # west, south, east, north
+var world_bounds := Vector4(16.0, -35.3, 33.3, -21.8) # west, south, east, north
 var world_cos := 0.84
 var provinces: Array = []
 var municipalities: Array = []
@@ -99,11 +99,11 @@ func _draw() -> void:
 
 func _set_bounds() -> void:
 	if map_mode == 1:
-		world_bounds = Rect4(16.0, -35.4, 25.4, -31.0)
+		world_bounds = Vector4(16.0, -35.4, 25.4, -31.0)
 	elif map_mode == 2:
-		world_bounds = Rect4(18.15, -34.15, 18.83, -33.55)
+		world_bounds = Vector4(18.15, -34.15, 18.83, -33.55)
 	else:
-		world_bounds = Rect4(16.0, -35.4, 33.3, -21.8)
+		world_bounds = Vector4(16.0, -35.4, 33.3, -21.8)
 	world_cos = cos(deg_to_rad((world_bounds.y + world_bounds.w) * 0.5))
 
 
