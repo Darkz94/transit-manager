@@ -357,12 +357,10 @@ func _draw_map_legend(font: Font) -> void:
 		draw_line(Vector2(x, y), Vector2(x + 20, y), route_colors[route_name], 3.0, true)
 		draw_string(font, Vector2(x + 25, y + 4), route_name, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, c_text)
 	var y2 := box.position.y + 50
-	draw_line(Vector2(box.position.x + 10, y2 - 3), Vector2(box.position.x + 28, y2 - 3), route_colors["N7"], 2.5, true)
-	draw_string(font, Vector2(box.position.x + 32, y2), "N7", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, c_text)
-	draw_circle(Vector2(box.position.x + 69, y2 - 3), 3.5, c_city)
-	draw_string(font, Vector2(box.position.x + 77, y2), "City", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, c_text)
-	draw_rect(Rect2(box.position.x + 119, y2 - 7, 7, 7), c_orange, true)
-	draw_string(font, Vector2(box.position.x + 130, y2), "Terminal", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, c_text)
+	draw_circle(Vector2(box.position.x + 18, y2 - 3), 3.5, c_city)
+	draw_string(font, Vector2(box.position.x + 27, y2), "City", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, c_text)
+	draw_rect(Rect2(box.position.x + 83, y2 - 7, 7, 7), c_orange, true)
+	draw_string(font, Vector2(box.position.x + 96, y2), "Terminal", HORIZONTAL_ALIGNMENT_LEFT, -1, 9, c_text)
 
 
 func _draw_info(font: Font) -> void:
