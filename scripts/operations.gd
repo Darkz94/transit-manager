@@ -6,13 +6,17 @@ signal message_changed(message: String)
 const DAY_SECONDS := 86400.0
 const STARTING_CASH := 1250000
 const HOME := "Cape Town"
+const ENERGY_PRICES := {"diesel":24.0,"petrol":26.0,"electricity":3.2}
+const INSPECTION_INTERVAL_KM := 5000
+const INSPECTION_COST := 12000
 const VEHICLES := [
-	{"id":"van","name":"Coastal Courier Van","class":"van","price":280000,"capacity":8,"km_cost":10.0,"equipment":["standard"],"cargo":["parcels","dry"]},
-	{"id":"rigid","name":"Regional Rigid 8T","class":"rigid","price":760000,"capacity":28,"km_cost":22.0,"equipment":["standard","flatbed"],"cargo":["dry","building"]},
-	{"id":"reefer","name":"ColdLink Refrigerated","class":"reefer","price":920000,"capacity":20,"km_cost":25.0,"equipment":["standard","refrigerated"],"cargo":["produce","dry"]},
-	{"id":"prime_mover","name":"Longhaul Prime Mover","class":"tractor","price":1350000,"capacity":40,"km_cost":32.0,"equipment":["standard","flatbed","machinery_platform"],"cargo":["dry","building","machinery"]},
-	{"id":"safechem_rigid","name":"SafeRoute DG Rigid","class":"rigid","price":1180000,"capacity":22,"km_cost":29.0,"equipment":["standard","hazmat"],"cargo":["dry","hazmat"]},
-	{"id":"capebulk_tipper","name":"CapeBulk Tipper 10T","class":"tipper","price":1050000,"capacity":32,"km_cost":26.0,"equipment":["standard","tipper"],"cargo":["granular","building"]}
+	{"id":"van","name":"Coastal Courier Van","class":"van","price":280000,"capacity":8,"km_cost":10.0,"energy_type":"petrol","energy_use_per_100km":10.0,"equipment":["standard"],"cargo":["parcels","dry"]},
+	{"id":"rigid","name":"Regional Rigid 8T","class":"rigid","price":760000,"capacity":28,"km_cost":22.0,"energy_type":"diesel","energy_use_per_100km":25.0,"equipment":["standard","flatbed"],"cargo":["dry","building"]},
+	{"id":"reefer","name":"ColdLink Refrigerated","class":"reefer","price":920000,"capacity":20,"km_cost":25.0,"energy_type":"diesel","energy_use_per_100km":30.0,"equipment":["standard","refrigerated"],"cargo":["produce","dry"]},
+	{"id":"prime_mover","name":"Longhaul Prime Mover","class":"tractor","price":1350000,"capacity":40,"km_cost":32.0,"energy_type":"diesel","energy_use_per_100km":38.0,"equipment":["standard","flatbed","machinery_platform"],"cargo":["dry","building","machinery"]},
+	{"id":"safechem_rigid","name":"SafeRoute DG Rigid","class":"rigid","price":1180000,"capacity":22,"km_cost":29.0,"energy_type":"diesel","energy_use_per_100km":28.0,"equipment":["standard","hazmat"],"cargo":["dry","hazmat"]},
+	{"id":"capebulk_tipper","name":"CapeBulk Tipper 10T","class":"tipper","price":1050000,"capacity":32,"km_cost":26.0,"energy_type":"diesel","energy_use_per_100km":27.0,"equipment":["standard","tipper"],"cargo":["granular","building"]},
+	{"id":"electric_van","name":"E-Courier Urban Van","class":"electric_van","price":640000,"capacity":7,"km_cost":6.0,"energy_type":"electricity","energy_use_per_100km":23.0,"equipment":["standard"],"cargo":["parcels","dry"]}
 ]
 const DRIVERS := [
 	{"name":"Lebo Mokoena","wage":900,"endorsements":["general"]},
@@ -232,6 +236,13 @@ func load_state(state: Dictionary, game_time: float) -> void:
 			vehicle["equipment"] = _infer_legacy_equipment(vehicle)
 		if not vehicle.has("class"):
 			vehicle["class"] = "reefer" if vehicle.get("equipment", []).has("refrigerated") else ("van" if int(vehicle.get("capacity", 0)) <= 8 else "rigid")
+		if not vehicle.has("energy_type"):
+			vehicle["energy_type"] = "petrol" if str(vehicle.get("class", "")) == "van" else "diesel"
+		if not vehicle.has("energy_use_per_100km"):
+			vehicle["energy_use_per_100km"] = 10.0 if str(vehicle.get("energy_type", "diesel")) == "petrol" else 27.0
+		vehicle["odometer_km"] = maxi(0, int(vehicle.get("odometer_km", 0)))
+		vehicle["inspection_due_km"] = maxi(INSPECTION_INTERVAL_KM, int(vehicle.get("inspection_due_km", INSPECTION_INTERVAL_KM)))
+		vehicle["inspection_due"] = int(vehicle["odometer_km"]) >= int(vehicle["inspection_due_km"])
 	drivers = state.get("drivers", [])
 	for driver in drivers:
 		if not driver.has("endorsements"):
@@ -325,6 +336,8 @@ func _complete_until(game_time: float) -> void:
 		for vehicle in fleet:
 			if str(vehicle.get("id", "")) == str(trip.get("vehicle_id", "")):
 				vehicle["condition"] = clampf(float(vehicle.get("condition", 100.0)) - float(trip.get("wear", 0.0)), 0.0, 100.0)
+				vehicle["odometer_km"] = int(vehicle.get("odometer_km", 0)) + int(round(float(trip.get("route_km", 0)) * 2.0))
+				vehicle["inspection_due"] = int(vehicle["odometer_km"]) >= int(vehicle.get("inspection_due_km", INSPECTION_INTERVAL_KM))
 				vehicle["status"] = "available"
 				vehicle["driver_id"] = ""
 				vehicle["location"] = HOME
@@ -407,7 +420,7 @@ func buy_vehicle() -> void:
 		_set_message("Not enough cash. %s costs R%s." % [definition["name"], commas(price)])
 		return
 	cash -= price
-	fleet.append({"id":"vehicle_%d" % (fleet.size()+1),"name":definition["name"],"class":definition.get("class", "rigid"),"price":price,"capacity":definition["capacity"],"km_cost":definition["km_cost"],"equipment":definition.get("equipment", ["standard"]).duplicate(),"cargo":definition["cargo"].duplicate(),"condition":100.0,"status":"available","driver_id":"","location":HOME})
+	fleet.append({"id":"vehicle_%d" % (fleet.size()+1),"name":definition["name"],"class":definition.get("class", "rigid"),"price":price,"capacity":definition["capacity"],"km_cost":definition["km_cost"],"energy_type":definition.get("energy_type", "diesel"),"energy_use_per_100km":definition.get("energy_use_per_100km", 27.0),"equipment":definition.get("equipment", ["standard"]).duplicate(),"cargo":definition["cargo"].duplicate(),"condition":100.0,"odometer_km":0,"inspection_due_km":INSPECTION_INTERVAL_KM,"inspection_due":false,"status":"available","driver_id":"","location":HOME})
 	selected_vehicle = fleet.size() - 1
 	vehicle_offer = (vehicle_offer + 1) % VEHICLES.size()
 	_set_message("Purchased %s for R%s." % [definition["name"], commas(price)])
@@ -484,16 +497,25 @@ func repair_selected_vehicle() -> void:
 		return
 	var condition := clampf(float(vehicle.get("condition", 100.0)), 0.0, 100.0)
 	var missing := 100.0 - condition
-	if missing < 0.5:
-		_set_message("%s is already in excellent condition." % vehicle.get("name", "Vehicle"))
+	var needs_inspection := _inspection_due(vehicle)
+	var repair_cost := int(ceil(missing * REPAIR_COST_PER_CONDITION))
+	var inspection_cost := INSPECTION_COST if needs_inspection else 0
+	var cost := repair_cost + inspection_cost
+	if cost <= 0:
+		_set_message("%s is in good condition and its inspection is up to date." % vehicle.get("name", "Vehicle"))
 		return
-	var cost := int(ceil(missing * REPAIR_COST_PER_CONDITION))
 	if cash < cost:
-		_set_message("Repair needs R%s, but your company has insufficient cash." % commas(cost))
+		_set_message("Service needs R%s, but your company has insufficient cash." % commas(cost))
 		return
 	cash -= cost
 	vehicle["condition"] = 100.0
-	_set_message("%s repaired to 100%% condition for R%s." % [vehicle.get("name", "Vehicle"), commas(cost)])
+	if needs_inspection:
+		var next_inspection := int(vehicle.get("inspection_due_km", INSPECTION_INTERVAL_KM))
+		while next_inspection <= int(vehicle.get("odometer_km", 0)):
+			next_inspection += INSPECTION_INTERVAL_KM
+		vehicle["inspection_due_km"] = next_inspection
+		vehicle["inspection_due"] = false
+	_set_message("%s serviced to 100%% condition%s for R%s." % [vehicle.get("name", "Vehicle"), " and passed its inspection" if needs_inspection else "", commas(cost)])
 
 
 func cycle_driver() -> void:
@@ -533,6 +555,19 @@ func network_job_label() -> String:
 	return "Cape Town → %s • %d km\n%s • %d units • Est. R%s • Need: %s" % [job["destination"], int(job["km"]), job["cargo_name"], units, commas(revenue), _cargo_equipment_label(str(job["cargo_id"]))]
 
 
+func network_cost_label() -> String:
+	_build_network_jobs(int(floor(last_time / DAY_SECONDS)))
+	if network_jobs.is_empty():
+		return "Buy a remote terminal to see line-haul costs."
+	if fleet.is_empty():
+		return "Trip cost depends on the truck you assign."
+	selected_vehicle = posmod(selected_vehicle, fleet.size())
+	selected_network_job = posmod(selected_network_job, network_jobs.size())
+	var job: Dictionary = network_jobs[selected_network_job]
+	var vehicle: Dictionary = fleet[selected_vehicle]
+	return "Round-trip cost R%s • %s" % [commas(_trip_expense(vehicle, int(job["km"]) * 2, 100)), energy_label(vehicle)]
+
+
 func dispatch_network(game_time: float) -> void:
 	_build_network_jobs(int(floor(game_time / DAY_SECONDS)))
 	if fleet.is_empty() or drivers.is_empty():
@@ -550,6 +585,9 @@ func dispatch_network(game_time: float) -> void:
 	if vehicle.get("status", "") != "available" or driver.get("status", "") != "available":
 		_set_message("Choose an available vehicle and driver.")
 		return
+	if _inspection_due(vehicle):
+		_set_message("%s needs an inspection before it can be dispatched." % vehicle.get("name", "This vehicle"))
+		return
 	if not _vehicle_can_carry(vehicle, str(job["cargo_id"])):
 		_set_message(_cargo_incompatibility_message(vehicle, str(job["cargo_id"])))
 		return
@@ -558,7 +596,7 @@ func dispatch_network(game_time: float) -> void:
 		return
 	var units := mini(int(job["demand"]), int(vehicle["capacity"]))
 	var revenue := int(300 + int(job["km"]) * float(job["rate"]) * units)
-	var expense := int(ceil((int(job["km"]) * 2 * float(vehicle["km_cost"]) + 100) * _vehicle_cost_multiplier(vehicle)))
+	var expense := _trip_expense(vehicle, int(job["km"]) * 2, 100)
 	if cash < expense:
 		_set_message("Insufficient cash for estimated R%s line-haul costs." % commas(expense))
 		return
@@ -594,6 +632,9 @@ func dispatch(game_time: float) -> void:
 	if vehicle["status"] != "available" or driver["status"] != "available":
 		_set_message("Choose an available vehicle and driver.")
 		return
+	if _inspection_due(vehicle):
+		_set_message("%s needs an inspection before it can be dispatched." % vehicle.get("name", "This vehicle"))
+		return
 	if not _vehicle_can_carry(vehicle, str(job["cargo_id"])):
 		_set_message(_cargo_incompatibility_message(vehicle, str(job["cargo_id"])))
 		return
@@ -603,7 +644,7 @@ func dispatch(game_time: float) -> void:
 	var units := mini(int(job["demand"]), int(vehicle["capacity"]))
 	var km := int(job["km"])
 	var revenue := int(500 + km * float(job["rate"]) * units)
-	var expense := int(ceil((km * 2 * float(vehicle["km_cost"]) + 100) * _vehicle_cost_multiplier(vehicle)))
+	var expense := _trip_expense(vehicle, km * 2, 100)
 	if cash < expense:
 		_set_message("Insufficient cash for estimated R%s trip costs." % commas(expense))
 		return
@@ -673,6 +714,9 @@ func dispatch_contract(game_time: float) -> void:
 	if vehicle.get("status", "") != "available" or driver.get("status", "") != "available":
 		_set_message("Choose an available vehicle and driver.")
 		return
+	if _inspection_due(vehicle):
+		_set_message("%s needs an inspection before it can be dispatched." % vehicle.get("name", "This vehicle"))
+		return
 	if not _vehicle_can_carry(vehicle, str(contract.get("cargo_id", "dry"))) or int(vehicle.get("capacity", 0)) < int(contract.get("units", 0)):
 		if not _vehicle_can_carry(vehicle, str(contract.get("cargo_id", "dry"))):
 			_set_message(_cargo_incompatibility_message(vehicle, str(contract.get("cargo_id", "dry"))))
@@ -682,7 +726,7 @@ func dispatch_contract(game_time: float) -> void:
 	if not _driver_can_carry(driver, str(contract.get("cargo_id", "dry"))):
 		_set_message(_driver_incompatibility_message(driver, str(contract.get("cargo_id", "dry"))))
 		return
-	var expense := int(ceil((int(contract["km"]) * 2 * float(vehicle["km_cost"]) + 1000) * _vehicle_cost_multiplier(vehicle)))
+	var expense := _trip_expense(vehicle, int(contract["km"]) * 2, 1000)
 	if cash < expense:
 		_set_message("Insufficient cash for estimated R%s long-haul costs." % commas(expense))
 		return
@@ -710,7 +754,12 @@ func contract_deadline_label() -> String:
 	if contract.is_empty():
 		return ""
 	var days_left := maxf(0.0, (float(contract["deadline"]) - SimulationClock.game_time_seconds) / DAY_SECONDS)
-	return "Deadline %.1f game days • R%s bond" % [days_left, commas(int(contract.get("bond", CONTRACT_BOND)))]
+	var label := "Deadline %.1f game days • R%s bond" % [days_left, commas(int(contract.get("bond", CONTRACT_BOND)))]
+	if not fleet.is_empty():
+		selected_vehicle = posmod(selected_vehicle, fleet.size())
+		var vehicle: Dictionary = fleet[selected_vehicle]
+		label += " • Trip cost R%s" % commas(_trip_expense(vehicle, int(contract["km"]) * 2, 1000))
+	return label
 
 
 func contract_action_label() -> String:
@@ -752,7 +801,8 @@ func vehicle_condition_label() -> String:
 	if fleet.is_empty():
 		return "Condition —"
 	var item: Dictionary = fleet[posmod(selected_vehicle, fleet.size())]
-	return "Condition %.0f%% • %s" % [float(item.get("condition", 100.0)), ", ".join(item.get("equipment", ["standard"]))]
+	var status := " • INSPECTION DUE" if _inspection_due(item) else ""
+	return "Condition %.0f%% • %s%s" % [float(item.get("condition", 100.0)), energy_label(item), status]
 
 
 func _vehicle_can_carry(vehicle: Dictionary, cargo_id: String) -> bool:
@@ -836,15 +886,55 @@ func _infer_legacy_equipment(vehicle: Dictionary) -> Array:
 
 func repair_label() -> String:
 	if fleet.is_empty():
-		return "REPAIR SELECTED VEHICLE"
+		return "SERVICE SELECTED VEHICLE"
 	var item: Dictionary = fleet[posmod(selected_vehicle, fleet.size())]
-	var cost := int(ceil((100.0 - clampf(float(item.get("condition", 100.0)), 0.0, 100.0)) * REPAIR_COST_PER_CONDITION))
-	return "REPAIR • R%s" % commas(cost)
+	var repair_cost := int(ceil((100.0 - clampf(float(item.get("condition", 100.0)), 0.0, 100.0)) * REPAIR_COST_PER_CONDITION))
+	var total_cost := repair_cost + (INSPECTION_COST if _inspection_due(item) else 0)
+	return "SERVICE • R%s" % commas(total_cost)
 
 
 func _vehicle_cost_multiplier(vehicle: Dictionary) -> float:
 	var condition := clampf(float(vehicle.get("condition", 100.0)), 0.0, 100.0)
 	return 1.0 + (100.0 - condition) * 0.005
+
+
+func _inspection_due(vehicle: Dictionary) -> bool:
+	var due := int(vehicle.get("odometer_km", 0)) >= int(vehicle.get("inspection_due_km", INSPECTION_INTERVAL_KM))
+	vehicle["inspection_due"] = due
+	return due
+
+
+func energy_label(vehicle: Dictionary) -> String:
+	var energy := str(vehicle.get("energy_type", "diesel"))
+	var unit := "kWh" if energy == "electricity" else "L"
+	return "%s %.0f %s/100 km" % [energy.capitalize(), float(vehicle.get("energy_use_per_100km", 0.0)), unit]
+
+
+func _energy_cost(vehicle: Dictionary, round_trip_km: int) -> int:
+	var energy := str(vehicle.get("energy_type", "diesel"))
+	var price := float(ENERGY_PRICES.get(energy, ENERGY_PRICES["diesel"]))
+	var usage := float(vehicle.get("energy_use_per_100km", 0.0)) * float(round_trip_km) / 100.0
+	return int(ceil(usage * price))
+
+
+func _trip_expense(vehicle: Dictionary, round_trip_km: int, fixed_fee: int) -> int:
+	var running_cost := float(round_trip_km) * float(vehicle.get("km_cost", 0.0))
+	var estimated := running_cost + float(_energy_cost(vehicle, round_trip_km)) + float(fixed_fee)
+	return int(ceil(estimated * _vehicle_cost_multiplier(vehicle)))
+
+
+func job_cost_label() -> String:
+	_build_jobs(int(floor(last_time / DAY_SECONDS)))
+	if jobs.is_empty():
+		return "No local trip cost to estimate."
+	if fleet.is_empty():
+		return "Trip cost depends on the truck you assign."
+	selected_job = posmod(selected_job, jobs.size())
+	selected_vehicle = posmod(selected_vehicle, fleet.size())
+	var job: Dictionary = jobs[selected_job]
+	var vehicle: Dictionary = fleet[selected_vehicle]
+	var expense := _trip_expense(vehicle, int(job["km"]) * 2, 100)
+	return "Estimated round-trip cost R%s • %s" % [commas(expense), energy_label(vehicle)]
 
 
 func _trip_wear(one_way_km: int, units: int, capacity: int, cargo_id: String) -> float:

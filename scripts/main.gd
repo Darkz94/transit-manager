@@ -676,7 +676,7 @@ func _draw_operations_screen(font: Font) -> void:
 	if operations_tab == 0:
 		draw_string(font, right.position + Vector2(16, 62), "CAPE TOWN LOCAL JOB MARKET", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, c_cyan)
 		draw_string(font, right.position + Vector2(16, 90), CompanyOperations.job_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 11, c_text)
-		draw_string(font, right.position + Vector2(16, 117), "One-way distance; vehicle returns to Cape Town.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
+		draw_string(font, right.position + Vector2(16, 117), CompanyOperations.job_cost_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
 		_draw_operation_button("next_job", "NEXT LOCAL JOB", Rect2(right.position.x + 12.0, right.position.y + 130.0, card_w - 24.0, 34.0), font)
 		_draw_operation_button("dispatch", "DISPATCH SELECTED JOB", Rect2(right.position.x + 12.0, right.position.y + 171.0, card_w - 24.0, 42.0), font)
 		draw_string(font, right.position + Vector2(16, 245), "ACTIVE DELIVERY", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, c_cyan)
@@ -691,7 +691,7 @@ func _draw_operations_screen(font: Font) -> void:
 	else:
 		draw_string(font, right.position + Vector2(16, 62), "OWNED TERMINAL LINE-HAULS", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, c_cyan)
 		draw_string(font, right.position + Vector2(16, 92), CompanyOperations.network_job_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 11, c_text)
-		draw_string(font, right.position + Vector2(16, 137), "Jobs run from Cape Town to an owned terminal and return.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
+		draw_string(font, right.position + Vector2(16, 137), CompanyOperations.network_cost_label(), HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
 		_draw_operation_button("next_network_job", "NEXT LINE-HAUL JOB", Rect2(right.position.x + 12.0, right.position.y + 153.0, card_w - 24.0, 36.0), font)
 		_draw_operation_button("dispatch_network", "DISPATCH LINE-HAUL", Rect2(right.position.x + 12.0, right.position.y + 196.0, card_w - 24.0, 42.0), font)
 		draw_string(font, right.position + Vector2(16, 264), "Terminal purchase unlocks daily freight demand at that destination.", HORIZONTAL_ALIGNMENT_LEFT, card_w - 32.0, 9, c_muted)
