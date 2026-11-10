@@ -8,7 +8,7 @@
 
 The current Godot map follows the user's supplied daytime and nighttime examples: a clean light-blue daytime map with a cream land fill, and a deep navy nighttime version. A theme button switches between the two. The map uses the existing generalized province geometry, so its country outline follows South Africa's nine provinces rather than the sketch's illustrative outline.
 
-The national view shows province labels, nearby country names, ocean labels, city and town pins, terminal markers, and color-coded N1, N2, N3, N4, and N7 route strokes. The N7 stroke is retained as an additional national corridor. The legend distinguishes routes, cities, and terminals.
+The national view shows province labels, nearby country names, ocean labels, city and town pins, terminal markers, and color-coded N1, N2, N3, and N4 route strokes. The N7 stroke is retained as an additional national corridor. The legend distinguishes routes, cities, and terminals.
 
 ## Zoom and selection
 
