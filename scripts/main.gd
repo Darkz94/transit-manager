@@ -11,10 +11,10 @@ var c_muted := Color("#5A7A8A")
 var c_gold := Color("#E65100")
 var c_orange := Color("#FF7A00")
 var c_divider := Color("#BFE8FF")
-var c_route_shadow := c_marker_outline
-var c_marker_outline := c_marker_outline
-var c_terminal_outline := c_marker_outline
-var c_button := c_marker_outline
+var c_route_shadow := Color("#FFFFFF")
+var c_marker_outline := Color("#FFFFFF")
+var c_terminal_outline := Color("#FFFFFF")
+var c_button := Color("#FFFFFF")
 var c_button_text := Color("#0B3A5A")
 var c_button_border := Color("#FF7A00")
 var c_legend := Color(1.0, 1.0, 1.0, 0.9)
@@ -415,6 +415,13 @@ func _feature_at_position(position: Vector2) -> Dictionary:
 
 
 func _handle_tap(position: Vector2) -> void:
+	if theme_button_rect.has_point(position):
+		theme_mode = 1 - theme_mode
+		_apply_theme()
+		queue_redraw()
+		accept_event()
+		return
+
 	for i in range(view_buttons.size()):
 		if view_buttons[i].has_point(position):
 			map_mode = i
@@ -445,10 +452,11 @@ func _handle_tap(position: Vector2) -> void:
 		else:
 			selected_item = item
 			selected_place = str(item.get("name", "Place"))
-			var province := str(item.get("province", ""))
-			if province != "":
-				selected_province = province
-				map_mode = 1
+			if map_mode != 2:
+				var province := str(item.get("province", ""))
+				if province != "":
+					selected_province = province
+					map_mode = 1
 		queue_redraw()
 		accept_event()
 		return
