@@ -8,7 +8,7 @@
 
 The current Godot map follows the user's supplied daytime and nighttime examples: a clean light-blue daytime map with a cream land fill, and a deep navy nighttime version. A theme button switches between the two. The map uses the existing generalized province geometry, so its country outline follows South Africa's nine provinces rather than the sketch's illustrative outline.
 
-The national view shows province labels, nearby country names, ocean labels, city and town pins, terminal markers, and color-coded N1, N2, N3, and N4 route strokes. The N7 stroke is retained as an additional national corridor. The legend distinguishes routes, cities, and terminals.
+The national view shows province labels, nearby country names, ocean labels, city and town pins, terminal markers, and color-coded N1, N2, N3, and N4 route strokes. The route legend also includes a zoom-aware scale bar. The legend distinguishes routes, cities, and terminals.
 
 ## Zoom and selection
 
@@ -18,7 +18,7 @@ Three map levels are available:
 2. **Province:** tap a province to zoom into its outline and locations; the view buttons also return to the currently selected province.
 3. **City or town:** tap a city, town, or terminal to open a close-in view. Cape Town shows its sample suburb-district pins. Johannesburg and Pretoria show the supplied Soweto and Centurion district seeds when they fall in view. Other city views are ready to accept further local-area data.
 
-The small orange links between a city center and included suburb-district pins are visual planning links, not street routes. The map does not calculate mileage, trip time, or contract values from the schematic lines. Smaller local contracts can use the city-level view after we add sourced local road geometry.
+The small orange links between a city center and included suburb-district pins are visual planning links, not street routes. The map does not calculate mileage, trip time, or contract values from the schematic lines. A scale bar changes with the current map zoom. Smaller local contracts can use the city-level view after we add sourced local road geometry.
 
 The information strip shows the selected place or terminal. The terminal locations are demo pins; no terminal is owned and there is no purchase action yet. The view buttons support country, province, and city/town levels, and touch input is handled directly for Android.
 
