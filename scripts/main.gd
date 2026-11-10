@@ -120,7 +120,7 @@ func _apply_theme() -> void:
 func _read_json(path: String) -> Variant:
 	if not FileAccess.file_exists(path):
 		return []
-	var parsed := JSON.parse_string(FileAccess.get_file_as_string(path))
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 	return parsed if parsed != null else []
 
 
