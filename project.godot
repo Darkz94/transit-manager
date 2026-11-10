@@ -14,6 +14,7 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 
 SimulationClock="*res://scripts/simulation_clock.gd"
 GameSave="*res://scripts/save_manager.gd"
+CompanyOperations="*res://scripts/operations.gd"
 
 [display]
 
