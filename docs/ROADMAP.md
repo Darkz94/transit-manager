@@ -94,9 +94,11 @@ Stage 0 outputs:
 2. Screen map and geographic hierarchy in [docs/STAGE_0_FOUNDATION.md](STAGE_0_FOUNDATION.md).
 3. Initial data schema for places, roads, terminals, vehicles, drivers, cargo, contracts, trips, deliveries, and saves.
 
+Stage 1 progress: the national, Western Cape, and Cape Town map views now load offline geography, selectable place details, and three clearly labeled demo terminal pins. See [docs/STAGE_1_MAP.md](STAGE_1_MAP.md) and [data/SOURCES.md](../data/SOURCES.md) for scope and limitations.
+
 Next implementation work:
 
-1. Stage 1: choose an offline geographic data source, document attribution, and create the South Africa overview with a detailed Western Cape prototype layer.
+1. Finish Stage 1: review the map in Godot at target Android landscape and desktop sizes, tune labels and touch targets, and record the visual review.
 2. Stage 2: implement and save the local simulation clock.
 3. Stage 4: prototype the long-haul contract flow between distant destinations.
 
