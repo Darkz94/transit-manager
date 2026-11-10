@@ -243,6 +243,8 @@ func _draw_info_panel(font: Font, rect: Rect2) -> void:
 	y += 23.0
 	var selected_kind := str(selected_item.get("type", "Place"))
 	var selected_parent := str(selected_item.get("province", selected_item.get("district", "")))
+	if selected_item.get("type", "") == "terminal":
+		selected_parent = str(selected_item.get("city", "")) + " • " + selected_parent
 	draw_string(font, Vector2(x, y), selected_kind.replace("_", " ").capitalize(), HORIZONTAL_ALIGNMENT_LEFT, -1, 11, COLOR_GOLD)
 	y += 20.0
 	if selected_parent != "":
@@ -302,6 +304,7 @@ func _gui_input(event: InputEvent) -> void:
 			if event.position.y < map_rect.position.y + 55.0:
 				map_mode = (map_mode + 1) % 3
 				selected_place = ["South Africa", "Western Cape", "Cape Town"][map_mode]
+				selected_item = {"name": selected_place, "type": "Map view", "province": selected_place}
 				queue_redraw()
 				accept_event()
 				return
