@@ -2,7 +2,7 @@
 
 **Status:** Map, selection details, and demo terminal pins implemented; Stage 1 remains in progress.  
 **Project:** Transit Manager  
-**Target:** Offline-first Godot 4 landscape management game.
+**Target:** Offline-first Android game for phones and tablets in landscape orientation. PC builds are out of scope for this phase.
 
 ## What is in the first pass
 
@@ -40,7 +40,7 @@ This is an offline data load: the running game reads files packaged with the pro
 
 ## Remaining Stage 1 work
 
-1. Open the project in Godot and review the national, Western Cape, and Cape Town views at the intended Android landscape sizes and desktop.
+1. Open the project in Godot and review the national, Western Cape, and Cape Town views on target Android phone and tablet landscape sizes.
 2. Adjust scale, label density, selection targets, and panel layout based on that visual review.
 3. Review and refine place/terminal detail panel content and selection behavior from a visual pass.
 4. Add terminal ownership actions only after the Stage 2 save model exists.
