@@ -37,10 +37,10 @@ jobs:
       - name: Run game regression checks
         run: godot --headless --path . --scene res://tests/test_trip_incidents.tscn --quit-after 30
 
-      - name: Export Android preview
+      - name: Export debug-signed Android preview
         run: |
           mkdir -p build
-          godot --headless --path . --export-release Android build/Transit-Manager-0.8.0-Operations-Preview.apk
+          godot --headless --path . --export-debug Android build/Transit-Manager-0.8.0-Operations-Preview.apk
 
       - name: Verify APK
         run: |
