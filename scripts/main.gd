@@ -312,10 +312,21 @@ func _draw() -> void:
 	clock_button_rect = Rect2(64.0, 37.0, 142.0, 34.0)
 	_draw_ui_card(clock_button_rect, c_button, c_panel_stroke, 7)
 	_draw_text(font, clock_button_rect.position + Vector2(0, 23), SimulationClock.speed_label(), HORIZONTAL_ALIGNMENT_CENTER, clock_button_rect.size.x, 10, c_button_text)
-	var screen_title := "SOUTH AFRICA" if screen_mode == 0 else "COMPANY OPERATIONS"
-	var subtitle := "NATIONAL NETWORK  •  9 PROVINCES  •  DAYTIME MAP" if screen_mode == 0 and theme_mode == 0 else ("NATIONAL NETWORK  •  9 PROVINCES  •  NIGHT MAP" if screen_mode == 0 else "CAPE TOWN FREIGHT  •  FLEET MANAGEMENT")
-	_draw_text(font, Vector2(0, 32), screen_title, HORIZONTAL_ALIGNMENT_CENTER, w, 21, c_header_title)
-	_draw_text(font, Vector2(0, 59), subtitle, HORIZONTAL_ALIGNMENT_CENTER, w, 9, c_muted)
+	var header_context := "NATIONAL NETWORK  •  9 PROVINCES"
+	if map_mode == 1:
+		header_context = "PROVINCE MAP  •  " + selected_province.to_upper()
+	elif map_mode == 2:
+		header_context = "CITY MAP  •  " + selected_city.to_upper()
+	if screen_mode == 1:
+		header_context = "OPERATIONS DESK  •  " + _operations_section_title().to_upper()
+	var header_identity_x := 232.0
+	var header_stats_x := w - 540.0
+	var header_identity_width := maxf(185.0, header_stats_x - header_identity_x - 18.0)
+	_draw_text(font, Vector2(header_identity_x, 31), company_name.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, header_identity_width, 16, c_header_title)
+	_draw_text(font, Vector2(header_identity_x, 56), header_context, HORIZONTAL_ALIGNMENT_LEFT, header_identity_width, 9, c_header_subtitle)
+	_draw_hud_stat(font, Rect2(w - 540.0, 10.0, 92.0, 56.0), "TRUCKS", str(CompanyOperations.fleet.size()), c_cyan)
+	var active_runs := active_count_on_road()
+	_draw_hud_stat(font, Rect2(w - 440.0, 10.0, 98.0, 56.0), "ON ROAD", str(active_runs), c_positive if active_runs > 0 else c_muted)
 	theme_button_rect = Rect2(w - 210.0, 0.0, 210.0, 70.0)
 	var theme_visual_rect := Rect2(w - 142.0, 10.0, 130.0, 56.0)
 	_draw_ui_card(theme_visual_rect, c_button, c_panel_stroke, 8)
@@ -1302,6 +1313,18 @@ func _draw_stat_card(rect: Rect2, label: String, value: String, detail: String, 
 	_draw_text(font, Vector2(rect.end.x - 96.0, rect.position.y + 34), detail, HORIZONTAL_ALIGNMENT_RIGHT, 86, 8, c_muted)
 
 
+func _draw_hud_stat(font: Font, rect: Rect2, label: String, value: String, value_color: Color) -> void:
+	_draw_ui_card(rect, c_surface_raised, c_panel_stroke, 8)
+	draw_circle(rect.position + Vector2(10.0, 13.0), 3.0, value_color)
+	_draw_text(font, rect.position + Vector2(19.0, 16.0), label, HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 26.0, 7, c_muted)
+	_draw_text(font, rect.position + Vector2(10.0, 42.0), value, HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 18.0, 14, value_color)
+
+
+func _operations_section_title() -> String:
+	var names := ["Overview", "Fleet", "Drivers", "Dispatch", "Depots", "Workshop"]
+	return names[clampi(operations_section, 0, names.size() - 1)]
+
+
 func _draw_metric(font: Font, position: Vector2, label: String, value: String, value_color: Color) -> void:
 	_draw_text(font, position, label, HORIZONTAL_ALIGNMENT_LEFT, 115, 8, c_muted)
 	_draw_text(font, position + Vector2(0, 15), value, HORIZONTAL_ALIGNMENT_LEFT, 130, 11, value_color)
@@ -1463,12 +1486,47 @@ func _draw_operation_button(button_id: String, label: String, rect: Rect2, font:
 	style.shadow_offset = Vector2(0, 2)
 	style.draw(get_canvas_item(), rect)
 	var display_label := label
-	var font_size := 10
+	var font_size := 11 if button_id.begins_with("ops_section_") else 10
 	if rect.size.y < 34.0:
 		font_size = 9
 	if rect.size.x < 150.0 and display_label.length() > 24:
 		display_label = display_label.left(21) + "..."
-	_draw_text(font, rect.position + Vector2(7, rect.size.y * 0.64), display_label, HORIZONTAL_ALIGNMENT_CENTER, rect.size.x - 14.0, font_size, text_color)
+	if button_id.begins_with("ops_section_"):
+		var section_index := clampi(int(button_id.trim_prefix("ops_section_")), 0, 5)
+		_draw_operations_section_icon(section_index, rect, text_color)
+		_draw_text(font, rect.position + Vector2(37.0, rect.size.y * 0.64), display_label, HORIZONTAL_ALIGNMENT_CENTER, rect.size.x - 42.0, font_size, text_color)
+	else:
+		_draw_text(font, rect.position + Vector2(7, rect.size.y * 0.64), display_label, HORIZONTAL_ALIGNMENT_CENTER, rect.size.x - 14.0, font_size, text_color)
+
+
+func _draw_operations_section_icon(index: int, rect: Rect2, color: Color) -> void:
+	var center := rect.position + Vector2(20.0, rect.size.y * 0.5)
+	match index:
+		0:
+			for point in [Vector2(-5.0, -5.0), Vector2(3.0, -5.0), Vector2(-5.0, 3.0), Vector2(3.0, 3.0)]:
+				draw_rect(Rect2(center + point, Vector2(5.0, 5.0)), color, true)
+		1:
+			draw_rect(Rect2(center + Vector2(-10.0, -5.0), Vector2(12.0, 9.0)), color, false, 1.8)
+			draw_colored_polygon(PackedVector2Array([center + Vector2(2.0, -3.0), center + Vector2(8.0, -3.0), center + Vector2(11.0, 1.0), center + Vector2(11.0, 4.0), center + Vector2(2.0, 4.0)]), color)
+			draw_circle(center + Vector2(-5.0, 5.0), 2.5, color)
+			draw_circle(center + Vector2(6.0, 5.0), 2.5, color)
+		2:
+			draw_circle(center + Vector2(0.0, -4.0), 4.0, color)
+			draw_arc(center + Vector2(0.0, 7.0), 8.0, PI, TAU, 20, color, 2.0, true)
+		3:
+			draw_circle(center + Vector2(-7.0, 5.0), 3.0, color)
+			draw_circle(center + Vector2(7.0, -5.0), 3.0, color)
+			draw_line(center + Vector2(-4.0, 3.0), center + Vector2(4.0, -3.0), color, 2.0, true)
+			draw_colored_polygon(PackedVector2Array([center + Vector2(2.0, -8.0), center + Vector2(9.0, -6.0), center + Vector2(5.0, 0.0)]), color)
+		4:
+			var warehouse := PackedVector2Array([center + Vector2(-10.0, -2.0), center + Vector2(0.0, -8.0), center + Vector2(10.0, -2.0), center + Vector2(10.0, 8.0), center + Vector2(-10.0, 8.0)])
+			draw_polyline(warehouse, color, 2.0, true)
+			draw_line(center + Vector2(-3.0, 8.0), center + Vector2(-3.0, 1.0), color, 1.5, true)
+			draw_line(center + Vector2(3.0, 8.0), center + Vector2(3.0, 1.0), color, 1.5, true)
+		5:
+			draw_line(center + Vector2(-7.0, 7.0), center + Vector2(5.0, -5.0), color, 3.0, true)
+			draw_circle(center + Vector2(-7.0, 7.0), 3.0, color, false, 1.8, true)
+			draw_arc(center + Vector2(7.0, -7.0), 5.0, -0.8, 2.7, 16, color, 2.0, true)
 
 
 func _draw_view_buttons(font: Font) -> void:

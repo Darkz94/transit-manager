@@ -1,6 +1,6 @@
 # Transit Manager UI visual direction
 
-**Status:** First visual refresh implemented. A readability pass now enlarges on-screen text, core navigation, and common touch targets; landscape Android review remains.
+**Status:** The map now has an expanded place card and navigation dock. A game-style HUD and section icons are added to Operations; landscape Android review remains.
 
 ## Direction
 
@@ -38,6 +38,13 @@ Truck Manager 2027 was reviewed as a category reference. Its public product mate
 - Expanded the selected-place information strip into a place card with a location marker, a large selected city/town/district/province name, a clear geographic context label, and a short next-step hint.
 - Enlarged the map navigation dock and added original vector icons for country, province, city/town, and operations. Active navigation has a stronger raised treatment.
 - Kept the map as the dominant screen and preserved its zoom, panning, routes, and place selection behavior.
+
+## Company HUD and Operations identity pass
+
+- Replaced the centered page heading with a company name and current map/Operations context in the top status bar.
+- Added live truck-count and on-road indicators alongside the existing clock, speed control, cash balance, and day/night control.
+- Added original vector icons to the six Operations sections to distinguish Overview, Fleet, Drivers, Dispatch, Depots, and Workshop.
+- These are presentation changes only; they do not add reputation, company levels, objectives, or new simulation rules.
 
 ## Next visual review
 
