@@ -1,0 +1,46 @@
+name: Android Preview Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/android-preview.yml'
+      - 'assets/**'
+      - 'data/**'
+      - 'export_presets.cfg'
+      - 'project.godot'
+      - 'scenes/**'
+      - 'scripts/**'
+      - 'tests/**'
+  workflow_dispatch:
+
+jobs:
+  android-preview:
+    runs-on: ubuntu-24.04
+    container:
+      image: barichello/godot-ci:4.6.3
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Run game regression checks
+        run: godot --headless --path . --scene res://tests/test_trip_incidents.tscn --quit-after 30
+
+      - name: Export Android preview
+        run: |
+          mkdir -p build
+          godot --headless --path . --export-release Android build/Transit-Manager-0.8.0-Operations-Preview.apk
+
+      - name: Verify APK
+        run: |
+          unzip -t build/Transit-Manager-0.8.0-Operations-Preview.apk
+          "$ANDROID_HOME/build-tools/33.0.2/apksigner" verify --verbose build/Transit-Manager-0.8.0-Operations-Preview.apk
+          "$ANDROID_HOME/build-tools/33.0.2/aapt" dump badging build/Transit-Manager-0.8.0-Operations-Preview.apk | grep -F "package: name='za.co.transitmanager.mappreview080' versionCode='18' versionName='0.8.0-operations-preview'"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Transit-Manager-0.8.0-Operations-Preview
+          path: build/Transit-Manager-0.8.0-Operations-Preview.apk
+          if-no-files-found: error
+          retention-days: 30
