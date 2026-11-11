@@ -24,6 +24,16 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v4
 
+      - name: Configure Android export tools
+        run: |
+          mkdir -p "$HOME/.local/share/godot/export_templates" "$HOME/.config"
+          cp -a /root/.local/share/godot/export_templates/4.6.3.stable "$HOME/.local/share/godot/export_templates/"
+          cp -a /root/.config/godot "$HOME/.config/"
+          apt-get update -qq
+          apt-get install -y -qq fontconfig
+          yes | sdkmanager --licenses >/dev/null
+          sdkmanager "platforms;android-35" "build-tools;35.0.1"
+
       - name: Run game regression checks
         run: godot --headless --path . --scene res://tests/test_trip_incidents.tscn --quit-after 30
 
@@ -35,8 +45,8 @@ jobs:
       - name: Verify APK
         run: |
           unzip -t build/Transit-Manager-0.8.0-Operations-Preview.apk
-          "$ANDROID_HOME/build-tools/33.0.2/apksigner" verify --verbose build/Transit-Manager-0.8.0-Operations-Preview.apk
-          "$ANDROID_HOME/build-tools/33.0.2/aapt" dump badging build/Transit-Manager-0.8.0-Operations-Preview.apk | grep -F "package: name='za.co.transitmanager.mappreview080' versionCode='18' versionName='0.8.0-operations-preview'"
+          "$ANDROID_HOME/build-tools/35.0.1/apksigner" verify --verbose build/Transit-Manager-0.8.0-Operations-Preview.apk
+          "$ANDROID_HOME/build-tools/35.0.1/aapt" dump badging build/Transit-Manager-0.8.0-Operations-Preview.apk | grep -F "package: name='za.co.transitmanager.mappreview080' versionCode='18' versionName='0.8.0-operations-preview'"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
