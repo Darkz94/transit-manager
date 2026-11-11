@@ -33,6 +33,12 @@ Truck Manager 2027 was reviewed as a category reference. Its public product mate
 - Increased the header, company status cards, Operations section tabs, Dispatch sub-tabs, primary action buttons, and bottom navigation hit areas.
 - Kept the original map and simulation behavior unchanged. The new spacing and text size still need device review, especially on narrow landscape screens and the six-section Operations row.
 
+## Game-interface pass
+
+- Expanded the selected-place information strip into a place card with a location marker, a large selected city/town/district/province name, a clear geographic context label, and a short next-step hint.
+- Enlarged the map navigation dock and added original vector icons for country, province, city/town, and operations. Active navigation has a stronger raised treatment.
+- Kept the map as the dominant screen and preserved its zoom, panning, routes, and place selection behavior.
+
 ## Next visual review
 
 Check the map and each Operations section on Android phones and tablets in landscape. Review the default day and night palettes, text clipping, finger target sizes, truck illustration clarity, panel spacing, and the freight card at narrow aspect ratios. The class-specific silhouettes are first-pass in-game vector art; they can later be replaced by original detailed vehicle illustrations. Keep schematic map corridors clearly identified as illustrative, and do not derive game distances or costs from them.

@@ -298,8 +298,8 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), c_bg, true)
 
 	var header_h := 78.0
-	var controls_h := 78.0
-	var info_h := 56.0
+	var controls_h := 90.0 if screen_mode == 0 else 78.0
+	var info_h := 80.0 if screen_mode == 0 else 56.0
 	draw_rect(Rect2(0, 0, w, header_h), c_topbar, true)
 	draw_rect(Rect2(0, header_h - 2.0, w, 2.0), c_orange, true)
 	var brand_mark := Rect2(12.0, 8.0, 48.0, 60.0)
@@ -922,25 +922,51 @@ func _draw_scale(font: Font) -> void:
 
 
 func _draw_info(font: Font) -> void:
-	var title := "South Africa • 9 provinces"
+	var title := "South Africa"
+	var context := "NATIONAL MAP  •  9 PROVINCES"
+	var detail := "Select a province, city, or town to explore."
+	var item_type := str(selected_item.get("type", "Map view"))
+	var province := str(selected_item.get("province", selected_province))
 	if map_mode == 1:
-		title = selected_province + " • Province view"
+		title = selected_province
+		context = "PROVINCE VIEW  •  SOUTH AFRICA"
+		detail = "Select a city or town to open its local map."
 	elif map_mode == 2:
-		title = selected_city + " • City routes"
-	var detail := str(selected_item.get("info", selected_place))
-	if startup_status != "":
-		title = "" if GameSave.recovered_backup else "Offline company ready"
-		detail = startup_status
-	if selected_item.get("type", "") == "terminal":
-		var terminal_city := str(selected_item.get("city", selected_place))
-		if CompanyOperations.owned_terminals.has(terminal_city):
-			detail = str(selected_item.get("info", selected_place)) + " • Owned by your company"
-		elif terminal_city in ["Gqeberha", "Bloemfontein", "Johannesburg", "Durban"]:
-			detail = str(selected_item.get("info", selected_place)) + " • Purchase in Operations to unlock line-haul jobs"
+		title = str(selected_item.get("name", selected_city))
+		if item_type == "suburb_district":
+			context = "METRO DISTRICT  •  %s  •  %s" % [selected_city.to_upper(), province.to_upper()]
+			detail = str(selected_item.get("info", "Metro district map anchor"))
+		elif item_type == "terminal":
+			context = "FREIGHT TERMINAL  •  %s" % province.to_upper()
+			detail = str(selected_item.get("info", "Terminal map location"))
+			var terminal_city := str(selected_item.get("city", selected_place))
+			if CompanyOperations.owned_terminals.has(terminal_city):
+				detail += "  •  OWNED BY YOUR COMPANY"
+			elif terminal_city in ["Gqeberha", "Bloemfontein", "Johannesburg", "Durban"]:
+				detail += "  •  PURCHASE IN OPERATIONS TO UNLOCK LINE-HAUL"
+			else:
+				detail += "  •  NOT YET AVAILABLE"
+		elif item_type.to_lower() in ["town", "city"]:
+			context = "%s  •  %s" % [item_type.to_upper(), province.to_upper()]
+			detail = "Tap a metro district to zoom in." if item_type.to_lower() == "city" else "Town map view"
 		else:
-			detail = str(selected_item.get("info", selected_place)) + " • Not yet available in the terminal market"
-	_draw_text(font, Vector2(14, info_rect.position.y + 19), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, c_cyan)
-	_draw_text(font, Vector2(14, info_rect.position.y + 38), detail, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, c_info_detail)
+			context = "LOCAL MAP  •  %s" % province.to_upper()
+			detail = str(selected_item.get("info", "Explore nearby places and routes."))
+	if startup_status != "":
+		title = "Offline company ready" if not GameSave.recovered_backup else "Save recovered"
+		context = "LOCAL GAME  •  SAVED ON THIS DEVICE"
+		detail = startup_status
+
+	var center := Vector2(34.0, info_rect.position.y + info_rect.size.y * 0.5)
+	draw_circle(center, 19.0, Color(c_orange, 0.16))
+	draw_colored_polygon(PackedVector2Array([center + Vector2(-6.0, 2.0), center + Vector2(6.0, 2.0), center + Vector2(0.0, 15.0)]), c_orange)
+	draw_circle(center + Vector2(0.0, -3.0), 7.5, c_orange)
+	draw_circle(center + Vector2(0.0, -3.0), 2.5, Color.WHITE)
+	var details_x := clampf(size.x * 0.48, 390.0, size.x - 220.0)
+	_draw_text(font, Vector2(69, info_rect.position.y + 33), title, HORIZONTAL_ALIGNMENT_LEFT, details_x - 84.0, 18, c_text)
+	_draw_text(font, Vector2(70, info_rect.position.y + 58), context, HORIZONTAL_ALIGNMENT_LEFT, details_x - 84.0, 9, c_cyan)
+	draw_line(Vector2(details_x - 20.0, info_rect.position.y + 14.0), Vector2(details_x - 20.0, info_rect.end.y - 14.0), c_divider, 1.0, true)
+	_draw_text(font, Vector2(details_x, info_rect.position.y + 46), detail.left(88), HORIZONTAL_ALIGNMENT_LEFT, size.x - details_x - 20.0, 10, c_info_detail)
 
 
 func _draw_operations_info(font: Font) -> void:
@@ -1448,22 +1474,55 @@ func _draw_operation_button(button_id: String, label: String, rect: Rect2, font:
 func _draw_view_buttons(font: Font) -> void:
 	view_buttons.clear()
 	var labels := ["COUNTRY", "PROVINCE", "CITY / TOWN", "OPERATIONS"] if screen_mode == 0 else ["BACK TO MAP"]
-	var button_w := 164.0 if screen_mode == 0 else 210.0
-	var gap := 8.0
+	var gap := 10.0
+	var button_w := minf(184.0, (controls_rect.size.x - 40.0 - gap * 3.0) / 4.0) if screen_mode == 0 else 224.0
+	button_w = maxf(132.0, button_w)
 	var total := button_w * float(labels.size()) + gap * float(maxi(0, labels.size() - 1))
 	var start_x := maxf(8.0, (controls_rect.size.x - total) * 0.5)
+	var button_h := 58.0 if screen_mode == 0 else 48.0
 	draw_rect(Rect2(0, controls_rect.position.y, controls_rect.size.x, controls_rect.size.y), c_topbar, true)
 	for i in range(labels.size()):
-		var rect := Rect2(start_x + float(i) * (button_w + gap), controls_rect.position.y + 5.0, button_w, 46.0)
+		var rect := Rect2(start_x + float(i) * (button_w + gap), controls_rect.position.y + 5.0, button_w, button_h)
 		var active := (screen_mode == 0 and i == map_mode) or screen_mode == 1
 		var style := StyleBoxFlat.new()
 		style.bg_color = c_orange if active else c_button
 		style.border_color = c_orange if active else c_panel_stroke
-		style.set_border_width_all(1)
-		style.set_corner_radius_all(8)
+		style.set_border_width_all(2 if active else 1)
+		style.set_corner_radius_all(12)
+		style.shadow_color = c_shadow
+		style.shadow_size = 4 if active else 2
+		style.shadow_offset = Vector2(0, 3)
 		style.draw(get_canvas_item(), rect)
-		_draw_text(font, rect.position + Vector2(0, 30), labels[i], HORIZONTAL_ALIGNMENT_CENTER, rect.size.x, 10, Color.WHITE if active else c_button_text)
+		var icon_color := Color.WHITE if active else c_cyan
+		_draw_view_navigation_icon(0 if screen_mode == 1 else i, rect, icon_color)
+		var text_color := Color.WHITE if active else c_button_text
+		_draw_text(font, rect.position + Vector2(34, 37), labels[i], HORIZONTAL_ALIGNMENT_CENTER, rect.size.x - 42.0, 11, text_color)
 		view_buttons.append(rect)
+
+
+func _draw_view_navigation_icon(icon_index: int, rect: Rect2, color: Color) -> void:
+	var center := rect.position + Vector2(21.0, rect.size.y * 0.5)
+	match icon_index:
+		0:
+			draw_circle(center, 8.0, color, false, 2.0, true)
+			draw_line(center + Vector2(-8.0, 0.0), center + Vector2(8.0, 0.0), color, 1.5, true)
+			draw_line(center + Vector2(0.0, -8.0), center + Vector2(0.0, 8.0), color, 1.5, true)
+			draw_arc(center, 4.5, -PI * 0.5, PI * 0.5, 16, color, 1.2, true)
+			draw_arc(center, 4.5, PI * 0.5, PI * 1.5, 16, color, 1.2, true)
+		1:
+			var province_shape := PackedVector2Array([center + Vector2(-9.0, -7.0), center + Vector2(-2.0, -9.0), center + Vector2(2.0, -5.0), center + Vector2(9.0, -8.0), center + Vector2(8.0, 7.0), center + Vector2(1.0, 9.0), center + Vector2(-3.0, 5.0), center + Vector2(-9.0, 7.0)])
+			draw_polyline(province_shape, color, 2.0, true)
+			draw_line(center + Vector2(-2.0, -8.0), center + Vector2(-3.0, 5.0), color, 1.2, true)
+			draw_line(center + Vector2(2.0, -5.0), center + Vector2(1.0, 8.0), color, 1.2, true)
+		2:
+			draw_colored_polygon(PackedVector2Array([center + Vector2(-7.0, -4.0), center + Vector2(7.0, -4.0), center + Vector2(0.0, 10.0)]), color)
+			draw_circle(center + Vector2(0.0, -5.0), 7.0, color)
+			draw_circle(center + Vector2(0.0, -5.0), 2.5, c_topbar)
+		3:
+			draw_rect(Rect2(center + Vector2(-10.0, -5.0), Vector2(12.0, 9.0)), color, false, 1.8)
+			draw_colored_polygon(PackedVector2Array([center + Vector2(2.0, -3.0), center + Vector2(8.0, -3.0), center + Vector2(11.0, 1.0), center + Vector2(11.0, 4.0), center + Vector2(2.0, 4.0)]), color)
+			draw_circle(center + Vector2(-5.0, 5.0), 2.5, color)
+			draw_circle(center + Vector2(6.0, 5.0), 2.5, color)
 
 
 func _set_selected_city(item: Dictionary) -> void:
