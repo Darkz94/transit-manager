@@ -44,8 +44,15 @@ Truck Manager 2027 was reviewed as a category reference. Its public product mate
 - Replaced the centered page heading with a company name and current map/Operations context in the top status bar.
 - Added live truck-count and on-road indicators alongside the existing clock, speed control, cash balance, and day/night control.
 - Added original vector icons to the six Operations sections to distinguish Overview, Fleet, Drivers, Dispatch, Depots, and Workshop.
-- These are presentation changes only; they do not add reputation, company levels, objectives, or new simulation rules.
+- These are presentation changes only; they do not add reputation, company levels, rewards, or new simulation rules.
+
+## Company goal and feedback pass
+
+- Added a state-aware optional company goal to the Overview dispatch card. It points to the next useful section for the current company stage, from buying the first van through opening a remote depot.
+- Made the goal button navigate to that section without purchasing, hiring, or dispatching on the player's behalf.
+- Reworked the Operations update strip as a larger, card-based company update so dispatch and delivery results stand out more clearly.
+- The prompt is derived from existing fleet, driver, trip, and depot data. It adds no save fields, rewards, balance changes, or required objectives.
 
 ## Next visual review
 
-Check the map and each Operations section on Android phones and tablets in landscape. Review the default day and night palettes, text clipping, finger target sizes, truck illustration clarity, panel spacing, and the freight card at narrow aspect ratios. The class-specific silhouettes are first-pass in-game vector art; they can later be replaced by original detailed vehicle illustrations. Keep schematic map corridors clearly identified as illustrative, and do not derive game distances or costs from them.
+Check the map and each Operations section on Android phones and tablets in landscape. Review the default day and night palettes, text clipping, finger target sizes, truck illustration clarity, panel spacing, the optional goal card, and the freight card at narrow aspect ratios. The class-specific silhouettes are first-pass in-game vector art; they can later be replaced by original detailed vehicle illustrations. Keep schematic map corridors clearly identified as illustrative, and do not derive game distances or costs from them.

@@ -981,9 +981,13 @@ func _draw_info(font: Font) -> void:
 
 
 func _draw_operations_info(font: Font) -> void:
-	draw_circle(Vector2(19, info_rect.position.y + 24), 5.0, c_positive)
-	_draw_text(font, Vector2(33, info_rect.position.y + 21), "DISPATCH LOG", HORIZONTAL_ALIGNMENT_LEFT, 110, 10, c_cyan)
-	_draw_text(font, Vector2(142, info_rect.position.y + 21), CompanyOperations.message, HORIZONTAL_ALIGNMENT_LEFT, info_rect.size.x - 160.0, 11, c_info_detail)
+	var banner := Rect2(10.0, info_rect.position.y + 6.0, info_rect.size.x - 20.0, info_rect.size.y - 12.0)
+	_draw_ui_card(banner, c_surface_raised, c_panel_stroke, 9)
+	_draw_rect(Rect2(banner.position.x, banner.position.y + 8.0, 4.0, banner.size.y - 16.0), c_orange, true)
+	draw_circle(Vector2(banner.position.x + 22.0, banner.position.y + banner.size.y * 0.5), 13.0, Color(c_orange, 0.16))
+	draw_circle(Vector2(banner.position.x + 22.0, banner.position.y + banner.size.y * 0.5), 5.0, c_orange)
+	_draw_text(font, Vector2(banner.position.x + 44.0, banner.position.y + 19.0), "LATEST COMPANY UPDATE", HORIZONTAL_ALIGNMENT_LEFT, banner.size.x - 58.0, 9, c_cyan)
+	_draw_text(font, Vector2(banner.position.x + 44.0, banner.position.y + 42.0), CompanyOperations.message, HORIZONTAL_ALIGNMENT_LEFT, banner.size.x - 58.0, 12, c_info_detail)
 
 
 func _draw_operations_screen(font: Font) -> void:
@@ -1079,7 +1083,37 @@ func _draw_overview_section(panel: Rect2, font: Font) -> void:
 	_draw_text(font, dispatch_card.position + Vector2(16, 82), CompanyOperations.job_label(), HORIZONTAL_ALIGNMENT_LEFT, dispatch_card.size.x - 32.0, 11, c_text)
 	_draw_text(font, dispatch_card.position + Vector2(16, 119), CompanyOperations.job_cost_label(), HORIZONTAL_ALIGNMENT_LEFT, dispatch_card.size.x - 32.0, 9, c_muted)
 	_draw_text(font, dispatch_card.position + Vector2(16, 156), CompanyOperations.trip_summary(), HORIZONTAL_ALIGNMENT_LEFT, dispatch_card.size.x - 32.0, 9, c_muted)
-	_draw_operation_button("ops_section_3", "OPEN DISPATCH", Rect2(dispatch_card.position.x + 12.0, dispatch_card.end.y - 50.0, dispatch_card.size.x - 24.0, 42.0), font)
+	var goal := _company_goal()
+	var goal_y := dispatch_card.position.y + 188.0
+	var goal_height := minf(90.0, dispatch_card.end.y - 62.0 - goal_y)
+	if goal_height >= 48.0:
+		var goal_rect := Rect2(dispatch_card.position.x + 12.0, goal_y, dispatch_card.size.x - 24.0, goal_height)
+		_draw_ui_card(goal_rect, c_bg, c_panel_stroke, 8)
+		_draw_rect(Rect2(goal_rect.position.x, goal_rect.position.y + 8.0, 3.0, goal_rect.size.y - 16.0), c_orange, true)
+		_draw_text(font, goal_rect.position + Vector2(12.0, 18.0), "OPTIONAL COMPANY GOAL", HORIZONTAL_ALIGNMENT_LEFT, goal_rect.size.x - 24.0, 8, c_orange)
+		_draw_text(font, goal_rect.position + Vector2(12.0, 41.0), str(goal["title"]), HORIZONTAL_ALIGNMENT_LEFT, goal_rect.size.x - 24.0, 12, c_text)
+		_draw_text(font, goal_rect.position + Vector2(12.0, 61.0), str(goal["detail"]), HORIZONTAL_ALIGNMENT_LEFT, goal_rect.size.x - 24.0, 9, c_muted)
+	_draw_operation_button("ops_section_%d" % int(goal["section"]), "NEXT STEP  •  %s" % str(goal["button"]), Rect2(dispatch_card.position.x + 12.0, dispatch_card.end.y - 50.0, dispatch_card.size.x - 24.0, 42.0), font)
+
+
+func _company_goal() -> Dictionary:
+	if CompanyOperations.fleet.is_empty():
+		return {"title":"Build your first fleet","detail":"Start with a van for local freight.","button":"OPEN FLEET","section":1}
+	if CompanyOperations.drivers.is_empty():
+		return {"title":"Hire your first driver","detail":"A driver is needed before dispatch.","button":"OPEN DRIVERS","section":2}
+	if CompanyOperations.trips.is_empty():
+		return {"title":"Make your first delivery","detail":"Choose a local job and send a crew.","button":"OPEN DISPATCH","section":3}
+	var returned_trips := 0
+	for trip in CompanyOperations.trips:
+		if str(trip.get("status", "")) == "returned":
+			returned_trips += 1
+	if returned_trips == 0:
+		var active_runs := active_count_on_road()
+		var detail := "%d truck%s currently on the road." % [active_runs, " is" if active_runs == 1 else "s are"] if active_runs > 0 else "Dispatch a local freight job to get started."
+		return {"title":"Bring your first delivery home","detail":detail,"button":"OPEN DISPATCH","section":3}
+	if CompanyOperations.owned_terminals.size() <= 1:
+		return {"title":"Open a remote depot","detail":"Unlock line-haul jobs and widen your network.","button":"OPEN DEPOTS","section":4}
+	return {"title":"Grow your transport company","detail":"Add trucks and take on new freight.","button":"OPEN FLEET","section":1}
 
 
 func _draw_fleet_section(panel: Rect2, font: Font) -> void:
