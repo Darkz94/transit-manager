@@ -98,9 +98,9 @@ Stage 1 progress: the map now follows the supplied day/night design direction, s
 
 Next implementation work:
 
-1. Review the refreshed map and operations UI on Android: verify day/night palettes, truck art, freight cards, label spacing, touch targets, and fit on phone and tablet; inspect country, Western Cape, and Cape Town zoom levels.
+1. Review the enlarged map and Operations UI on Android: verify day/night palettes, text readability, truck art, freight cards, label spacing, larger touch targets, and fit on phone and tablet; inspect country, Western Cape, and Cape Town zoom levels.
 2. Review save/resume and the Stage 5 wear, repair, and equipment compatibility loops on-device. See [docs/STAGE_2_SIMULATION.md](STAGE_2_SIMULATION.md) and [docs/STAGE_5_FLEET.md](STAGE_5_FLEET.md).
-3. Review service fees, inspection cycle, workshop upgrades, and the new recoverable incidents on device; tune trip costs and certification rules before adding further maintenance upgrades or incident types. The first UI visual refresh is recorded in [docs/UI_VISUAL_DIRECTION.md](UI_VISUAL_DIRECTION.md).
+3. Review service fees, inspection cycle, workshop upgrades, and the new recoverable incidents on device; tune trip costs and certification rules before adding further maintenance upgrades or incident types. The first UI visual refresh and a 30% readability pass for on-screen text, Operations tabs, and touch targets are recorded in [docs/UI_VISUAL_DIRECTION.md](UI_VISUAL_DIRECTION.md); the new sizing needs Android device review.
 4. Build an arterial base graph with selected local access roads around terminals and playable districts; do not discard all local roads based on the global component statistic. Then define game truck dimensions and loaded weights before evaluating physical limits. Add conditional access, turn restrictions, terminal access, and route plausibility checks. Measure Android size/load time and complete ODbL distribution review before bundling data. Keep schematic route economics unchanged until these checks pass.
 
 ## Initial simulation entities

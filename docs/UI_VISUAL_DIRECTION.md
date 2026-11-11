@@ -1,6 +1,6 @@
 # Transit Manager UI visual direction
 
-**Status:** First visual refresh implemented in the map and operations interface; landscape Android review remains.
+**Status:** First visual refresh implemented. A readability pass now enlarges on-screen text, core navigation, and common touch targets; landscape Android review remains.
 
 ## Direction
 
@@ -26,6 +26,12 @@ Truck Manager 2027 was reviewed as a category reference. Its public product mate
 - Added the CapeRunner Bakkie and TownLink 3T Dropside as new early-fleet vehicles with distinct cargo fit, capacity, energy use, and operating costs.
 - Preserved old saves by mapping their previous vehicle-offer index back to the same named offer; new saves store the offer ID.
 - Trailer artwork communicates the later vehicle family, while swappable trailers and trailer compatibility remain future gameplay work.
+
+## Readability pass
+
+- Increased the shared UI text scale by 30% across the map, header, Operations cards, dispatch details, and action labels. Marker-label collision measurements use the same larger size.
+- Increased the header, company status cards, Operations section tabs, Dispatch sub-tabs, primary action buttons, and bottom navigation hit areas.
+- Kept the original map and simulation behavior unchanged. The new spacing and text size still need device review, especially on narrow landscape screens and the six-section Operations row.
 
 ## Next visual review
 
