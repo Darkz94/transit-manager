@@ -34,24 +34,27 @@ jobs:
           yes | sdkmanager --licenses >/dev/null
           sdkmanager "platforms;android-35" "build-tools;35.0.1"
 
+      - name: Import project assets
+        run: godot --headless --editor --path . --quit
+
       - name: Run game regression checks
         run: godot --headless --path . --scene res://tests/test_trip_incidents.tscn --quit-after 30
 
       - name: Export debug-signed Android preview
         run: |
           mkdir -p build
-          godot --headless --path . --export-debug Android build/Transit-Manager-0.8.0-Operations-Preview.apk
+          godot --headless --path . --export-debug Android build/Transit-Manager-0.8.1-Vehicle-Art-Preview.apk
 
       - name: Verify APK
         run: |
-          unzip -t build/Transit-Manager-0.8.0-Operations-Preview.apk
-          "$ANDROID_HOME/build-tools/35.0.1/apksigner" verify --verbose build/Transit-Manager-0.8.0-Operations-Preview.apk
-          "$ANDROID_HOME/build-tools/35.0.1/aapt" dump badging build/Transit-Manager-0.8.0-Operations-Preview.apk | grep -F "package: name='za.co.transitmanager.mappreview080' versionCode='18' versionName='0.8.0-operations-preview'"
+          unzip -t build/Transit-Manager-0.8.1-Vehicle-Art-Preview.apk
+          "$ANDROID_HOME/build-tools/35.0.1/apksigner" verify --verbose build/Transit-Manager-0.8.1-Vehicle-Art-Preview.apk
+          "$ANDROID_HOME/build-tools/35.0.1/aapt" dump badging build/Transit-Manager-0.8.1-Vehicle-Art-Preview.apk | grep -F "package: name='za.co.transitmanager.mappreview080' versionCode='19' versionName='0.8.1-vehicle-art-preview'"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Transit-Manager-0.8.0-Operations-Preview
-          path: build/Transit-Manager-0.8.0-Operations-Preview.apk
+          name: Transit-Manager-0.8.1-Vehicle-Art-Preview
+          path: build/Transit-Manager-0.8.1-Vehicle-Art-Preview.apk
           if-no-files-found: error
           retention-days: 30

@@ -46,6 +46,7 @@ var operations_tab := 0 # 0 local jobs, 1 long-haul contracts
 var operations_section := 3 # overview, fleet, drivers, dispatch, depots, workshop
 var operations_ready := false
 var operation_buttons: Array = []
+var vehicle_lineup_atlas: Texture2D
 
 var map_mode := 0 # 0 country, 1 province, 2 city
 var selected_province := "Western Cape"
@@ -88,6 +89,7 @@ var mouse_drag_moved := false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	vehicle_lineup_atlas = load("res://assets/vehicles/vehicle_lineup_atlas.png")
 	SimulationClock.time_changed.connect(_on_clock_changed)
 	var saved_state: Dictionary = GameSave.load_game()
 	if saved_state.is_empty():
@@ -1153,7 +1155,8 @@ func _draw_fleet_section(panel: Rect2, font: Font) -> void:
 		running_cost = float(upcoming.get("km_cost", 0.0))
 	_draw_text(font, hero.position + Vector2(20, 26), tier.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, hero.size.x - 40.0, 10, c_cyan)
 	_draw_text(font, Vector2(hero.position.x + 20, hero.position.y + 56), title, HORIZONTAL_ALIGNMENT_LEFT, hero.size.x - 40.0, 15, c_text)
-	_draw_truck_illustration(Rect2(hero.position.x + 22.0, hero.position.y + 91.0, hero.size.x - 44.0, 116.0), c_orange, vehicle_class)
+	var vehicle_art_height := minf(190.0, maxf(96.0, hero.size.y * 0.52))
+	_draw_truck_illustration(Rect2(hero.position.x + 22.0, hero.position.y + 68.0, hero.size.x - 44.0, vehicle_art_height), c_orange, vehicle_class)
 	_draw_text(font, hero.position + Vector2(20, hero.size.y - 58.0), status, HORIZONTAL_ALIGNMENT_LEFT, hero.size.x - 40.0, 9, c_muted)
 	var buy_y := hero.end.y - 48.0
 	if CompanyOperations.fleet.is_empty():
@@ -1416,6 +1419,13 @@ func _vehicle_tier_label(vehicle_class: String) -> String:
 
 
 func _draw_truck_illustration(rect: Rect2, cab_color: Color, vehicle_class: String = "rigid") -> void:
+	if screen_mode == 1 and rect.size.x >= 120.0 and vehicle_lineup_atlas != null:
+		var source_rect := _vehicle_lineup_region(vehicle_class)
+		var fit_scale := minf(rect.size.x / source_rect.size.x, rect.size.y / source_rect.size.y)
+		var art_size := source_rect.size * fit_scale
+		var art_rect := Rect2(rect.position + (rect.size - art_size) * 0.5, art_size)
+		draw_texture_rect_region(vehicle_lineup_atlas, art_rect, source_rect)
+		return
 	var sx := rect.size.x / 140.0
 	var sy := rect.size.y / 54.0
 	var wheel_radius := 7.0 * minf(sx, sy)
@@ -1486,6 +1496,29 @@ func _draw_truck_illustration(rect: Rect2, cab_color: Color, vehicle_class: Stri
 		draw_colored_polygon(PackedVector2Array([rect.position + Vector2((cab_start + 12.0) * sx, 19.0 * sy), rect.position + Vector2((cab_start + 25.0) * sx, 19.0 * sy), rect.position + Vector2(131.0 * sx, 29.0 * sy), rect.position + Vector2((cab_start + 11.0) * sx, 29.0 * sy)]), cab_window)
 		for x in wheel_positions:
 			_draw_wheel(rect.position.x + float(x) * sx, wheel_y, wheel_radius)
+
+
+func _vehicle_lineup_region(vehicle_class: String) -> Rect2:
+	match vehicle_class:
+		"van":
+			return Rect2(88.0, 72.0, 414.0, 260.0)
+		"electric_van":
+			return Rect2(600.0, 72.0, 392.0, 260.0)
+		"bakkie":
+			return Rect2(1086.0, 72.0, 420.0, 260.0)
+		"light_rigid":
+			return Rect2(88.0, 378.0, 410.0, 262.0)
+		"rigid":
+			return Rect2(600.0, 378.0, 396.0, 262.0)
+		"reefer":
+			return Rect2(1086.0, 378.0, 420.0, 262.0)
+		"tipper":
+			return Rect2(88.0, 699.0, 410.0, 275.0)
+		"hazmat_rigid":
+			return Rect2(600.0, 699.0, 396.0, 275.0)
+		"tractor":
+			return Rect2(1086.0, 710.0, 420.0, 265.0)
+	return Rect2(600.0, 378.0, 396.0, 262.0)
 
 
 func _draw_wheel(x: float, y: float, radius: float) -> void:

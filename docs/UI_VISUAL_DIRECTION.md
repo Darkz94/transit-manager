@@ -27,6 +27,12 @@ Truck Manager 2027 was reviewed as a category reference. Its public product mate
 - Preserved old saves by mapping their previous vehicle-offer index back to the same named offer; new saves store the offer ID.
 - Trailer artwork communicates the later vehicle family, while swappable trailers and trailer compatibility remain future gameplay work.
 
+## Fleet artwork integration
+
+- Added the approved nine-vehicle concept sheet as a shared atlas for larger Fleet, Overview, and truck-detail illustrations, preserving the distinct van, electric van, bakkie, dropside, rigid, refrigerated, tipper, dangerous-goods, and prime-mover silhouettes.
+- Atlas regions are drawn at their source proportions so the starter van no longer stretches across a wide card like a rail vehicle. Small map markers continue to use lightweight vector drawings.
+- These are visual updates only. The dangerous-goods truck keeps its existing gameplay class; the prime-mover trailer is still illustrative and does not add trailer ownership or compatibility.
+
 ## Readability pass
 
 - Increased the shared UI text scale by 30% across the map, header, Operations cards, dispatch details, and action labels. Marker-label collision measurements use the same larger size.
@@ -55,4 +61,4 @@ Truck Manager 2027 was reviewed as a category reference. Its public product mate
 
 ## Next visual review
 
-Check the map and each Operations section on Android phones and tablets in landscape. Review the default day and night palettes, text clipping, finger target sizes, truck illustration clarity, panel spacing, the optional goal card, and the freight card at narrow aspect ratios. The class-specific silhouettes are first-pass in-game vector art; they can later be replaced by original detailed vehicle illustrations. Keep schematic map corridors clearly identified as illustrative, and do not derive game distances or costs from them.
+Check the map and each Operations section on Android phones and tablets in landscape. Review the default day and night palettes, text clipping, finger target sizes, truck illustration clarity, panel spacing, the optional goal card, and the freight card at narrow aspect ratios. Keep schematic map corridors clearly identified as illustrative, and do not derive game distances or costs from them.
