@@ -1,0 +1,352 @@
+[
+  {
+    "id": "cape-town-city-bowl",
+    "name": "City Bowl",
+    "type": "suburb_district",
+    "lat": -33.925,
+    "lon": 18.418,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
+  },
+  {
+    "id": "woodstock",
+    "name": "Woodstock",
+    "type": "suburb_district",
+    "lat": -33.9275,
+    "lon": 18.448,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
+  },
+  {
+    "id": "bellville",
+    "name": "Bellville",
+    "type": "suburb_district",
+    "lat": -33.9,
+    "lon": 18.63,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
+  },
+  {
+    "id": "parow",
+    "name": "Parow",
+    "type": "suburb_district",
+    "lat": -33.9,
+    "lon": 18.59,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
+  },
+  {
+    "id": "table-view",
+    "name": "Table View",
+    "type": "suburb_district",
+    "lat": -33.822,
+    "lon": 18.49,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
+  },
+  {
+    "id": "milnerton",
+    "name": "Milnerton",
+    "type": "suburb_district",
+    "lat": -33.88,
+    "lon": 18.5,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
+  },
+  {
+    "id": "century-city",
+    "name": "Century City",
+    "type": "suburb_district",
+    "lat": -33.892,
+    "lon": 18.51,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
+  },
+  {
+    "id": "claremont",
+    "name": "Claremont",
+    "type": "suburb_district",
+    "lat": -33.98,
+    "lon": 18.47,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
+  },
+  {
+    "id": "hout-bay",
+    "name": "Hout Bay",
+    "type": "suburb_district",
+    "lat": -34.05,
+    "lon": 18.36,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
+  },
+  {
+    "id": "khayelitsha",
+    "name": "Khayelitsha",
+    "type": "suburb_district",
+    "lat": -34.04,
+    "lon": 18.67,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
+  },
+  {
+    "id": "mitchells-plain",
+    "name": "Mitchells Plain",
+    "type": "suburb_district",
+    "lat": -34.05,
+    "lon": 18.62,
+    "city": "Cape Town",
+    "province": "Western Cape",
+    "info": "Western Cape • Metro district"
+  },
+  {
+    "id": "sandton",
+    "name": "Sandton",
+    "type": "suburb_district",
+    "lat": -26.1076,
+    "lon": 28.0567,
+    "city": "Johannesburg",
+    "province": "Gauteng",
+    "info": "Gauteng • Metro district"
+  },
+  {
+    "id": "rosebank-jhb",
+    "name": "Rosebank",
+    "type": "suburb_district",
+    "lat": -26.145,
+    "lon": 28.043,
+    "city": "Johannesburg",
+    "province": "Gauteng",
+    "info": "Gauteng • Metro district"
+  },
+  {
+    "id": "randburg",
+    "name": "Randburg",
+    "type": "suburb_district",
+    "lat": -26.094,
+    "lon": 28.001,
+    "city": "Johannesburg",
+    "province": "Gauteng",
+    "info": "Gauteng • Metro district"
+  },
+  {
+    "id": "roodepoort",
+    "name": "Roodepoort",
+    "type": "suburb_district",
+    "lat": -26.162,
+    "lon": 27.872,
+    "city": "Johannesburg",
+    "province": "Gauteng",
+    "info": "Gauteng • Metro district"
+  },
+  {
+    "id": "alexandra",
+    "name": "Alexandra",
+    "type": "suburb_district",
+    "lat": -26.103,
+    "lon": 28.1,
+    "city": "Johannesburg",
+    "province": "Gauteng",
+    "info": "Gauteng • Metro district"
+  },
+  {
+    "id": "hatfield",
+    "name": "Hatfield",
+    "type": "suburb_district",
+    "lat": -25.747,
+    "lon": 28.236,
+    "city": "Pretoria",
+    "province": "Gauteng",
+    "info": "Gauteng • Metro district"
+  },
+  {
+    "id": "menlyn",
+    "name": "Menlyn",
+    "type": "suburb_district",
+    "lat": -25.783,
+    "lon": 28.276,
+    "city": "Pretoria",
+    "province": "Gauteng",
+    "info": "Gauteng • Metro district"
+  },
+  {
+    "id": "mamelodi",
+    "name": "Mamelodi",
+    "type": "suburb_district",
+    "lat": -25.706,
+    "lon": 28.365,
+    "city": "Pretoria",
+    "province": "Gauteng",
+    "info": "Gauteng • Metro district"
+  },
+  {
+    "id": "akasia",
+    "name": "Akasia",
+    "type": "suburb_district",
+    "lat": -25.666,
+    "lon": 28.103,
+    "city": "Pretoria",
+    "province": "Gauteng",
+    "info": "Gauteng • Metro district"
+  },
+  {
+    "id": "umhlanga",
+    "name": "Umhlanga",
+    "type": "suburb_district",
+    "lat": -29.727,
+    "lon": 31.085,
+    "city": "Durban",
+    "province": "KwaZulu-Natal",
+    "info": "KwaZulu-Natal • Metro district"
+  },
+  {
+    "id": "durban-north",
+    "name": "Durban North",
+    "type": "suburb_district",
+    "lat": -29.795,
+    "lon": 31.037,
+    "city": "Durban",
+    "province": "KwaZulu-Natal",
+    "info": "KwaZulu-Natal • Metro district"
+  },
+  {
+    "id": "pinetown",
+    "name": "Pinetown",
+    "type": "suburb_district",
+    "lat": -29.814,
+    "lon": 30.861,
+    "city": "Durban",
+    "province": "KwaZulu-Natal",
+    "info": "KwaZulu-Natal • Metro district"
+  },
+  {
+    "id": "chatsworth",
+    "name": "Chatsworth",
+    "type": "suburb_district",
+    "lat": -29.918,
+    "lon": 30.888,
+    "city": "Durban",
+    "province": "KwaZulu-Natal",
+    "info": "KwaZulu-Natal • Metro district"
+  },
+  {
+    "id": "summerstrand",
+    "name": "Summerstrand",
+    "type": "suburb_district",
+    "lat": -34.026,
+    "lon": 25.667,
+    "city": "Gqeberha",
+    "province": "Eastern Cape",
+    "info": "Eastern Cape • Metro district"
+  },
+  {
+    "id": "walmer",
+    "name": "Walmer",
+    "type": "suburb_district",
+    "lat": -33.978,
+    "lon": 25.587,
+    "city": "Gqeberha",
+    "province": "Eastern Cape",
+    "info": "Eastern Cape • Metro district"
+  },
+  {
+    "id": "new-brighton",
+    "name": "New Brighton",
+    "type": "suburb_district",
+    "lat": -33.89,
+    "lon": 25.58,
+    "city": "Gqeberha",
+    "province": "Eastern Cape",
+    "info": "Eastern Cape • Metro district"
+  },
+  {
+    "id": "heidedal",
+    "name": "Heidedal",
+    "type": "suburb_district",
+    "lat": -29.083,
+    "lon": 26.251,
+    "city": "Bloemfontein",
+    "province": "Free State",
+    "info": "Free State • Metro district"
+  },
+  {
+    "id": "langenhovan-park",
+    "name": "Langenhoven Park",
+    "type": "suburb_district",
+    "lat": -29.136,
+    "lon": 26.163,
+    "city": "Bloemfontein",
+    "province": "Free State",
+    "info": "Free State • Metro district"
+  },
+  {
+    "id": "nahoon",
+    "name": "Nahoon",
+    "type": "suburb_district",
+    "lat": -32.993,
+    "lon": 27.939,
+    "city": "East London",
+    "province": "Eastern Cape",
+    "info": "Eastern Cape • Metro district"
+  },
+  {
+    "id": "beacon-bay",
+    "name": "Beacon Bay",
+    "type": "suburb_district",
+    "lat": -32.982,
+    "lon": 27.949,
+    "city": "East London",
+    "province": "Eastern Cape",
+    "info": "Eastern Cape • Metro district"
+  },
+  {
+    "id": "vincent-east-london",
+    "name": "Vincent",
+    "type": "suburb_district",
+    "lat": -32.995,
+    "lon": 27.91,
+    "city": "East London",
+    "province": "Eastern Cape",
+    "info": "Eastern Cape • Metro district"
+  },
+  {
+    "id": "amalinda",
+    "name": "Amalinda",
+    "type": "suburb_district",
+    "lat": -33.015,
+    "lon": 27.85,
+    "city": "East London",
+    "province": "Eastern Cape",
+    "info": "Eastern Cape • Metro district"
+  },
+  {
+    "id": "mdantsane",
+    "name": "Mdantsane",
+    "type": "suburb_district",
+    "lat": -32.991,
+    "lon": 27.75,
+    "city": "East London",
+    "province": "Eastern Cape",
+    "info": "Eastern Cape • Metro district"
+  },
+  {
+    "id": "gonubie",
+    "name": "Gonubie",
+    "type": "suburb_district",
+    "lat": -32.936,
+    "lon": 28.02,
+    "city": "East London",
+    "province": "Eastern Cape",
+    "info": "Eastern Cape • Metro district"
+  }
+]

@@ -1,0 +1,32 @@
+# Transit Manager UI visual direction
+
+**Status:** First visual refresh implemented in the map and operations interface; landscape Android review remains.
+
+## Direction
+
+Transit Manager is a truck fleet and logistics strategy game. Its interface should make the player feel like they are running a South African carrier: a live national map, a working garage, a dispatch desk, visible freight, and trucks moving between terminals. Use an original dark-navy, road-orange, and signal-cyan visual identity, with readable day and night map palettes.
+
+Truck Manager 2027 was reviewed as a category reference. Its public product material describes fleet management, detailed truck models, live truck tracking on a map, route planning, and operating economics. These categories inform what Transit Manager should communicate visually; its branding, art, vehicle designs, wording, screen layouts, and balance are not reused. See the [official product listing](https://apps.apple.com/sa/app/truck-manager-2027/id6474616329?platform=ipad).
+
+## First refresh
+
+- Replaced thin orange outlines on every control with filled primary actions, quieter secondary controls, rounded cards, clearer active tabs, and stronger text hierarchy.
+- Added an original, code-drawn truck illustration to the garage, dispatch route, active-delivery panel, and moving map markers.
+- Added persistent company balance, fleet, driver, and active-trip status cards to Operations.
+- Reframed local freight as a Cape Town origin-to-destination dispatch card with cargo, distance, load size, and estimated revenue visible before dispatch.
+- Added a map-side fleet activity card with a direct path to Operations, so the map communicates the current company state even before the first truck is sent out.
+- Updated the map legend, layer controls, and zoom controls to share the same card and button language.
+
+## Operations and starter fleet pass
+
+- Split Operations into Overview, Fleet, Drivers, Dispatch, Depots, and Workshop sections. Local freight, line-haul, and contracts remain sub-tabs inside Dispatch.
+- Replaced the single crowded two-column page with section-specific cards and actions. Overview offers direct links to the garage, crew, and dispatch desk.
+- Added original class-specific vector silhouettes for vans, bakkies, small/rigid trucks, tippers, and tractor-trailer combinations.
+- Ordered the vehicle offer list as starter vans, bakkie, small dropside, medium rigid, refrigerated rigid, tipper, hazmat rigid, and prime mover with a trailer silhouette. No passenger cars are included.
+- Added the CapeRunner Bakkie and TownLink 3T Dropside as new early-fleet vehicles with distinct cargo fit, capacity, energy use, and operating costs.
+- Preserved old saves by mapping their previous vehicle-offer index back to the same named offer; new saves store the offer ID.
+- Trailer artwork communicates the later vehicle family, while swappable trailers and trailer compatibility remain future gameplay work.
+
+## Next visual review
+
+Check the map and each Operations section on Android phones and tablets in landscape. Review the default day and night palettes, text clipping, finger target sizes, truck illustration clarity, panel spacing, and the freight card at narrow aspect ratios. The class-specific silhouettes are first-pass in-game vector art; they can later be replaced by original detailed vehicle illustrations. Keep schematic map corridors clearly identified as illustrative, and do not derive game distances or costs from them.

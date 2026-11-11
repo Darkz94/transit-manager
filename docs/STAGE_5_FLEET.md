@@ -1,6 +1,6 @@
 # Stage 5: Fleet depth and maintenance
 
-**Status:** Vehicle wear/service, energy costs, mileage inspections, cargo equipment, and three specialist driver endorsements are implemented; Android play review and balance tuning remain.
+**Status:** Vehicle wear/service, energy costs, mileage inspections, cargo equipment, three specialist driver endorsements, and rare recoverable trip incidents are implemented; Android play review and balance tuning remain.
 **Target:** Android phones and tablets in landscape orientation.
 
 ## Included in this pass
@@ -19,7 +19,17 @@
 - Added bulk aggregates and the CapeBulk Tipper 10T. Bulk aggregates require tipper equipment; the tipper can also carry building supplies.
 - Vehicle running costs now include energy consumption. Diesel, petrol, and electricity have separate illustrative game prices; route cost summaries include energy plus the vehicle's baseline operating cost.
 - Added the E-Courier Urban Van as a lower-capacity electric option with a different purchase price and running-cost profile.
+- Added the CapeRunner Bakkie and TownLink 3T Dropside as early-fleet steps between vans and medium rigid trucks. Their capacities, cargo eligibility, energy use, and running costs are separate game values.
+- Reordered new-company vehicle offers to move from vans through a bakkie and small truck before medium and specialist trucks. Existing saves keep their previous next vehicle through a stable offer-ID migration.
+- Added distinct first-pass vector visuals for vans, bakkies, rigid trucks, tippers, and the later prime-mover/trailer combination. The current trailer image is illustrative; trailer ownership, swapping, and compatibility are not implemented yet.
+- Split the Operations screen into Overview, Fleet, Drivers, Dispatch, Depots, and Workshop sections. Local, line-haul, and contract work remain inside Dispatch.
 - Vehicles track odometer distance. An inspection becomes due every 5,000 km; dispatch is blocked until the available vehicle is serviced. Service repairs condition and, when due, includes the inspection fee. The odometer and next inspection threshold are saved locally.
+- Two permanent workshop improvements reduce condition-repair costs across the fleet: Workshop Efficiency costs R200,000 for a 20% saving; Workshop Expansion costs R450,000 more for a total 35% saving. Inspection fees are unchanged. Workshop level persists in local saves, including migration from the original single-upgrade save field.
+- The selected vehicle's fleet card now shows its odometer against the next inspection threshold, along with the inspection-due warning.
+- Trips can encounter a mild slow-traffic delay or minor tyre repair. The base chance is 2.5% per trip, rising with route length and low vehicle condition to a maximum of 6.5%.
+- Slow traffic adds 0.5 game hours to the return ETA without an extra charge. A minor tyre repair adds 0.75 game hours, costs R1,800, and adds one condition point of wear. Neither event immobilizes the truck or loses cargo.
+- Incident outcome and effect are saved on the trip at dispatch. If the repair cost would exceed available cash beyond the planned trip expense, the event becomes a no-cost traffic delay when the ETA allows it; otherwise the incident is skipped. A contract incident is only applied when its delay still leaves the truck on or before its deadline, so a random incident cannot create a bond loss.
+- Dispatch messages and the active trip summary show incident delays and costs; the return message repeats the outcome. Older saves and trips without incident fields continue to load with no incident effects.
 
 ## Initial balance rules
 
@@ -39,4 +49,4 @@ These values are first-pass game balance, not real fleet-maintenance estimates. 
 
 ## Next slice
 
-The next fleet slice can add fuel and energy choices, inspection intervals, and additional vehicle roles. Keep breakdown events out until maintenance costs and certification rules have been reviewed on Android, so the system stays understandable rather than punitive.
+Review service costs, mileage inspections, both workshop improvements, and the new incident frequency/effects on Android. Tune from play before adding more incident types or breakdowns; keep the system recoverable and avoid disabling trucks or losing cargo.
