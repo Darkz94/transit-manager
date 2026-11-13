@@ -89,7 +89,7 @@ var mouse_drag_moved := false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	vehicle_lineup_atlas = load("res://assets/vehicles/vehicle_lineup_atlas.png")
+	vehicle_lineup_atlas = load("res://assets/vehicles/vehicle_lineup_atlas.webp")
 	SimulationClock.time_changed.connect(_on_clock_changed)
 	var saved_state: Dictionary = GameSave.load_game()
 	if saved_state.is_empty():
@@ -995,6 +995,11 @@ func _draw_operations_info(font: Font) -> void:
 func _draw_operations_screen(font: Font) -> void:
 	operation_buttons.clear()
 	draw_rect(map_rect, c_bg, true)
+	var grid_color := Color(c_cyan, 0.10)
+	for x in range(0, int(map_rect.size.x), 28):
+		draw_line(Vector2(x, map_rect.position.y), Vector2(x, map_rect.end.y), grid_color)
+	for y in range(int(map_rect.position.y), int(map_rect.end.y), 28):
+		draw_line(Vector2(0, y), Vector2(map_rect.end.x, y), grid_color)
 	var fleet_count := CompanyOperations.fleet.size()
 	var driver_count := CompanyOperations.drivers.size()
 	var active_count := 0
@@ -1008,14 +1013,14 @@ func _draw_operations_screen(font: Font) -> void:
 	var stat_gap := 10.0
 	var stat_width := (map_rect.size.x - 32.0 - stat_gap * 3.0) / 4.0
 	var stats := [
-		["COMPANY BALANCE", "R%s" % CompanyOperations.commas(CompanyOperations.cash), "OFFLINE COMPANY"],
+		["COMPANY BALANCE", "R%s" % CompanyOperations.commas(CompanyOperations.cash), ""],
 		["FLEET", "%d TRUCKS" % fleet_count, "%d AVAILABLE" % available_count],
-		["DRIVERS", "%d HIRED" % driver_count, "LOCAL CREW"],
-		["ACTIVE RUNS", "%d ON ROAD" % active_count, "LIVE DISPATCH"]
+		["DRIVERS", "%d HIRED" % driver_count, ""],
+		["ACTIVE RUNS", "%d ON ROAD" % active_count, ""]
 	]
 	for i in range(stats.size()):
 		var stat_rect := Rect2(16.0 + float(i) * (stat_width + stat_gap), map_rect.position.y + 9.0, stat_width, 55.0)
-		_draw_stat_card(stat_rect, str(stats[i][0]), str(stats[i][1]), str(stats[i][2]), font, i == 0)
+		_draw_stat_card(stat_rect, str(stats[i][0]), str(stats[i][1]), str(stats[i][2]), font, [c_positive, c_cyan, c_cyan, c_orange][i])
 	var section_names := ["OVERVIEW", "FLEET", "DRIVERS", "DISPATCH", "DEPOTS", "WORKSHOP"]
 	var section_gap := 6.0
 	var section_width := (map_rect.size.x - 32.0 - section_gap * float(section_names.size() - 1)) / float(section_names.size())
@@ -1024,7 +1029,7 @@ func _draw_operations_screen(font: Font) -> void:
 		_draw_operation_button("ops_section_%d" % i, section_names[i], section_rect, font)
 	var panel_y := map_rect.position.y + 116.0
 	var panel := Rect2(16.0, panel_y, map_rect.size.x - 32.0, maxf(180.0, map_rect.end.y - panel_y - 10.0))
-	_draw_ui_card(panel, c_info_bg, c_panel_stroke, 12)
+	_draw_ui_card(panel, c_info_bg, c_panel_stroke, 5)
 	_draw_rect(Rect2(panel.position.x + 1.0, panel.position.y + 1.0, panel.size.x - 2.0, 3.0), c_orange if operations_section == 3 else c_cyan, true)
 	_draw_operations_section(panel, font)
 
@@ -1046,8 +1051,8 @@ func _draw_operations_section(panel: Rect2, font: Font) -> void:
 
 
 func _draw_overview_section(panel: Rect2, font: Font) -> void:
-	_draw_text(font, panel.position + Vector2(18, 27), "COMPANY OVERVIEW", HORIZONTAL_ALIGNMENT_LEFT, -1, 15, c_text)
-	_draw_text(font, panel.position + Vector2(18, 45), "Your fleet, crew, and freight at a glance", HORIZONTAL_ALIGNMENT_LEFT, panel.size.x - 36.0, 10, c_muted)
+	_draw_text(font, panel.position + Vector2(18, 27), "DISPATCH HQ", HORIZONTAL_ALIGNMENT_LEFT, -1, 15, c_text)
+	_draw_text(font, panel.position + Vector2(18, 45), "Fleet, crew and freight", HORIZONTAL_ALIGNMENT_LEFT, panel.size.x - 36.0, 10, c_muted)
 	var gap := 12.0
 	var y := panel.position.y + 58.0
 	var height := panel.size.y - 72.0
@@ -1055,8 +1060,9 @@ func _draw_overview_section(panel: Rect2, font: Font) -> void:
 	var fleet_card := Rect2(panel.position.x + 14.0, y, width, height)
 	var driver_card := Rect2(fleet_card.end.x + gap, y, width, height)
 	var dispatch_card := Rect2(driver_card.end.x + gap, y, width, height)
-	for card in [fleet_card, driver_card, dispatch_card]:
-		_draw_ui_card(card, c_surface_raised, c_panel_stroke, 10)
+	_draw_operations_bay(fleet_card, c_cyan)
+	_draw_operations_bay(driver_card, c_cyan)
+	_draw_operations_bay(dispatch_card, c_orange)
 	_draw_text(font, fleet_card.position + Vector2(14, 23), "YOUR FLEET", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, c_cyan)
 	var truck_class := CompanyOperations.next_vehicle_class()
 	var fleet_name := CompanyOperations.next_vehicle_label()
@@ -1075,7 +1081,8 @@ func _draw_overview_section(panel: Rect2, font: Font) -> void:
 	if not CompanyOperations.drivers.is_empty():
 		driver_copy = CompanyOperations.driver_label()
 	draw_circle(driver_card.position + Vector2(44, 76), 26.0, Color(c_cyan, 0.18))
-	_draw_text(font, driver_card.position + Vector2(29, 83), "DR", HORIZONTAL_ALIGNMENT_LEFT, 33, 14, c_cyan)
+	draw_circle(driver_card.position + Vector2(44, 76), 26.0, c_cyan, false, 2.0, true)
+	_draw_operations_section_icon(2, Rect2(driver_card.position + Vector2(24, 56), Vector2(40, 40)), c_cyan)
 	_draw_text(font, driver_card.position + Vector2(84, 70), "%d HIRED" % CompanyOperations.drivers.size(), HORIZONTAL_ALIGNMENT_LEFT, driver_card.size.x - 100.0, 13, c_text)
 	_draw_text(font, driver_card.position + Vector2(84, 90), "General and specialist", HORIZONTAL_ALIGNMENT_LEFT, driver_card.size.x - 100.0, 9, c_muted)
 	_draw_text(font, driver_card.position + Vector2(16, 132), driver_copy, HORIZONTAL_ALIGNMENT_LEFT, driver_card.size.x - 32.0, 9, c_muted)
@@ -1096,6 +1103,15 @@ func _draw_overview_section(panel: Rect2, font: Font) -> void:
 		_draw_text(font, goal_rect.position + Vector2(12.0, 41.0), str(goal["title"]), HORIZONTAL_ALIGNMENT_LEFT, goal_rect.size.x - 24.0, 12, c_text)
 		_draw_text(font, goal_rect.position + Vector2(12.0, 61.0), str(goal["detail"]), HORIZONTAL_ALIGNMENT_LEFT, goal_rect.size.x - 24.0, 9, c_muted)
 	_draw_operation_button("ops_section_%d" % int(goal["section"]), "NEXT STEP  •  %s" % str(goal["button"]), Rect2(dispatch_card.position.x + 12.0, dispatch_card.end.y - 50.0, dispatch_card.size.x - 24.0, 42.0), font)
+
+
+func _draw_operations_bay(rect: Rect2, accent: Color) -> void:
+	_draw_ui_card(rect, c_surface_raised, c_panel_stroke, 5)
+	draw_rect(Rect2(rect.position + Vector2(1, 1), Vector2(rect.size.x - 2, 32)), Color(accent, 0.12))
+	draw_line(rect.position + Vector2(1, 33), Vector2(rect.end.x - 1, rect.position.y + 33), Color(accent, 0.55))
+	for index in range(4):
+		var corner := Vector2(rect.end.x - 18.0 - index * 7.0, rect.position.y + 10.0)
+		draw_line(corner, corner + Vector2(-5, 12), Color(accent, 0.65), 2.0, true)
 
 
 func _company_goal() -> Dictionary:
@@ -1136,6 +1152,8 @@ func _draw_fleet_section(panel: Rect2, font: Font) -> void:
 	var energy := ""
 	var running_cost := 0.0
 	var condition := -1.0
+	var odometer_km := 0
+	var inspection_due_km := CompanyOperations.INSPECTION_INTERVAL_KM
 	if not CompanyOperations.fleet.is_empty():
 		var vehicle: Dictionary = CompanyOperations.fleet[posmod(CompanyOperations.selected_vehicle, CompanyOperations.fleet.size())]
 		vehicle_class = str(vehicle.get("class", "rigid"))
@@ -1147,6 +1165,8 @@ func _draw_fleet_section(panel: Rect2, font: Font) -> void:
 		energy = "%s • %.0f per 100 km" % [str(vehicle.get("energy_type", "diesel")).capitalize(), float(vehicle.get("energy_use_per_100km", 0.0))]
 		running_cost = float(vehicle.get("km_cost", 0.0))
 		condition = float(vehicle.get("condition", 100.0))
+		odometer_km = int(vehicle.get("odometer_km", 0))
+		inspection_due_km = int(vehicle.get("inspection_due_km", CompanyOperations.INSPECTION_INTERVAL_KM))
 	else:
 		var upcoming: Dictionary = CompanyOperations.next_vehicle_definition()
 		capacity = int(upcoming.get("capacity", 0))
@@ -1165,14 +1185,17 @@ func _draw_fleet_section(panel: Rect2, font: Font) -> void:
 		_draw_operation_button("cycle_vehicle", "SELECT NEXT OWNED TRUCK", Rect2(hero.position.x + 14.0, buy_y, (hero.size.x - 34.0) * 0.48, 44.0), font)
 		_draw_operation_button("buy_vehicle", "BUY NEXT  •  " + CompanyOperations.next_vehicle_label(), Rect2(hero.position.x + 20.0 + (hero.size.x - 34.0) * 0.48, buy_y, (hero.size.x - 34.0) * 0.52, 44.0), font)
 	_draw_text(font, specs.position + Vector2(18, 27), "TRUCK PROFILE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, c_cyan)
-	_draw_profile_value(font, specs, 58.0, "PAYLOAD", "%d units" % capacity)
-	_draw_profile_value(font, specs, 101.0, "FREIGHT", cargo_text.capitalize())
-	_draw_profile_value(font, specs, 152.0, "ENERGY", energy)
-	_draw_profile_value(font, specs, 203.0, "RUNNING COST", "R%.0f / km" % running_cost)
+	_draw_profile_value(font, specs, 54.0, "PURCHASE PRICE", "R%s" % CompanyOperations.commas(int(CompanyOperations.next_vehicle_definition().get("price", 0))) if condition < 0.0 else "R%s" % CompanyOperations.commas(int(CompanyOperations.fleet[posmod(CompanyOperations.selected_vehicle, CompanyOperations.fleet.size())].get("price", 0))))
+	_draw_profile_value(font, specs, 94.0, "PAYLOAD", "%d units" % capacity)
+	_draw_profile_value(font, specs, 134.0, "CARGO TYPES", cargo_text.capitalize())
+	_draw_profile_value(font, specs, 174.0, "FUEL / ENERGY USE", energy)
+	_draw_profile_value(font, specs, 214.0, "BASE RUNNING COST", "R%.0f / km" % running_cost)
 	if condition >= 0.0:
-		_draw_profile_value(font, specs, 254.0, "CONDITION", "%.0f%%" % condition)
-		draw_rect(Rect2(specs.position.x + 18.0, specs.position.y + 280.0, specs.size.x - 36.0, 10.0), c_bg, true)
-		draw_rect(Rect2(specs.position.x + 18.0, specs.position.y + 280.0, (specs.size.x - 36.0) * condition / 100.0, 10.0), c_positive if condition > 40.0 else c_orange, true)
+		_draw_profile_value(font, specs, 254.0, "VEHICLE CONDITION", "%.0f%%" % condition)
+		draw_rect(Rect2(specs.position.x + 18.0, specs.position.y + 280.0, specs.size.x - 36.0, 8.0), c_bg, true)
+		draw_rect(Rect2(specs.position.x + 18.0, specs.position.y + 280.0, (specs.size.x - 36.0) * clampf(condition, 0.0, 100.0) / 100.0, 8.0), c_positive if condition > 40.0 else c_orange, true)
+		var inspection_status := "INSPECTION DUE" if odometer_km >= inspection_due_km else "NEXT INSPECTION AT %s KM" % CompanyOperations.commas(inspection_due_km)
+		_draw_profile_value(font, specs, 296.0, "ODOMETER  •  %s KM" % CompanyOperations.commas(odometer_km), inspection_status)
 	else:
 		_draw_text(font, specs.position + Vector2(18, specs.size.y - 55.0), "TRAILER COMBINATIONS ARE A LATER FLEET STEP", HORIZONTAL_ALIGNMENT_LEFT, specs.size.x - 36.0, 9, c_muted)
 
@@ -1342,12 +1365,15 @@ func _draw_local_job_card(card: Rect2, font: Font) -> void:
 	_draw_metric(font, Vector2(card.position.x + card.size.x * 0.62, metric_y), "EST. REVENUE", "R%s" % CompanyOperations.commas(revenue), c_positive)
 
 
-func _draw_stat_card(rect: Rect2, label: String, value: String, detail: String, font: Font, highlighted: bool) -> void:
-	_draw_ui_card(rect, c_info_bg, c_panel_stroke, 9)
-	draw_rect(Rect2(rect.position.x + 1.0, rect.position.y + 9.0, 3.0, rect.size.y - 18.0), c_orange if highlighted else c_cyan, true)
-	_draw_text(font, rect.position + Vector2(13, 16), label, HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 22.0, 8, c_muted)
-	_draw_text(font, rect.position + Vector2(13, 34), value, HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 22.0, 12, c_text)
-	_draw_text(font, Vector2(rect.end.x - 96.0, rect.position.y + 34), detail, HORIZONTAL_ALIGNMENT_RIGHT, 86, 8, c_muted)
+func _draw_stat_card(rect: Rect2, label: String, value: String, detail: String, font: Font, accent: Color) -> void:
+	var instrument_accent := accent.lightened(0.35) if theme_mode == 0 else accent
+	_draw_ui_card(rect, Color("#101E30"), Color("#31465D"), 4)
+	draw_rect(Rect2(rect.position, Vector2(rect.size.x, 2.0)), instrument_accent)
+	draw_circle(rect.position + Vector2(14.0, 16.0), 3.0, instrument_accent)
+	_draw_text(font, rect.position + Vector2(24, 20), label, HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 36.0, 9, Color("#B5C7D8"))
+	_draw_text(font, rect.position + Vector2(12, 44), value, HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 24.0, 16, Color("#F1F7FC"))
+	if not detail.is_empty() and rect.size.x >= 210.0:
+		_draw_text(font, rect.end - Vector2(102, 11), detail, HORIZONTAL_ALIGNMENT_RIGHT, 90, 8, instrument_accent)
 
 
 func _draw_hud_stat(font: Font, rect: Rect2, label: String, value: String, value_color: Color) -> void:
@@ -1419,7 +1445,7 @@ func _vehicle_tier_label(vehicle_class: String) -> String:
 
 
 func _draw_truck_illustration(rect: Rect2, cab_color: Color, vehicle_class: String = "rigid") -> void:
-	if screen_mode == 1 and rect.size.x >= 120.0 and vehicle_lineup_atlas != null:
+	if screen_mode == 1 and vehicle_lineup_atlas != null:
 		var source_rect := _vehicle_lineup_region(vehicle_class)
 		var fit_scale := minf(rect.size.x / source_rect.size.x, rect.size.y / source_rect.size.y)
 		var art_size := source_rect.size * fit_scale
@@ -1499,26 +1525,37 @@ func _draw_truck_illustration(rect: Rect2, cab_color: Color, vehicle_class: Stri
 
 
 func _vehicle_lineup_region(vehicle_class: String) -> Rect2:
+	var column := 1
+	var row := 1
 	match vehicle_class:
 		"van":
-			return Rect2(88.0, 72.0, 414.0, 260.0)
+			column = 0
+			row = 0
 		"electric_van":
-			return Rect2(600.0, 72.0, 392.0, 260.0)
+			column = 1
+			row = 0
 		"bakkie":
-			return Rect2(1086.0, 72.0, 420.0, 260.0)
+			column = 2
+			row = 0
 		"light_rigid":
-			return Rect2(88.0, 378.0, 410.0, 262.0)
+			column = 0
+			row = 1
 		"rigid":
-			return Rect2(600.0, 378.0, 396.0, 262.0)
+			column = 1
+			row = 1
 		"reefer":
-			return Rect2(1086.0, 378.0, 420.0, 262.0)
+			column = 2
+			row = 1
 		"tipper":
-			return Rect2(88.0, 699.0, 410.0, 275.0)
+			column = 0
+			row = 2
 		"hazmat_rigid":
-			return Rect2(600.0, 699.0, 396.0, 275.0)
+			column = 1
+			row = 2
 		"tractor":
-			return Rect2(1086.0, 710.0, 420.0, 265.0)
-	return Rect2(600.0, 378.0, 396.0, 262.0)
+			column = 2
+			row = 2
+	return Rect2(Vector2(column * (1024.0 / 3.0), row * (683.0 / 3.0)), Vector2(1024.0 / 3.0, 683.0 / 3.0))
 
 
 func _draw_wheel(x: float, y: float, radius: float) -> void:
@@ -1541,17 +1578,19 @@ func _draw_operation_button(button_id: String, label: String, rect: Rect2, font:
 	if button_id.begins_with("ops_section_"):
 		selected = int(button_id.trim_prefix("ops_section_")) == operations_section
 	var fill := c_orange if primary else (c_button if selected else c_surface_raised)
-	var text_color := Color("#FFFFFF") if primary else c_button_text
+	var text_color := Color("#18120C") if primary else c_button_text
 	var stroke := Color(c_orange.lightened(0.12)) if primary else (c_cyan if selected else c_panel_stroke)
 	var style := StyleBoxFlat.new()
 	style.bg_color = fill
 	style.border_color = stroke
 	style.set_border_width_all(1 if primary or selected else 0)
-	style.set_corner_radius_all(8)
+	style.set_corner_radius_all(4)
 	style.shadow_color = c_shadow
 	style.shadow_size = 3 if primary else 1
 	style.shadow_offset = Vector2(0, 2)
 	style.draw(get_canvas_item(), rect)
+	if primary or selected:
+		draw_rect(Rect2(rect.position + Vector2(5, 2), Vector2(rect.size.x - 10, 2)), Color(stroke.lightened(0.25), 0.8))
 	var display_label := label
 	var font_size := 11 if button_id.begins_with("ops_section_") else 10
 	if rect.size.y < 34.0:

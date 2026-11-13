@@ -1036,7 +1036,8 @@ func _inspection_due(vehicle: Dictionary) -> bool:
 func energy_label(vehicle: Dictionary) -> String:
 	var energy := str(vehicle.get("energy_type", "diesel"))
 	var unit := "kWh" if energy == "electricity" else "L"
-	return "%s %.0f %s/100 km" % [energy.capitalize(), float(vehicle.get("energy_use_per_100km", 0.0)), unit]
+	var label := "Battery" if energy == "electricity" else energy.capitalize()
+	return "%s • %.0f %s per 100 km" % [label, float(vehicle.get("energy_use_per_100km", 0.0)), unit]
 
 
 func _energy_cost(vehicle: Dictionary, round_trip_km: int) -> int:
